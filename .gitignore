@@ -1,0 +1,48 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# --- Build & Output ---
+.open-next
+/.next/
+/out/
+/build
+# Quan trọng: Loại bỏ các thư mục dist trong src/packages (core, viewer, v.v.)
+src/packages/**/dist/
+*.tsbuildinfo
+
+# --- Dependencies ---
+/node_modules
+/.pnp
+.pnp.js
+
+# --- Testing ---
+/coverage
+/test-results/
+/playwright-report/
+/playwright/.cache/
+# Cypress artifacts
+cypress/screenshots/
+cypress/videos/
+
+# --- Environment & Secrets ---
+.env
+.env*.local
+.env.test
+.env.production
+*.pem
+
+# --- IDE & Editors ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# --- Debug Logs ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*

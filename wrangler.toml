@@ -1,0 +1,25 @@
+name = "printerval"
+main = ".open-next/worker.js" 
+compatibility_date = "2026-01-04"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[vars]
+NEXTJS_ENV = "production"
+
+[observability]
+enabled = true
+
+[build]
+command = "npm run build:cf"
+
+[build.upload]
+format = "modules"
+
+# wrangler.toml
+compatibility_flags = ["nodejs_compat"]
+# Thêm dòng này để xử lý module tốt hơn nếu build vẫn lỗi
+node_compat = true
