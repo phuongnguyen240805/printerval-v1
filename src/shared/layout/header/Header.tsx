@@ -16,6 +16,7 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 import Sidebar from './SideBar';
 import { navLinks, campaign, categories, blog, NavLink } from './data';
 import { api } from '@/utils/api';
+import { keysToRemove } from '@/pages/user/account';
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
@@ -42,7 +43,7 @@ export const Header = () => {
   };
 
   const accessToken = getToken();
-  
+
   // get user
   const { data: customer, isLoading, error } = api.medusa.userDetail.useQuery(
     { accessToken: accessToken as string },
@@ -54,6 +55,8 @@ export const Header = () => {
       refetchOnWindowFocus: false,
     }
   );
+
+  // console.log('check user: ', customer); 
 
   const user = useMemo(() => {
     if (!customer) return null;
@@ -104,6 +107,15 @@ export const Header = () => {
       case 'Blog': return "text-black-600 hover:text-orange-500 hover:brightness-125";
       default: return "text-black-600 hover:text-orange-500 hover:brightness-125";
     }
+  };
+
+  // logout handler
+  const handleLogout = () => {
+    // Thực hiện xóa
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+    sessionStorage.removeItem('authToken');
+    localStorage.removeItem('authToken');
+    window.location.href = '/';
   };
 
   return (
@@ -236,9 +248,10 @@ export const Header = () => {
                           <DropdownMenuItem
                             className="cursor-pointer text-red-600 rounded-lg flex items-center gap-3 text-sm hover:bg-red-50 hover:text-red-700"
                             onClick={() => {
-                              sessionStorage.removeItem('authToken');
-                              localStorage.removeItem('authToken');
-                              window.location.href = '/signin';
+                              handleLogout()
+                              // sessionStorage.removeItem('authToken');
+                              // localStorage.removeItem('authToken');
+                              // window.location.href = '/signin';
                             }}
                           >
                             <GiFountainPen size={16} /> Logout

@@ -18,6 +18,7 @@ import { mockProduct, isCustomizableProduct, getCustomizationByHandle } from "@/
 import { PrintLocationSelector } from "@/packages/product-asset/print-location";
 import { CustomizationController } from "@/packages/customization";
 import { MiniCartSheet } from "@/shared/features/page/cart/MiniCartSheet";
+import { api } from "@/utils/api";
 
 const Detail = ({ product, cart = [], addToCart, createCart, boughtTogetherSelections = new Set(), boughtTogetherProducts = [], rating = 5, reviewCount = 0, onCustomizationApply }: {
   product?: any;
@@ -57,6 +58,7 @@ const Detail = ({ product, cart = [], addToCart, createCart, boughtTogetherSelec
   const [isCustomizing, setIsCustomizing] = useState(false);
   const [customDesign, setCustomDesign] = useState<any>(null);
   const [displayCart, setDisplayCart] = useState<any[]>([]);
+  const [cartId, setCartId] = useState<string | null>(null);
 
   // Countdown timer state
   const [timeLeft, setTimeLeft] = useState({ h: 0, m: 10, s: 40 });
@@ -125,35 +127,61 @@ const Detail = ({ product, cart = [], addToCart, createCart, boughtTogetherSelec
   }, []);
 
   const matchingVariant = useMemo(() => {
-    if (!safeProduct?.variants) return null;
-    if (!selectedColor && !selectedVariant && !selectedSize) return safeProduct.variants[0];
+    if (!safeProduct?.variants || safeProduct.variants.length === 0) return null;
+
+    // 1. Nếu chưa chọn bất kỳ option nào, trả về variant mặc định
+    if (!selectedColor && !selectedVariant && !selectedSize) {
+      return safeProduct.variants[0];
+    }
+
+    // 2. Tìm kiếm chính xác
     const exactMatch = safeProduct.variants.find((variant: any) => {
-      const variantOptions = variant.options || [];
-      const colorMatch = selectedColor ? variantOptions.some((opt: any) => opt.value?.toLowerCase() === selectedColor.toLowerCase()) : true;
-      const variantMatch = selectedVariant ? variantOptions.some((opt: any) => opt.value?.toLowerCase() === selectedVariant.toLowerCase()) : true;
-      const sizeMatch = selectedSize ? variant.title?.toLowerCase().includes(selectedSize.toLowerCase()) : true;
-      return colorMatch && variantMatch && sizeMatch;
+      const title = variant.title.toLowerCase();
+
+      // Tách các thành phần trong title (thường phân cách bằng " / ")
+      const titleParts = title.split("/").map((p: string) => p.trim());
+
+      // Kiểm tra từng điều kiện (Nếu người dùng đã chọn thì PHẢI khớp)
+      const matchesColor = selectedColor
+        ? titleParts.includes(selectedColor.toLowerCase())
+        : true;
+
+      const matchesType = selectedVariant
+        ? titleParts.includes(selectedVariant.toLowerCase())
+        : true;
+
+      const matchesSize = selectedSize
+        ? titleParts.includes(selectedSize.toLowerCase())
+        : true;
+
+      // Chỉ trả về true nếu TẤT CẢ các lựa chọn hiện tại đều nằm trong title
+      return matchesColor && matchesType && matchesSize;
     });
-    return exactMatch || safeProduct.variants[0];
+
+    // 3. Log để kiểm tra thực tế trong Console
+    if (exactMatch) {
+      console.log("✅ Đã tìm thấy Variant ID:", exactMatch.id);
+    } else {
+      console.warn("❌ Không tìm thấy variant nào khớp với lựa chọn.");
+    }
+
+    return exactMatch || null;
   }, [safeProduct?.variants, selectedColor, selectedVariant, selectedSize]);
 
-  console.log('check matching variant: ', matchingVariant.id)
+  // console.log('check matching variant: ', matchingVariant.id, safeProduct.variants)
 
   const handleAddToCart = async () => {
-    // 1. Kiểm tra biến đầu vào
     if (!matchingVariant?.id) {
       setCartMessage("Please select a variant before adding to cart.");
       setTimeout(() => setCartMessage(""), 3000);
       return;
     }
 
-    setAddingToCart(true); // Bật trạng thái loading local
+    setAddingToCart(true);
 
     try {
-      // 2. Lấy Cart ID hiện tại
       let currentCartId = localStorage.getItem("medusa_cart_id");
 
-      // 3. BƯỚC QUAN TRỌNG: Tạo Cart nếu chưa có
       if (!currentCartId) {
         console.log("🛒 No Cart ID found, creating new cart...");
         const regionId = localStorage.getItem("selected_region") || "reg_01"; // Đảm bảo có fallback ID hợp lệ
@@ -170,24 +198,19 @@ const Detail = ({ product, cart = [], addToCart, createCart, boughtTogetherSelec
         }
       }
 
-      // 4. BƯỚC THÊM VÀO GIỎ (Lúc này chắc chắn đã có currentCartId)
-      console.log("🚀 Adding item to cart:", currentCartId);
       const addResponse = await addToCart.mutate({
-        cart_id: currentCartId,
+        cart_id: currentCartId as string,
         variant_id: matchingVariant.id,
         quantity: mount,
       });
 
-      // 5. CẬP NHẬT GIAO DIỆN & THÔNG BÁO
       if (addResponse?.cart) {
-        // Cập nhật bản sao sản phẩm ở local nếu cần (tùy chọn)
         updateLocalMirror(addResponse.cart);
 
         setCartMessage("Successfully added to cart!");
 
-        // Bắn sự kiện để Navbar/Cart Icon cập nhật số lượng ngay lập tức
         window.dispatchEvent(new CustomEvent('cart:updated', {
-          detail: { cart: addResponse.cart }
+          detail: { cart: addResponse?.cart }
         }));
       }
 
@@ -207,127 +230,6 @@ const Detail = ({ product, cart = [], addToCart, createCart, boughtTogetherSelec
       setAddingToCart(false); // Tắt loading
     }
   };
-
-  // const handleAddToCart = async () => {
-  //   if (!matchingVariant?.id) {
-  //     setCartMessage("Please select a variant");
-  //     return;
-  //   }
-
-  //   setAddingToCart(true);
-
-  //   try {
-  //     let currentCartId = localStorage.getItem("medusa_cart_id");
-
-  //     if (!currentCartId) {
-  //       const regionId = localStorage.getItem("selected_region") || "";
-
-  //       const result = await createCart.mutate(
-  //         { id: regionId }
-  //       );
-  //       console.log("Create Cart Result:", result);
-  //       // Handle the response through the data prop instead
-  //       if (createCart.data?.cart?.id) {
-  //         const newCartId = createCart.data.cart.id;
-  //         localStorage.setItem("medusa_cart_id", newCartId);
-  //         addToCart.mutate(
-  //           {
-  //             cart_id: newCartId,
-  //             variant_id: matchingVariant.id,
-  //             quantity: mount,
-  //           },
-  //         );
-
-  //         setCartMessage("Thêm vào giỏ hàng thành công!");
-  //         window.dispatchEvent(new CustomEvent('cart:updated'));
-  //       }
-  //     } else {
-  //       addToCart.mutate(
-  //         {
-  //           cart_id: currentCartId,
-  //           variant_id: matchingVariant.id,
-  //           quantity: mount,
-  //         },
-  //       );
-
-  //       setCartMessage("Thêm vào giỏ hàng thành công!");
-  //       window.dispatchEvent(new CustomEvent('cart:updated'));
-  //     }
-  //   } catch (error) {
-  //     console.error("Cart Error:", error);
-  //     setAddingToCart(false);
-  //   }
-  //   // if (!matchingVariant?.id) {
-  //   //   setCartMessage("Please select a variant");
-  //   //   setTimeout(() => setCartMessage(""), 3000);
-  //   //   return;
-  //   // }
-  //   // setAddingToCart(true);
-  //   // try {
-  //   //   // Lưu sản phẩm vào giỏ hàng (localStorage)
-  //   //   const currentCart = JSON.parse(localStorage.getItem('cart_items') || '[]');
-
-  //   //   // Tìm xem sản phẩm đã có trong giỏ chưa
-  //   //   const existingItem = currentCart.find((item: any) => item.id === safeProduct?.id);
-
-  //   //   // Ensure price is a valid number
-  //   //   const productPrice = Number(safeProduct?.variants?.[0]?.calculated_price?.calculated_amount) || 0;
-
-  //   //   if (existingItem) {
-  //   //     // Nếu đã có, tăng số lượng lên
-  //   //     existingItem.quantity += mount;
-  //   //   } else {
-  //   //     // Nếu chưa có, thêm mới
-  //   //     currentCart.push({
-  //   //       id: safeProduct?.id,
-  //   //       title: safeProduct?.title,
-  //   //       thumbnail: safeProduct?.thumbnail,
-  //   //       quantity: mount,
-  //   //       price: productPrice,
-  //   //       handle: safeProduct?.handle,
-  //   //       metadata: {
-  //   //         print_position: selectedPrintLocation?.position || 'Front',
-  //   //         customization: customDesign || null,
-  //   //       }
-  //   //     });
-  //   //   }
-
-  //   //   // Lưu lại vào localStorage
-  //   //   localStorage.setItem('cart_items', JSON.stringify(currentCart));
-  //   //   console.log("✅ Added to cart:", currentCart);
-
-  //   //   // Gửi sự kiện để cart page cập nhật
-  //   //   window.dispatchEvent(new CustomEvent('cart:updated', { detail: { success: true, cart: currentCart } }));
-
-  //   //   setCartMessage("Added to cart successfully!");
-  //   //   setTimeout(() => setCartMessage(""), 2000);
-  //   // } catch (error) {
-  //   //   console.error("Error adding to cart:", error);
-  //   //   setCartMessage("Error adding to cart");
-  //   // } finally {
-  //   //   setAddingToCart(false);
-  //   // }
-  // };
-
-  // // Hàm phụ trợ để gọi tRPC addToCart
-  // const proceedToAddToCart = (cartId: string) => {
-  //   try {
-  //     if (cartId && matchingVariant?.id) {
-  //       addToCart.mutate(
-  //         {
-  //           cart_id: cartId,
-  //           variant_id: matchingVariant.id,
-  //           quantity: mount,
-  //         },
-  //       );
-
-  //       setCartMessage("Thêm vào giỏ hàng thành công!");
-  //       window.dispatchEvent(new CustomEvent('cart:updated'));
-  //     }
-  //   } catch (error) {
-  //     console.error("Process AddCart Error:", error);
-  //   }
-  // };
 
   // Hàm cập nhật bản sao cart ở local (tùy chọn)
   const updateLocalMirror = (cartData: any) => {

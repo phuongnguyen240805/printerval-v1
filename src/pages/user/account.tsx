@@ -7,6 +7,16 @@ import Link from "next/link";
 import Image from "next/image";
 import Recently from "@/packages/browsing-history/components/recently";
 
+export const keysToRemove = [
+    "medusa_cart_id",
+    "medusa_auth_token",
+    "medusa_user",
+    "cart_items",
+    "purchased_products",
+    "recently_viewed_products",
+    "designJSON"
+];
+
 const AccountPage = () => {
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const [selectedAvatar, setSelectedAvatar] = useState<File | null>(null);
@@ -62,6 +72,8 @@ const AccountPage = () => {
         };
     }, [avatarPreview]);
     const handleLogout = () => {
+        // Thực hiện xóa
+        keysToRemove.forEach(key => localStorage.removeItem(key));
         sessionStorage.removeItem('authToken');
         localStorage.removeItem('authToken');
         window.location.href = '/';

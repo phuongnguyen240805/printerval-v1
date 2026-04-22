@@ -36,7 +36,7 @@ export const MiniCartSheet = ({
 }: MiniCartSheetProps) => {
     const subtotal =
         displayCart.reduce((sum: number, item: any) => {
-            return sum + ((Number(item.price) || 0) / 100 * (Number(item.quantity) || 1));
+            return sum + ((Number(item.unit_price) || 0) * (Number(item.quantity) || 1));
         }, 0) +
         Array.from(boughtTogetherSelections).reduce((sum, id) => {
             const product = boughtTogetherProducts?.find((p: any) => p.id === id);
@@ -69,7 +69,7 @@ export const MiniCartSheet = ({
                             </Button>
                             <span className="col-span-4 text-xs text-gray-500">{item.handle}</span>
                             <span className="col-span-1 text-sm font-bold">
-                                ${(Number(item.price) / 100 || 0).toFixed(2)}
+                                ${(Number(item.unit_price) || 0).toFixed(2)}
                             </span>
                             <div className="col-span-3 flex justify-end items-center gap-2">
                                 <Button variant="outline" size="sm" className="h-7 w-7 p-0">

@@ -30,8 +30,10 @@ import { Table, TableBody, TableCell, TableRow } from "@/shared/ui/table";
 import { Button } from "@/shared/ui/button";
 import { Label } from "@/shared/ui/label";
 import { Checkbox } from "@/shared/ui/checkbox";
+import Trpc from "@/pages/api/trpc/[trpc]";
 const CartStep = ({ product = [], nextStep, cartDelete }: { product: StoreCartLineItem[]; nextStep: () => void, cartDelete: any }) => {
-    console.log('check product cart: ', product)
+    // console.log('check product cart: ', productData)
+    // const product = productData.items; 
     const [quantities, setQuantities] = useState<number[]>([])
     const handleDeleteItem = async (productId: string) => {
         try {
@@ -147,7 +149,7 @@ const CartStep = ({ product = [], nextStep, cartDelete }: { product: StoreCartLi
                                         }}>-</Button>
                                         <span className="font-semibold w-8 text-center">{quantities[index]}</span>
                                         <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={() => {
-                                            const newQty = Math.max(1, quantities[index] + 1); 
+                                            const newQty = Math.max(1, quantities[index] + 1);
                                             setQuantities(prev => {
                                                 const next = [...prev];
                                                 next[index] = newQty;

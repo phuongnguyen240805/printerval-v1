@@ -167,8 +167,11 @@ export const userRouter = {
       }
 
       try {
+        const queryParams = new URLSearchParams({
+          "fields": "+metadata"
+        });
         // GET /store/customers/me với Bearer customer token + publishable key [[Store customer.me](https://docs.medusajs.com/resources/references/js-sdk/store/customer#customer---js-sdk-store-reference)]
-        const response = await fetch(`${MEDUSA_BASE}/store/customers/me?fields=+metadata`, {
+        const response = await fetch(`${MEDUSA_BASE}/store/customers/me?${queryParams.toString()}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

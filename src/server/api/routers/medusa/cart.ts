@@ -30,10 +30,15 @@ export const cartRouter = {
     line_item_id: z.string(),
   }))
   .mutation(async ({ input }) => {
-    const response = await medusaClient.store.cart.deleteLineItem(
+    try {
+      const response = await medusaClient.store.cart.deleteLineItem(
       input.cart_id,
       input.line_item_id
     )
-    return response
+      return response
+    } catch (error) {
+      console.error("Error deleting item from cart:", error);
+      throw new Error(error || "Failed to delete item from cart");
+    }
   }),
 }
