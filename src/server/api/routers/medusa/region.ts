@@ -11,9 +11,10 @@ export const regionRouter = {
       if(!regions) return [];
 
       return regions;
-    } catch (err) {
-      console.error("Medusa regions fetch error:", err);
-      throw new Error("Failed to fetch regions from Medusa");
+    } catch {
+      // Browsing remains available when the commerce backend is offline.
+      // Do not invent region IDs that could later be submitted to checkout.
+      return [];
     }
   }),
 

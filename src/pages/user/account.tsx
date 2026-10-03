@@ -8,9 +8,9 @@ import Image from "next/image";
 import Recently from "@/packages/browsing-history/components/recently";
 
 export const keysToRemove = [
-    "medusa_cart_id",
+    // "medusa_cart_id",
     "medusa_auth_token",
-    "medusa_user",
+    // "medusa_user",
     "cart_items",
     "purchased_products",
     "recently_viewed_products",

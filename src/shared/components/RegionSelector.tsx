@@ -14,12 +14,16 @@ export const RegionSelector = () => {
     const [selectedRegion, setSelectedRegion] = useState<string>("");
 
     // Fetch regions from Medusa
-    const { data: regions, isLoading } = api.medusa.getRegions.useQuery();
+    const { data: regions, isLoading } = api.medusa.getRegions.useQuery(undefined, {
+        retry: false,
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
+    });
 
     // Load selected region from localStorage on mount
     useEffect(() => {
         const storedRegion = localStorage.getItem('selected_region');
-        if (storedRegion) {
+        if (storedRegion && regions?.some(region => region.id === storedRegion)) {
             setSelectedRegion(storedRegion);
         } else if (regions && regions.length > 0) {
             // Default to first region
@@ -43,11 +47,20 @@ export const RegionSelector = () => {
         window.location.reload();
     };
 
-    if (isLoading || !regions || regions.length === 0) {
+    if (isLoading) {
         return (
             <div className="flex items-center gap-2 text-sm text-gray-600">
                 <span className="text-2xl">🌍</span>
                 <span>Loading...</span>
+            </div>
+        );
+    }
+
+    if (!regions?.length) {
+        return (
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+                <span className="text-2xl">🌍</span>
+                <span>Worldwide · USD</span>
             </div>
         );
     }

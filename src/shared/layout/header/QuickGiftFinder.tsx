@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import styles from './QuickGiftFinder.module.css';
 
 const QUICK_LINKS = [
   { name: 'For Him', image: 'https://res.cloudinary.com/dm1wqczhm/image/upload/v1774941285/gift-for-him_hr4cqc.png' },
@@ -48,7 +49,7 @@ export const QuickGiftFinder = () => {
              src="https://res.cloudinary.com/dm1wqczhm/image/upload/v1774869889/tho1_pszhws.png" 
              alt="gift" 
              fill 
-             className="object-contain animate-bounce-slow" 
+             className={`object-contain ${styles.bounceSlow}`}
            />
         </div>
 
@@ -85,15 +86,6 @@ export const QuickGiftFinder = () => {
         </div>
       </div>
 
-      <style jsx>{`
-        .animate-bounce-slow {
-          animation: bounce 3s infinite;
-        }
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-      `}</style>
     </div>
   );
 };

@@ -9,6 +9,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { DefaultSeo } from 'next-seo';
 import NextNProgress from 'nextjs-progressbar';
 import SEO from '../../next-seo.config';
+import i18nConfig from '../../next-i18next.config';
 import '@/styles/globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -42,4 +43,4 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   );
 }
 
-export default api.withTRPC(appWithTranslation(MyApp));
+export default api.withTRPC(appWithTranslation(MyApp, i18nConfig));

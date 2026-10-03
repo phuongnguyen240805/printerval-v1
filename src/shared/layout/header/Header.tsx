@@ -56,8 +56,6 @@ export const Header = () => {
     }
   );
 
-  // console.log('check user: ', customer); 
-
   const user = useMemo(() => {
     if (!customer) return null;
 
@@ -70,6 +68,20 @@ export const Header = () => {
       avatar: (customer.metadata?.avatar as string) || undefined
     };
   }, [customer]);
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("medusa_user", JSON.stringify(customer));
+
+      // Đồng bộ Cart ID theo Key riêng của User này
+      const userCartKey = `medusa_cart_id_${customer?.id}`;
+      const cartIdFromMetadata = customer?.metadata?.active_cart_id;
+
+      if (cartIdFromMetadata) {
+        localStorage.setItem(userCartKey, cartIdFromMetadata as string);
+      }
+    }
+  }, [user, customer]);
 
   const handleShowMenu = (navLink: NavLink) => setHoveredNavLink(navLink);
   const handleCloseMenu = () => setHoveredNavLink(null);

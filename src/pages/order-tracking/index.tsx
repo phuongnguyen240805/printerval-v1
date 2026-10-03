@@ -48,7 +48,7 @@ const OrderTracking = () => {
                     </div>
                 </div>
             </div>
-            <Recently />
+            {/* <Recently /> */}
         </>
     )
 }

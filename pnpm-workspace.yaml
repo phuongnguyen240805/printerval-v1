@@ -1,0 +1,15 @@
+allowBuilds:
+  '@prisma/client': false
+  '@prisma/engines': false
+  canvas: true
+  core-js: false
+  cypress: false
+  esbuild: false
+  medusa-telemetry: false
+  msgpackr-extract: false
+  msw: false
+  prisma: false
+  protobufjs: false
+  sharp: false
+  unrs-resolver: false
+  workerd: false

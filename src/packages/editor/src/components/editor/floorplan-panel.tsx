@@ -2105,7 +2105,7 @@ function formatArea(areaSqM: number, unit: 'metric' | 'imperial') {
     const areaSqFt = areaSqM * 10.763_910_4
     return (
       <>
-        {Math.round(areaSqFt).toLocaleString()} ft
+        {Math.round(areaSqFt).toLocaleString('en-US')} ft
         <tspan baselineShift="super" fontSize="0.75em">
           2
         </tspan>

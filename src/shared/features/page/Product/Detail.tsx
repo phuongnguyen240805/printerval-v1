@@ -19,6 +19,8 @@ import { PrintLocationSelector } from "@/packages/product-asset/print-location";
 import { CustomizationController } from "@/packages/customization";
 import { MiniCartSheet } from "@/shared/features/page/cart/MiniCartSheet";
 import { api } from "@/utils/api";
+import { medusaClient } from "@/lib/medusaClient";
+import { getCartKey } from "@/helpers/getCartKey";
 
 const Detail = ({ product, cart = [], addToCart, createCart, boughtTogetherSelections = new Set(), boughtTogetherProducts = [], rating = 5, reviewCount = 0, onCustomizationApply }: {
   product?: any;
@@ -180,7 +182,9 @@ const Detail = ({ product, cart = [], addToCart, createCart, boughtTogetherSelec
     setAddingToCart(true);
 
     try {
-      let currentCartId = localStorage.getItem("medusa_cart_id");
+      const cartKey = getCartKey(); // Lấy key động: ví dụ medusa_cart_id_cus_123
+      let currentCartId = localStorage.getItem(cartKey);
+      const accessToken = sessionStorage.getItem("authToken");
 
       if (!currentCartId) {
         console.log("🛒 No Cart ID found, creating new cart...");
@@ -191,7 +195,7 @@ const Detail = ({ product, cart = [], addToCart, createCart, boughtTogetherSelec
 
         if (createResponse?.cart?.id) {
           currentCartId = createResponse.cart.id;
-          localStorage.setItem("medusa_cart_id", currentCartId as string);
+          localStorage.setItem(cartKey, currentCartId as string);
           console.log("✅ New Cart ID saved to Local Storage:", currentCartId);
         } else {
           throw new Error("Failed to retrieve new Cart ID from server.");

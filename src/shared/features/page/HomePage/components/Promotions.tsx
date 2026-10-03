@@ -9,12 +9,16 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/shared/ui/carousel"
-import { MOCK_PRODUCTS_DATABASE } from '@/lib/mockProduct';
+import { mockProducts } from '@/lib/mockProduct';
 import { api } from '@/utils/api';
 import React, { useEffect } from 'react';
 
 export const SaleProduct = ({ TopSale, title }: { TopSale?: any[], title: string }) => {
-    const { data: regions } = api.medusa.getRegions.useQuery();
+    const { data: regions } = api.medusa.getRegions.useQuery(undefined, {
+        retry: false,
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
+    });
 
     // 2. State để quản lý regionID hiện tại
     const [regionID, setRegionID] = React.useState<string | null>(null);
@@ -22,13 +26,15 @@ export const SaleProduct = ({ TopSale, title }: { TopSale?: any[], title: string
     useEffect(() => {
         const savedRegion = localStorage.getItem("selected_region");
 
-        if (savedRegion) {
+        if (savedRegion && regions?.some(region => region.id === savedRegion)) {
             setRegionID(savedRegion);
         } else if (regions && regions.length > 0) {
             // Nếu chưa có trong local, lấy cái đầu tiên từ Medusa và lưu lại
             const defaultId = regions[0].id;
             localStorage.setItem("selected_region", defaultId);
             setRegionID(defaultId);
+        } else {
+            setRegionID(null);
         }
     }, [regions]);
 
@@ -41,11 +47,13 @@ export const SaleProduct = ({ TopSale, title }: { TopSale?: any[], title: string
         {
             enabled: !!regionID,
             staleTime: 1000 * 60 * 5,
+            retry: false,
+            refetchOnWindowFocus: false,
         }
     );
 
     // ƯU TIÊN: saleProducts từ API -> TopSale từ Prop -> Mock cuối cùng
-    const products = saleProducts || TopSale || [];
+    const products = saleProducts?.length ? saleProducts : TopSale?.length ? TopSale : mockProducts;
     const countArrays = Array.from({ length: Math.ceil(products.length / 4) }, (_, i) => i);
 
     return (
@@ -106,11 +114,11 @@ export const SaleProduct = ({ TopSale, title }: { TopSale?: any[], title: string
 
                                                         <div className='flex flex-wrap items-center gap-2'>
                                                             <span className='text-lg font-bold text-red-600'>
-                                                                {currencySymbol}{calculatedAmount.toLocaleString()}
+                                                                {currencySymbol}{calculatedAmount.toLocaleString('en-US')}
                                                             </span>
                                                             {discount > 0 && (
                                                                 <span className='text-xs text-gray-400 line-through'>
-                                                                    {currencySymbol}{originalAmount.toLocaleString()}
+                                                                    {currencySymbol}{originalAmount.toLocaleString('en-US')}
                                                                 </span>
                                                             )}
                                                         </div>

@@ -2,6 +2,7 @@
 
 # --- Build & Output ---
 .open-next
+.wrangler/
 /.next/
 /out/
 /build
@@ -10,7 +11,7 @@ src/packages/**/dist/
 *.tsbuildinfo
 
 # --- Dependencies ---
-/node_modules
+node_modules/
 /.pnp
 .pnp.js
 
@@ -25,9 +26,14 @@ cypress/videos/
 
 # --- Environment & Secrets ---
 .env
+.env.*
+!.env.example
+!.env.sample
 .env*.local
 .env.test
 .env.production
+.dev.vars
+.dev.vars.*
 *.pem
 
 # --- IDE & Editors ---
@@ -46,3 +52,4 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+/log.md

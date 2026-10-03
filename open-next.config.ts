@@ -1,6 +1,8 @@
 // open-next.config.ts
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
 
-export default defineCloudflareConfig({
+const config = defineCloudflareConfig();
+// Webpack emits server imports supported by OpenNext on Windows.
+config.buildCommand = "pnpm exec next build --webpack";
 
-});
+export default config;

@@ -7,11 +7,11 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
-  // DI CHUYỂN vào experimental nếu dùng bản Next 16 đời đầu, 
-  // hoặc để ngoài nếu bản 16.1.x không báo lỗi.
-  serverExternalPackages: ['@trpc/server', '@trpc/client'],
-
   reactStrictMode: true,
+  transpilePackages: ['@vercel/analytics'],
+  outputFileTracingIncludes: {
+    '/*': ['./node_modules/.pnpm/@babel+runtime*/node_modules/@babel/runtime/**/*'],
+  },
   i18n,
 
   images: {

@@ -30,9 +30,9 @@
     "build": "next build",
     "test": "run-s test:*",
     "prepare": "husky install || true",
-    "build:cf": "npx @opennextjs/cloudflare build",
+    "build:cf": "node scripts/build-cloudflare.mjs",
     "preview": "opennextjs-cloudflare preview",
-    "deploy": "npx wrangler deploy --minify --config wrangler.toml",
+    "deploy": "pnpm run build:cf && opennextjs-cloudflare deploy --config wrangler.toml",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {

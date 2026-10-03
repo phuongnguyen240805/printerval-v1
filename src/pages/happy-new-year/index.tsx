@@ -3,6 +3,7 @@ import HeroComponent from "@/shared/components/Hero";
 import { PrimaryLayout } from "@/layouts";
 import { GetStaticProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import i18nConfig from '../../../next-i18next.config';
 import { ReactElement } from "react";
 import { NextPageWithLayout } from "../_app";
 import { api } from "@/utils/api";
@@ -16,7 +17,7 @@ import SaleCodeComponent from "@/shared/components/SaleCode";
 export const getStaticProps: GetStaticProps = async context => {
   return {
     props: {
-      ...(await serverSideTranslations(context.locale as string)),
+      ...(await serverSideTranslations(context.locale as string, undefined, i18nConfig)),
     },
   };
 };

@@ -2,6 +2,7 @@
 import { PrimaryLayout } from "@/layouts";
 import { GetStaticProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import i18nConfig from '../../../next-i18next.config';
 import { api } from "@/utils/api";
 import { useMultiplestepForm } from "@/shared/hooks/useMultipleStep";
 import BreadcrumbComponent from "@/shared/components/sidebarCheckout";
@@ -12,9 +13,22 @@ import { useState, useEffect } from "react";
 export const getStaticProps: GetStaticProps = async context => {
     return {
         props: {
-            ...(await serverSideTranslations(context.locale as string)),
+            ...(await serverSideTranslations(context.locale as string, undefined, i18nConfig)),
         },
     };
+};
+
+const getCartId = () => {
+    if (typeof window === "undefined") return null;
+
+    const userData = localStorage.getItem("medusa_user");
+    if (userData) {
+        const user = JSON.parse(userData);
+        // Ưu tiên lấy giỏ hàng của tài khoản đang login
+        return localStorage.getItem(`medusa_cart_id_${user.id}`);
+    }
+    // Nếu chưa login, lấy giỏ hàng của khách vãng lai
+    return localStorage.getItem("medusa_cart_id_guest");
 };
 
 const Cart = () => {
@@ -33,7 +47,7 @@ const Cart = () => {
 
     // 1. Lấy cart_id từ localStorage khi component mount
     useEffect(() => {
-        const savedCartId = localStorage.getItem("medusa_cart_id");
+        const savedCartId = getCartId();
         if (savedCartId) {
             setCartId(savedCartId);
         } else {

@@ -2,6 +2,7 @@ import type { GetStaticProps } from 'next';
 import { type ReactElement } from 'react';
 import type { NextPageWithLayout } from './_app';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import i18nConfig from '../../next-i18next.config';
 import { PrimaryLayout } from '@/layouts';
 import FadeIn from '@/shared/components/FadeIn';
 import { Hero } from '@/shared/features/page/HomePage/components/Hero';
@@ -24,7 +25,7 @@ import BasedOnWhatYouLove from '@/packages/BasedOnWhatYouLove/components/BasedOn
 export const getStaticProps: GetStaticProps = async ({ locale = 'en' }) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale)),
+      ...(await serverSideTranslations(locale, undefined, i18nConfig)),
     },
   };
 };

@@ -167,8 +167,14 @@ export const userRouter = {
       }
 
       try {
+        const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${input.accessToken}`,
+      "x-publishable-api-key": PUBLISHABLE_KEY,
+    };
+
         const queryParams = new URLSearchParams({
-          "fields": "+metadata"
+          "fields": "+metadata,*addresses"
         });
         // GET /store/customers/me với Bearer customer token + publishable key [[Store customer.me](https://docs.medusajs.com/resources/references/js-sdk/store/customer#customer---js-sdk-store-reference)]
         const response = await fetch(`${MEDUSA_BASE}/store/customers/me?${queryParams.toString()}`, {
@@ -185,9 +191,15 @@ export const userRouter = {
           throw new Error(`Failed to fetch customer: ${response.status}`);
         }
 
-        const data = await response.json();
+        // const data = await response.json();
+        const { customer } = await response.json();
         // sex & avatar sẽ nằm trong customer.metadata.sex / customer.metadata.avatar
-        return data.customer;
+
+            // return data.customer;
+          return {
+            ...customer,
+            active_cart_id: customer.metadata?.active_cart_id,
+        };
       } catch (err: any) {
         throw new Error("Unable to fetch user details");
       }

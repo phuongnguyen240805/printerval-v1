@@ -59,9 +59,9 @@ export const Hero = () => {
             <CarouselContent className="h-full">
               {[
                 { id: 1, handle: 'custom-tshirt-1', image: 'https://res.cloudinary.com/dm1wqczhm/image/upload/v1774876745/hog_p3gudm.png', title: 'Personalized presents that make memories' },
-                { id: 2, handle: 'custom-mug-1', image: 'https://placehold.co/290x290/ff7a00/white?text=Product+2', title: 'Premium custom products for you' },
-                { id: 3, handle: 'custom-hoodie-1', image: 'https://placehold.co/290x290/5542be/white?text=Product+3', title: 'Unique gifts that stand out' },
-                { id: 4, handle: 'custom-poster-1', image: 'https://placehold.co/290x290/ffd700/white?text=Product+4', title: 'Create your own masterpiece' },
+                { id: 2, handle: 'custom-mug-1', image: 'https://placehold.co/290x290/ff7a00/white/png?text=Product+2', title: 'Premium custom products for you' },
+                { id: 3, handle: 'custom-hoodie-1', image: 'https://placehold.co/290x290/5542be/white/png?text=Product+3', title: 'Unique gifts that stand out' },
+                { id: 4, handle: 'custom-poster-1', image: 'https://placehold.co/290x290/ffd700/white/png?text=Product+4', title: 'Create your own masterpiece' },
               ].map((product) => (
                 <CarouselItem key={product.id} className="pl-2 md:pl-4 basis-full">
                   <Link href={`/product/${product.handle}`} className="group block h-full">
