@@ -10,18 +10,19 @@ import { Header } from '@/shared/layout/header/Header';
 
 interface PrimaryLayoutProps extends React.PropsWithChildren {
   seo: NextSeoProps;
+  appearance?: 'default' | 'liquid-glass';
 }
 
-export const PrimaryLayout = ({ seo, children }: PrimaryLayoutProps) => {
+export const PrimaryLayout = ({ seo, children, appearance = 'liquid-glass' }: PrimaryLayoutProps) => {
   const data = undefined;
 
   return (
-    <>
+    <div className="liquid-layout">
       <NextSeo noindex={true} nofollow={true} {...seo} />
-      <Header />
+      <Header liquidGlass={appearance === 'liquid-glass'} />
       {children}
       <Toaster />
       <Footer />
-    </>
+    </div>
   );
 };

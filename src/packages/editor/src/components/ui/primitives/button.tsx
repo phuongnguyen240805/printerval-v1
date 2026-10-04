@@ -50,6 +50,7 @@ function Button({
       <Slot
         className={cn(buttonVariants({ variant, size, className }))}
         data-slot="button"
+        data-liquid-control=""
         ref={ref as never}
         {...props}
       />
@@ -60,6 +61,7 @@ function Button({
     <button
       className={cn(buttonVariants({ variant, size, className }))}
       data-slot="button"
+        data-liquid-control=""
       ref={ref}
       {...props}
     />

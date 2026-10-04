@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Heart, Star } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group";
 import { Button } from "@/shared/ui/button";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/shared/ui/select';
 
 interface Product {
     id: string;
@@ -71,17 +72,16 @@ const CategoryProduct = ({
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                        className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                        <option value="most-relevant">Most Relevant</option>
-                        <option value="price-low-high">Price: Low to High</option>
-                        <option value="price-high-low">Price: High to Low</option>
-                        <option value="newest">Newest</option>
-                        <option value="best-selling">Best Selling</option>
-                    </select>
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                        <SelectTrigger aria-label="Sort products" className="w-44 bg-white/75"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="most-relevant">Most Relevant</SelectItem>
+                            <SelectItem value="price-low-high">Price: Low to High</SelectItem>
+                            <SelectItem value="price-high-low">Price: High to Low</SelectItem>
+                            <SelectItem value="newest">Newest</SelectItem>
+                            <SelectItem value="best-selling">Best Selling</SelectItem>
+                        </SelectContent>
+                    </Select>
 
                     <Button variant="outline" size="sm" className="flex items-center gap-2">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +113,7 @@ const CategoryProduct = ({
                     return (
                         <Link href={`/product/${product.handle}`} key={product.id}>
                             <div className="relative group">
-                                <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100">
+                                <div data-liquid-card="" className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100">
                                     {/* Product Image */}
                                     <div className="aspect-square relative bg-gray-50">
                                         <Image
@@ -139,7 +139,7 @@ const CategoryProduct = ({
 
                                         {/* Discount Badge */}
                                         {getDiscount(product) && (
-                                            <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-medium">
+                                            <div data-liquid-badge="" className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-medium">
                                                 {getDiscount(product)}% off
                                             </div>
                                         )}

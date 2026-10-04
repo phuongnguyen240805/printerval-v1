@@ -136,7 +136,7 @@ export default function RecentlyViewed() {
                           <span className='text-[14px] font-Inter text-gray-400 line-through'>
                             ${comparePrice!.toFixed(2)}
                           </span>
-                          <span className="bg-[#FFF4E5] text-[#FF8A00] text-[10px] font-semibold font-Inter px-1.5 py-0.5 rounded-full">
+                          <span data-liquid-badge="" className="bg-[#FFF4E5] text-[#FF8A00] text-[10px] font-semibold font-Inter px-1.5 py-0.5 rounded-full">
                             {Math.round(((comparePrice! - salePriceNum) / comparePrice!) * 100)}% OFF
                           </span>
                         </>

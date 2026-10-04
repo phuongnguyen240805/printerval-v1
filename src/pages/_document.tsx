@@ -20,7 +20,7 @@ export default class MyDocument extends Document {
 
   render(): JSX.Element {
     return (
-      <Html lang="en" data-scroll-behavior="smooth">
+      <Html lang="en" className="liquid-site" data-scroll-behavior="smooth">
         <Head>
           <meta charSet="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
@@ -35,7 +35,7 @@ export default class MyDocument extends Document {
             defer
           ></Script>
         </Head>
-        <body>
+        <body className="font-sans">
           <Main />
           <NextScript />
         </body>

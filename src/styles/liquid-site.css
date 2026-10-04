@@ -1,0 +1,116 @@
+/* Shared material: preserve existing brand colors and native layout dimensions. */
+.liquid-site body, .liquid-site .liquid-background {
+  background-color: var(--liquid-page-color);
+  background-image: var(--liquid-page-image);
+}
+.liquid-site main { min-height: 100dvh; }
+.liquid-site .liquid-footer {
+  background: var(--liquid-panel);
+  border-color: var(--liquid-edge);
+  box-shadow: inset 0 1px 0 var(--liquid-edge);
+}
+.liquid-site .liquid-footer > div:is(.bg-gray-50) { background: rgba(239,231,223,.35); }
+/* Compatibility for older page panels; new panels should use LiquidSurface. */
+.liquid-site :is(section, article, form, div)[class~="bg-white"][class*="rounded"]:not([role]):not([data-liquid-card]):not([data-liquid-field]):not([data-liquid-surface]):not([data-liquid="off"]):not([data-liquid="off"] *) {
+  background-color: var(--liquid-panel);
+  border-radius: var(--liquid-radius-panel);
+  box-shadow: var(--liquid-shadow);
+}
+/* Text-entry fields only. Native checkboxes, sliders and color swatches keep their semantics. */
+.liquid-site :is(input, textarea, [data-liquid-field]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="reset"]):not([type="button"]):not([data-liquid="off"]):not([data-liquid="off"] *) {
+  border-radius: var(--liquid-radius-field);
+  background-color: var(--liquid-field);
+  background-image: linear-gradient(165deg, rgba(255,255,255,.2), transparent 65%);
+  border-color: var(--liquid-field-edge);
+  color: var(--liquid-field-ink);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.8), inset 0 -1px 2px rgba(80,45,22,.05), 0 3px 10px rgba(80,45,22,.04);
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+.liquid-site [data-slot="input-group"] :is(input, textarea) { background: transparent; border: 0; box-shadow: none; }
+.liquid-site :is(input, textarea)::placeholder { color: var(--liquid-field-placeholder); opacity: 1; }
+.liquid-site :is(input, textarea):focus-visible {
+  outline: 2px solid var(--liquid-focus);
+  outline-offset: 2px;
+}
+.liquid-site :is(input, textarea):is([aria-invalid="true"], [data-invalid]) { border-color: #c43b35; }
+.liquid-site :is(input, textarea):disabled { cursor: not-allowed; opacity: .6; box-shadow: none; }
+@media (max-width: 767px) {
+  .liquid-site :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]), textarea) { font-size: 16px; }
+}
+.liquid-site a[class*="rounded"][class*="bg-"]:not(:has(img)):not([data-liquid-control]) {
+  background-image: linear-gradient(165deg, rgba(255,255,255,.3), transparent 55%, rgba(80,45,22,.06));
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.7), inset 0 -1px 2px rgba(71,46,29,.12), 0 3px 9px rgba(71,46,29,.08);
+}
+.liquid-site :is(button, [data-liquid-control], select, [role="button"], [role="tab"]):not([role="switch"]):not([role="checkbox"]):not([role="radio"]) {
+  border-radius: var(--liquid-radius-control);
+  background-image: radial-gradient(ellipse at var(--liquid-x, 35%) var(--liquid-y, 0%), var(--liquid-sheen), transparent 65%), linear-gradient(170deg, rgba(255,255,255,.18), transparent 48%, rgba(80,45,22,.05));
+  box-shadow: var(--liquid-control-shadow);
+  transition: box-shadow 180ms ease, scale 180ms ease, background-color 180ms ease;
+}
+.liquid-site :is(button, [data-liquid-control], [role="button"]):is(.rounded-full, [data-liquid-shape="round"], [data-liquid-shape="pill"]) { border-radius: 999px; }
+.liquid-site :is(button, [data-liquid-control], select, [role="button"], [role="tab"]):focus-visible {
+  outline: 2px solid var(--liquid-focus);
+  outline-offset: 3px;
+}
+.liquid-site :is(button, [data-liquid-control], [role="button"]):not([role="switch"]):not([role="checkbox"]):not([role="radio"]):not(:disabled):not([aria-disabled="true"]):active { scale: .97; }
+.liquid-site :is(button, [data-liquid-control], select):is(:disabled, [aria-disabled="true"], [data-disabled]) { box-shadow: none; }
+.liquid-site :is([role="menu"], [role="listbox"], [data-liquid-surface]) {
+  font-family: var(--font-inter, ui-sans-serif), system-ui, sans-serif;
+  background: var(--liquid-panel);
+  border: 1px solid var(--liquid-edge);
+  border-radius: var(--liquid-radius-panel);
+  box-shadow: 0 18px 48px rgba(63,42,32,.16), inset 0 1px 0 rgba(255,255,255,.96);
+  -webkit-backdrop-filter: blur(var(--liquid-blur)) saturate(135%);
+  backdrop-filter: blur(var(--liquid-blur)) saturate(135%);
+}
+.liquid-site :is([role="option"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]) {
+  border-radius: var(--liquid-radius-item);
+  transition: background-color 160ms ease, box-shadow 160ms ease;
+}
+.liquid-site :is([role="option"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]):is(:focus, [data-highlighted], [aria-selected="true"], [data-state="checked"]) {
+  background: rgba(245,218,198,.8);
+  color: #443128;
+  box-shadow: inset 0 1px 1px #fff, inset 0 -1px 2px rgba(90,55,30,.09);
+}
+.liquid-site :is([data-liquid-card], a[href^="/product"]:has(img):not(:has([data-liquid-card]))) {
+  border-radius: var(--liquid-radius-card);
+  background: linear-gradient(150deg, rgba(255,255,255,.96), rgba(255,249,244,.82));
+  border: 1px solid rgba(216,198,183,.45);
+  box-shadow: var(--liquid-shadow);
+  transition: box-shadow 220ms ease, border-color 220ms ease;
+}
+.liquid-site :is([data-liquid-badge], .liquid-discount) {
+  border-radius: 999px;
+  background-image: linear-gradient(165deg, rgba(255,255,255,.62), rgba(255,255,255,.08) 55%, rgba(222,137,65,.14));
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.9), inset 0 -1px 1px rgba(133,74,25,.13), 0 2px 6px rgba(101,62,28,.08);
+  border: 1px solid rgba(240,172,106,.25);
+}
+@media (hover: hover) and (pointer: fine) {
+  .liquid-site :is(button, [data-liquid-control], select, [role="button"]):not(:disabled):not([aria-disabled="true"]):hover {
+    box-shadow: inset 0 1px 2px #fff, inset 0 -2px 3px rgba(71,46,29,.1), 0 5px 14px rgba(71,46,29,.13);
+  }
+  .liquid-site :is([data-liquid-card], a[href^="/product"]:has(img):not(:has([data-liquid-card]))):hover {
+    border-color: rgba(194,143,105,.5);
+    box-shadow: 0 12px 28px rgba(82,53,34,.14), inset 0 1px 0 #fff;
+  }
+}
+.liquid-touch-layer { position: fixed; inset: 0; z-index: 2147483000; pointer-events: none; }
+.liquid-touch-clip { position: absolute; overflow: hidden; }
+.liquid-touch-drop {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.85);
+  background: radial-gradient(circle, transparent 36%, rgba(255,255,255,.25) 62%, rgba(255,255,255,.65) 70%, transparent 73%);
+  box-shadow: inset 0 0 16px rgba(255,255,255,.28);
+}
+.liquid-site .dark [data-liquid-card], .liquid-site.dark [data-liquid-card] { background: linear-gradient(150deg, rgba(45,46,50,.96), rgba(30,31,35,.9)); border-color: rgba(255,255,255,.12); }
+@supports not (backdrop-filter: blur(1px)) {
+  .liquid-site :is([role="menu"], [role="listbox"], [data-liquid-surface]) { background: var(--liquid-solid-panel); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .liquid-site :is([role="menu"], [role="listbox"], [data-liquid-surface]) { background: var(--liquid-solid-panel); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liquid-site :is(button, input, textarea, [data-liquid-control], select, [role="button"], [data-liquid-card]) { transition: none; }
+  .liquid-site :is(button, [data-liquid-control], [role="button"]):active { scale: 1; }
+  .liquid-touch-layer { display: none; }
+}

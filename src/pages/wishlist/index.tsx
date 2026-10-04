@@ -96,7 +96,7 @@ const WishListPage = () => {
                                         {discountPercent > 0 && (
                                             <div className="flex gap-2 items-center">
                                                 <span className='text-xs font-medium text-gray-400 line-through'>${originalPrice}</span>
-                                                <span className='px-1.5 py-0.5 text-[10px] text-orange-600 font-bold bg-orange-100 rounded-full'>
+                                                <span data-liquid-badge="" className='px-1.5 py-0.5 text-[10px] text-orange-600 font-bold bg-orange-100 rounded-full'>
                                                     -{discountPercent}%
                                                 </span>
                                             </div>
@@ -104,7 +104,7 @@ const WishListPage = () => {
                                     </div>
                                 </div>
 
-                                <div className="w-full p-3 bg-blue-500 text-white text-center font-semibold text-sm group-hover:bg-blue-600 transition-colors mt-auto">
+                                <div data-liquid-control="" className="w-full p-3 bg-blue-500 text-white text-center font-semibold text-sm group-hover:bg-blue-600 transition-colors mt-auto">
                                     Customize Now
                                 </div>
                             </Link>

@@ -80,7 +80,7 @@ export default function RecentlyViewedNew() {
                                 <FadeIn key={item.id} delay={index * 0.03} direction="left">
                                     <CarouselItem key={item.id} className="pl-3 basis-auto">
                                         <Link href={item.url} className="block group">
-                                            <div className="product-viewed-item bg-[#fafafa] p-2 rounded-xl grid grid-cols-[80px_1fr] gap-3 w-[218px] h-[96px] hover:shadow-md transition-shadow duration-300">
+                                            <div data-liquid-card="" className="product-viewed-item bg-[#fafafa] p-2 rounded-xl grid grid-cols-[80px_1fr] gap-3 w-[218px] h-[96px] hover:shadow-md transition-shadow duration-300">
 
                                                 <div className="relative w-[80px] h-[80px] bg-white rounded-md overflow-hidden shrink-0">
                                                     <Image

@@ -1,6 +1,9 @@
 import { Barlow } from 'next/font/google'
 import localFont from 'next/font/local'
 import '@/styles/globals.css'
+import '@/styles/liquid-tokens.css'
+import '@/styles/liquid-site.css'
+import { LiquidTheme } from '@/shared/ui/liquid/LiquidTheme'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -25,12 +28,12 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      className={`${geistSans.variable} ${geistMono.variable} ${barlow.variable}`}
+      className={`liquid-site ${geistSans.variable} ${geistMono.variable} ${barlow.variable}`}
       lang="en"
     >
       <head></head>
       <body className="font-sans">
-        {children}
+        <LiquidTheme>{children}</LiquidTheme>
       </body>
     </html>
   )

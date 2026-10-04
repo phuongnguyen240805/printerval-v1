@@ -19,15 +19,16 @@ interface Product {
 }
 
 interface Props {
+  liquidGlass?: boolean;
   recentSearches: string[];
   trending: string[];
   picks: Product[];
   isLoading: boolean;
   onItemClick: (term: string) => void;
 }
-export function SearchDropdown({ recentSearches, trending, picks, isLoading, onItemClick }: Props) {
+export function SearchDropdown({ recentSearches, trending, picks, isLoading, onItemClick, liquidGlass = false }: Props) {
   return (
-    <div className="absolute top-full left-0 mt-2 w-full rounded-lg bg-white p-6 shadow-2xl z-50 border border-gray-100 flex flex-col">
+    <div className={`${liquidGlass ? 'home-glass-search-results home-glass-popover' : 'bg-white'} absolute top-full left-0 mt-2 w-full rounded-lg p-6 shadow-2xl z-50 border border-gray-100 flex flex-col`}>
 
       {/* PHẦN TRÊN: Grid 2 cột */}
       <div className="grid grid-cols-12 gap-8">

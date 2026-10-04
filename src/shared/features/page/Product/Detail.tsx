@@ -373,7 +373,7 @@ const Detail = ({ product, cart = [], addToCart, createCart, boughtTogetherSelec
         <div className="flex flex-wrap items-baseline gap-2 mb-1">
           <span className="text-2xl sm:text-3xl font-bold text-green-700">${calculatedPrice.toFixed(2)}</span>
           <span className="text-sm text-gray-400 line-through">${originalPrice.toFixed(2)}</span>
-          <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded-full">{discountPct}% off</span>
+          <span data-liquid-badge="" className="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded-full">{discountPct}% off</span>
         </div>
 
         {/* Countdown */}

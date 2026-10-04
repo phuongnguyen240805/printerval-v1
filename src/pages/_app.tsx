@@ -11,6 +11,10 @@ import NextNProgress from 'nextjs-progressbar';
 import SEO from '../../next-seo.config';
 import i18nConfig from '../../next-i18next.config';
 import '@/styles/globals.css';
+import '@/styles/liquid-tokens.css';
+import '@/styles/home-glass.css';
+import '@/styles/liquid-site.css';
+import { LiquidTheme } from '@/shared/ui/liquid/LiquidTheme';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -26,19 +30,21 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? (page => page);
 
   return (
-    <main className={`${inter.variable} font-sans`}>
-      <DefaultSeo {...SEO} />
-      {getLayout(
-        <>
-          <NextNProgress
-            color="#8b5cf6"
-            height={3}
-            options={{ showSpinner: false }}
-          />
-          <Component {...pageProps} />
-        </>
-      )}
-      <Analytics />
+    <main className={`${inter.variable} font-sans home-glass`}>
+      <LiquidTheme>
+        <DefaultSeo {...SEO} />
+        {getLayout(
+          <>
+            <NextNProgress
+              color="#8b5cf6"
+              height={3}
+              options={{ showSpinner: false }}
+            />
+            <Component {...pageProps} />
+          </>
+        )}
+        <Analytics />
+      </LiquidTheme>
     </main>
   );
 }

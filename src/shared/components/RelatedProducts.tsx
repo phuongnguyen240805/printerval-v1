@@ -106,7 +106,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ currentProductId, col
                       <span className="text-sm font-medium text-gray-400 line-through">
                         ${originalPrice}
                       </span>
-                      <span className="text-xs font-bold text-[#e65100] bg-[#ffe0b2] px-2 py-0.5 rounded-full">
+                      <span data-liquid-badge="" className="text-xs font-bold text-[#e65100] bg-[#ffe0b2] px-2 py-0.5 rounded-full">
                         -{discountPercent}%
                       </span>
                     </>
@@ -115,7 +115,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ currentProductId, col
               </div>
 
               {/* NÚT TÙY CHỈNH (Màu xanh chuẩn theo ảnh) */}
-              <div className="w-full py-3.5 bg-[#2563eb] text-white text-center font-bold text-[15px] group-hover:bg-[#1d4ed8] transition-colors mt-auto">
+              <div data-liquid-control="" className="w-full py-3.5 bg-[#2563eb] text-white text-center font-bold text-[15px] group-hover:bg-[#1d4ed8] transition-colors mt-auto">
                  Customize Now
               </div>
             </Link>

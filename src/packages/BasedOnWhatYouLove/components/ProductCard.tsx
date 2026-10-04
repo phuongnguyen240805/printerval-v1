@@ -16,7 +16,7 @@ export default function ProductCard({ product }: Props) {
 
     return (
         <Link href={productUrl}>
-            <div className="group cursor-pointer">
+            <div data-liquid-card="" className="group cursor-pointer overflow-hidden">
                 <div className="relative w-full aspect-square h-[155px] sm:h-[220px] lg:h-[270px] overflow-hidden rounded-xl">
                     <Image
                         src={imageUrl}
@@ -27,7 +27,7 @@ export default function ProductCard({ product }: Props) {
                 </div>
 
                 {/* Info */}
-                <div className=' sm:p-3 flex flex-col flex-grow'>
+                <div className='p-2 sm:p-3 flex flex-col flex-grow'>
                     <h2 className='text-14px sm:text-sm font-semibold font-Inter text-gray-600 line-clamp-2 leading-tight min-h-[1.5rem]'>
                         {product.title}
                     </h2>
@@ -41,7 +41,7 @@ export default function ProductCard({ product }: Props) {
                                 <span className='text-xs font-Inter text-gray-400 line-through'>
                                     ${originalPrice}
                                 </span>
-                                <span className="bg-[#FFF4E5] text-[#FF8A00] text-sm font-semibold font-Inter px-2  rounded-full">
+                                <span data-liquid-badge="" className="bg-[#FFF4E5] text-[#FF8A00] text-sm font-semibold font-Inter px-2  rounded-full">
                                     {discount}% OFF
                                 </span>
                             </>

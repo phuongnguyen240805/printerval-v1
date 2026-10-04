@@ -1,0 +1,36 @@
+/* Change these tokens to tune the material everywhere, including portal menus. */
+.liquid-site {
+  --liquid-radius-control: 16px;
+  --liquid-radius-field: 16px;
+  --liquid-radius-panel: 24px;
+  --liquid-radius-card: 20px;
+  --liquid-radius-item: 12px;
+  --liquid-blur: 22px;
+  --liquid-header-blur: 18px;
+  --liquid-panel: rgba(255, 253, 250, .88);
+  --liquid-solid-panel: #fffcf8;
+  --liquid-field: rgba(255, 255, 255, .78);
+  --liquid-field-edge: rgba(145, 119, 101, .28);
+  --liquid-field-ink: #342b29;
+  --liquid-field-placeholder: #756d69;
+  --liquid-focus: #b64c2c;
+  --liquid-edge: rgba(255, 255, 255, .9);
+  --liquid-shadow: 0 8px 24px rgba(74, 49, 37, .09), inset 0 1px 1px rgba(255, 255, 255, .95);
+  --liquid-sheen: rgba(255, 255, 255, .36);
+  --liquid-page-color: #faf8f5;
+  --liquid-page-image: radial-gradient(ellipse at 0 18%, rgba(255,215,194,.2), transparent 36%), radial-gradient(ellipse at 100% 35%, rgba(229,221,249,.18), transparent 35%);
+  --liquid-control-shadow: inset 0 1px 1px rgba(255,255,255,.72), inset 0 -1px 2px rgba(71,46,29,.1), 0 3px 9px rgba(71,46,29,.07);
+}
+.liquid-site .dark, .liquid-site.dark {
+  --liquid-panel: rgba(30,31,35,.92);
+  --liquid-solid-panel: #202125;
+  --liquid-field: rgba(38,39,43,.86);
+  --liquid-field-edge: rgba(255,255,255,.2);
+  --liquid-field-ink: #f5f1ed;
+  --liquid-field-placeholder: #b8b1ab;
+  --liquid-edge: rgba(255,255,255,.12);
+  --liquid-sheen: rgba(255,255,255,.12);
+  --liquid-shadow: 0 8px 24px rgba(0,0,0,.2), inset 0 1px 1px rgba(255,255,255,.12);
+  --liquid-control-shadow: inset 0 1px 1px rgba(255,255,255,.18), inset 0 -1px 2px rgba(0,0,0,.2), 0 3px 9px rgba(0,0,0,.15);
+  --liquid-page-color: #202125;
+}

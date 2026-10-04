@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import styles from './QuickGiftFinder.module.css';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/shared/ui/select';
 
 const QUICK_LINKS = [
   { name: 'For Him', image: 'https://res.cloudinary.com/dm1wqczhm/image/upload/v1774941285/gift-for-him_hr4cqc.png' },
@@ -41,7 +41,7 @@ export const QuickGiftFinder = () => {
       </div>
 
       {/* --- Thanh lọc (Filter Bar) --- */}
-      <div className="relative bg-[#FDE6D2] rounded-[2rem] p-6 md:p-10 flex flex-col md:flex-row items-end gap-1 shadow-sm">
+      <div className="home-gift-filter relative bg-[#FDE6D2] rounded-[2rem] p-6 md:p-10 flex flex-col md:flex-row items-end gap-1 shadow-sm">
         
         {/* Icon hộp quà (Sử dụng Image thay vì img để tối ưu) */}
         <div className="absolute -left-8 -bottom-4 w-28 h-28 hidden lg:block pointer-events-none z-10">
@@ -55,26 +55,23 @@ export const QuickGiftFinder = () => {
 
         {/* Dropdown 1 */}
         <div className="w-full flex-1">
-          <label className="block text-gray-800 font-Inter font-semibold mb-2 text-base md:text-lg ml-1">Who&apos;s This For?</label>
+          <label id="gift-recipient-label" className="block text-gray-800 font-Inter font-semibold mb-2 text-base md:text-lg ml-1">Who&apos;s This For?</label>
           <div className="relative group">
-            <select className="w-full bg-white border-none rounded-2xl py-4 px-5 appearance-none focus:ring-2 focus:ring-orange-400 text-gray-500 font-semibold cursor-pointer shadow-sm">
-              <option>All Recipients</option>
-              <option>For Him</option>
-              <option>For Her</option>
-            </select>
+            <Select defaultValue="all">
+              <SelectTrigger aria-labelledby="gift-recipient-label" className="h-14 w-full bg-white/75 rounded-2xl px-5 text-gray-600 font-semibold text-base"><SelectValue /></SelectTrigger>
+              <SelectContent><SelectItem value="all">All Recipients</SelectItem><SelectItem value="him">For Him</SelectItem><SelectItem value="her">For Her</SelectItem></SelectContent>
+            </Select>
           </div>
         </div>
 
         {/* Dropdown 2 */}
         <div className="w-full flex-1">
-          <label className="block text-gray-800 font-Inter font-semibold mb-2 text-base md:text-lg ml-1">What&apos;s the Occasion?</label>
+          <label id="gift-occasion-label" className="block text-gray-800 font-Inter font-semibold mb-2 text-base md:text-lg ml-1">What&apos;s the Occasion?</label>
           <div className="relative group">
-            <select className="w-full bg-white border-none rounded-2xl py-4 px-5 appearance-none focus:ring-2 focus:ring-orange-400 text-gray-500 font-semibold cursor-pointer shadow-sm">
-              <option>All Occasions</option>
-              <option>Birthday</option>
-              <option>Anniversary</option>
-              <option>Valentine</option>
-            </select>
+            <Select defaultValue="all">
+              <SelectTrigger aria-labelledby="gift-occasion-label" className="h-14 w-full bg-white/75 rounded-2xl px-5 text-gray-600 font-semibold text-base"><SelectValue /></SelectTrigger>
+              <SelectContent><SelectItem value="all">All Occasions</SelectItem><SelectItem value="birthday">Birthday</SelectItem><SelectItem value="anniversary">Anniversary</SelectItem><SelectItem value="valentine">Valentine</SelectItem></SelectContent>
+            </Select>
           </div>
         </div>
 

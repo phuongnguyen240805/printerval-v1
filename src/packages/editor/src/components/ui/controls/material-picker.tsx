@@ -2,6 +2,7 @@
 
 import { DEFAULT_MATERIALS, type MaterialPreset, type MaterialSchema } from '@/packages/core'
 import { useState } from 'react'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/shared/ui/select'
 
 const PRESET_COLORS: Record<MaterialPreset, string> = {
   white: '#ffffff',
@@ -175,17 +176,10 @@ export function MaterialPicker({ value, onChange }: MaterialPickerProps) {
 
           <div className="flex items-center gap-2">
             <label className="w-16 text-gray-500 text-xs">Side</label>
-            <select
-              className="h-7 flex-1 rounded border border-gray-300 px-2 text-xs"
-              onChange={(e) =>
-                handlePropertyChange('side', e.target.value as 'front' | 'back' | 'double')
-              }
-              value={currentProps.side}
-            >
-              <option value="front">Front</option>
-              <option value="back">Back</option>
-              <option value="double">Double</option>
-            </select>
+            <Select value={currentProps.side} onValueChange={value => handlePropertyChange('side', value as 'front' | 'back' | 'double')}>
+              <SelectTrigger aria-label="Material side" className="h-7 flex-1 text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent><SelectItem value="front">Front</SelectItem><SelectItem value="back">Back</SelectItem><SelectItem value="double">Double</SelectItem></SelectContent>
+            </Select>
           </div>
         </div>
       )}

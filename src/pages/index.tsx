@@ -21,6 +21,7 @@ import { Fandom } from '@/shared/features/page/HomePage/components/Fandom';
 import { QuickGiftFinder } from '@/shared/layout/header/QuickGiftFinder';
 import RecentlyViewedNew from '@/packages/browsing-history/components/RecentlyViewedNew';
 import BasedOnWhatYouLove from '@/packages/BasedOnWhatYouLove/components/BasedOnWhatYouLove';
+import { HomeGlassIntro } from '@/shared/features/page/HomePage/components/HomeGlassIntro';
 
 export const getStaticProps: GetStaticProps = async ({ locale = 'en' }) => {
   return {
@@ -55,28 +56,29 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <>
-      <Hero />
-      <QuickGiftFinder />
-      <div >
+      <HomeGlassIntro />
+      <div className="home-glass-hero"><Hero calm /></div>
+      <section id="home-gifts" className="home-glass-gifts" aria-label="Find a gift"><QuickGiftFinder /></section>
+      <div className="home-glass-feed">
 
-        <SaleProduct TopSale={productSalesData as any} title={priceList?.price_lists?.[0]?.title as string} />
-        <div className='px-[30px]'>
-          <RecentlyViewedNew />
-          <BasedOnWhatYouLove
+        <section id="home-deals" className="home-glass-deals" aria-label="Today's deals"><SaleProduct TopSale={productSalesData as any} title={priceList?.price_lists?.[0]?.title as string} /></section>
+        <div className="home-glass-sections">
+          <section className="home-glass-section"><RecentlyViewedNew /></section>
+          <section className="home-glass-section"><BasedOnWhatYouLove
             currentProductId="p1"
             category="t-shirt"
             limit={5}
-          />
+          /></section>
 
           {/* <Fandom /> */}
-          <TopPick product={productTopPickData as any} title={priceList?.price_lists?.[1]?.title as string} />
-          <InStory />
-          <CreateYourOwn />
-          <Trending />
+          <section className="home-glass-section"><TopPick product={productTopPickData as any} title={priceList?.price_lists?.[1]?.title as string} /></section>
+          <section className="home-glass-section"><InStory /></section>
+          <section className="home-glass-section"><CreateYourOwn /></section>
+          <section className="home-glass-section"><Trending /></section>
 
         </div>
       </div>
-      <div className='px-[30px]'>
+      <div className="home-glass-sections home-glass-section">
         <AdsSpace />
       </div>
 
@@ -87,7 +89,7 @@ const Home: NextPageWithLayout = () => {
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
-    <PrimaryLayout seo={{ title: 'Home', canonical: '/' }}>
+    <PrimaryLayout appearance="liquid-glass" seo={{ title: 'Home', canonical: '/' }}>
       {page}
     </PrimaryLayout>
   );

@@ -28,6 +28,7 @@ function PopoverContent({
           className,
         )}
         data-slot="popover-content"
+        data-liquid-surface=""
         sideOffset={sideOffset}
         {...props}
       />

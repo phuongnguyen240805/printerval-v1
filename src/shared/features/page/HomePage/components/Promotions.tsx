@@ -58,7 +58,7 @@ export const SaleProduct = ({ TopSale, title }: { TopSale?: any[], title: string
 
     return (
         <div className='w-full mx-auto h-full lg:px-2 md:my-10'>
-            <div className='bg-[#FE5535] lg:rounded-2xl py-4 px-3 xl:px-10 shadow-sm border border-black/5'>
+            <div className='home-sale-panel bg-[#FE5535] lg:rounded-2xl py-4 px-3 xl:px-10 shadow-sm border border-black/5'>
 
                 {/* Header: tiêu đề + countdown + View all */}
                 <div className="flex items-center justify-between mb-4">
@@ -124,7 +124,7 @@ export const SaleProduct = ({ TopSale, title }: { TopSale?: any[], title: string
                                                         </div>
 
                                                         {discount > 0 && (
-                                                            <div className="inline-block w-fit bg-orange-100 text-orange-600 text-xs font-bold px-2 py-1 rounded">
+                                                            <div data-liquid-badge="" className="inline-block w-fit bg-orange-100 text-orange-600 text-xs font-bold px-2 py-1 rounded">
                                                                 {discount}% OFF
                                                             </div>
                                                         )}

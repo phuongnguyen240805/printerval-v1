@@ -17,8 +17,9 @@ import Sidebar from './SideBar';
 import { navLinks, campaign, categories, blog, NavLink } from './data';
 import { api } from '@/utils/api';
 import { keysToRemove } from '@/pages/user/account';
+import { WaterNavigation } from './WaterNavigation';
 
-export const Header = () => {
+export const Header = ({ liquidGlass = true }: { liquidGlass?: boolean }) => {
   const [open, setOpen] = useState(false);
   const [sidebar, setSidebar] = useState(false);
   const [hoveredNavLink, setHoveredNavLink] = useState<NavLink | null>();
@@ -92,6 +93,7 @@ export const Header = () => {
   ], [cartCount, wishlist]);
 
   useEffect(() => {
+    if (liquidGlass) return;
     const controlHeader = () => {
       if (typeof window !== 'undefined') {
         const currentScrollY = window.scrollY;
@@ -105,7 +107,7 @@ export const Header = () => {
     };
     window.addEventListener('scroll', controlHeader, { passive: true });
     return () => window.removeEventListener('scroll', controlHeader);
-  }, [lastScrollY]);
+  }, [lastScrollY, liquidGlass]);
 
   const getSolidStyle = (name: string) => {
     switch (name) {
@@ -135,18 +137,18 @@ export const Header = () => {
       {/* ✅ Sidebar nằm NGOÀI <header> để không bị z-index hay transform của header ảnh hưởng */}
       <Sidebar open={sidebar} onClose={() => setSidebar(false)} />
 
-      <header className={`sticky top-0 z-40 w-full transition-transform duration-300 ease-in-out ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+      <header className={`${liquidGlass ? 'home-glass-header' : ''} sticky top-0 z-40 w-full transition-transform duration-300 ease-in-out ${isHeaderVisible || liquidGlass ? 'translate-y-0' : '-translate-y-full'}`}>
         <TopBar blogs={campaign} />
 
         {/* KHỐI HEADER CHÍNH */}
-        <div className="relative w-full border-b border-black/5 z-30 shadow-sm "
+        <div className={`${liquidGlass ? 'home-glass-header-surface' : ''} relative w-full border-b border-black/5 z-30 shadow-sm`}
           style={{
             backgroundColor: '#fce4ec', // Màu nền hồng nhạt
             minHeight: '100px'
           }}
         >
           {/* Con thỏ bên trái (Ăn mì) */}
-          <div className="absolute left-0 bottom-0 h-full w-auto select-none pointer-events-none z-10 hidden min-[1400px]:block">
+          <div className="home-header-art absolute left-0 bottom-0 h-full w-auto select-none pointer-events-none z-10 hidden min-[1400px]:block">
             <img
               src="https://res.cloudinary.com/dm1wqczhm/image/upload/v1774869889/tho1_pszhws.png"
               alt="rabbit-left"
@@ -155,7 +157,7 @@ export const Header = () => {
           </div>
 
           {/* Con thỏ bên phải (Cầm áo) */}
-          <div className="absolute right-0 bottom-0 h-full w-auto select-none pointer-events-none z-10 hidden min-[1400px]:block">
+          <div className="home-header-art absolute right-0 bottom-0 h-full w-auto select-none pointer-events-none z-10 hidden min-[1400px]:block">
             <img
               src="https://res.cloudinary.com/dm1wqczhm/image/upload/v1774869517/tho22_qeespt.png"
               alt="rabbit-right"
@@ -164,7 +166,7 @@ export const Header = () => {
           </div>
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between gap-4 lg:gap-8">
+            <div className="home-header-row flex items-center justify-between gap-4 lg:gap-8">
 
               {/* 1. Menu Icon Mobile & Logo */}
               <div className="flex items-center gap-4 w-auto">
@@ -177,7 +179,7 @@ export const Header = () => {
                 </button>
 
                 <Link href="/" className="flex flex-shrink-0 items-center transition-opacity hover:opacity-80">
-                  <Image className="w-auto h-20 md:h-20 object-contain" priority src="/logo.png" alt="Brand Logo" width={100} height={30} quality={100} />
+                  <Image className="home-header-logo w-auto h-20 md:h-20 object-contain" priority src="/logo.png" alt="Brand Logo" width={100} height={30} quality={100} />
                 </Link>
               </div>
 
@@ -188,7 +190,7 @@ export const Header = () => {
                     {open ? <FiX size={30} /> : <FiAlignJustify size={17} />}
                     <span className="hidden sm:inline">Categories</span>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="rounded-xl overflow-hidden p-0 shadow-lg !bg-white w-72 max-h-[500px] border border-gray-100 ">
+                  <DropdownMenuContent className={`${liquidGlass ? 'home-glass-popover' : '!bg-white'} rounded-xl overflow-hidden p-0 shadow-lg w-72 max-h-[500px] border border-gray-100`}>
                     <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent">
                       {categories?.map((item, index) => (
                         <DropdownMenuItem key={index} className="p-0 focus:bg-gray-50">
@@ -214,12 +216,12 @@ export const Header = () => {
               </div>
 
               {/* 3. Search Bar */}
-              <div className='flex-grow max-w-2xl relative z-[100] hidden md:block'>
-                <SearchBar />
+              <div className='home-header-search flex-grow max-w-2xl relative z-[100] hidden md:block'>
+                <SearchBar liquidGlass={liquidGlass} />
               </div>
 
               {/* 4. Right Icons (User, Wishlist, Cart) */}
-              <div className="flex items-center justify-end gap-5 flex-shrink-0">
+              <div className="home-header-actions flex items-center justify-end gap-5 flex-shrink-0">
                 {user ? (
                   <>
                     <div className="hidden md:block">
@@ -243,7 +245,7 @@ export const Header = () => {
                           </svg>
                         </DropdownMenuTrigger>
 
-                        <DropdownMenuContent className="w-56 mt-2 rounded-xl p-2 border-gray-100 shadow-lg">
+                        <DropdownMenuContent className={`${liquidGlass ? 'home-glass-popover' : ''} w-56 mt-2 rounded-xl p-2 border-gray-100 shadow-lg`}>
                           <DropdownMenuItem asChild className="rounded-lg mb-1 cursor-pointer">
                             <Link href="/user/account" className="flex items-center gap-3 text-sm"><UserCircle size={16} /> User profile</Link>
                           </DropdownMenuItem>
@@ -278,7 +280,7 @@ export const Header = () => {
                         <DrawerTrigger className='bg-[#111111] rounded-full flex justify-center items-center w-8 h-8 relative focus:outline-none'>
                           <User size={16} color='white' />
                         </DrawerTrigger>
-                        <DrawerContent className='p-4 bg-white'>
+                        <DrawerContent className={`${liquidGlass ? 'home-glass-popover' : 'bg-white'} p-4`}>
                           <div className="flex flex-col gap-2 mt-4">
                             <Link href="/user/account" className="w-full cursor-pointer flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg text-sm font-Inter"><UserCircle size={18} /> User profile</Link>
                             <Link href="/orders" className="w-full cursor-pointer flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg text-sm font-Inter"><MapIcon size={18} /> Address book</Link>
@@ -301,7 +303,7 @@ export const Header = () => {
                     </div>
                   </>
                 ) : (
-                  <Link href="/signin">
+                  <Link href="/signin" aria-label="Sign in" className="relative flex items-center justify-center">
                     <User className="text-[#111111] transition-opacity hover:opacity-60 hidden md:block" size={22} />
                     <div className="rounded-full md:hidden flex gap-1.5 bg-[#111111] text-white text-[16px] items-center px-3 py-1.5 font-Inter">
                       <User size={14} /> Login
@@ -315,7 +317,7 @@ export const Header = () => {
                   const badgeGlossy = "bg-[#F67273] ";
 
                   return (
-                    <Link key={url} href={url} className='relative flex items-center'>
+                    <Link key={url} href={url} aria-label={url === '/cart' ? 'Shopping cart' : 'Wishlist'} className='relative flex items-center'>
                       <Icon className={`${iconColor} transition-transform duration-300 hover:text-orange-400`} size={22} />
                       {number > 0 && (
                         <Badge className={` pointer-events-none absolute overflow-hidden rounded-full text-[12px] font-Inter w-5 h-5 p-0 -top-1.5 -right-2 flex justify-center items-center text-white ${badgeGlossy} z-10`}>
@@ -329,8 +331,14 @@ export const Header = () => {
             </div>
           </div>
 
+          {liquidGlass && (
+            <div className="home-glass-mobile-search md:hidden px-4 pb-3 relative z-[100]">
+              <SearchBar liquidGlass />
+            </div>
+          )}
+
           {/* NAVBAR DESKTOP */}
-          <div className="hidden lg:block max-w-7xl mx-auto ">
+          <WaterNavigation enabled={liquidGlass} className="home-header-desktop-nav hidden lg:block max-w-7xl mx-auto">
             <ul className="flex items-center justify-center gap-6 ">
               {navLinks.map((item, index) => {
                 const solidClasses = getSolidStyle(item.name);
@@ -343,15 +351,15 @@ export const Header = () => {
                       onMouseLeave={handleCloseMenu}>
                       <NavigationMenu>
                         <NavigationMenuItem>
-                          <NavigationMenuTrigger className={`bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent px-0 ${textClasses}`}>
+                          <NavigationMenuTrigger data-water-item={liquidGlass ? '' : undefined} className={`bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent px-0 ${textClasses}`}>
                             {item.name}
                           </NavigationMenuTrigger>
                           <NavigationMenuContent>
-                            <ul className="grid w-40 gap-0 p-2 bg-white rounded-xl shadow-xl border border-gray-100">
+                            <ul className="grid w-40 gap-1 p-2">
                               {item.name === 'Product' && categories?.map((category) => (
                                 <li key={category.id}>
                                   <NavigationMenuLink asChild>
-                                    <Link href={`/product/${category.handle}`} className="block rounded-lg px-3 py-2 hover:bg-gray-50 transition-colors">
+                                    <Link data-liquid-control="" href={`/product/${category.handle}`} className="block rounded-lg px-3 py-2 hover:bg-gray-50 transition-colors">
                                       <div className="font-Inter text-[16px] text-[#111111]">{category.name}</div>
                                     </Link>
                                   </NavigationMenuLink>
@@ -360,7 +368,7 @@ export const Header = () => {
                               {item.name === 'Blog' && (blog as unknown as { id: number; documentId?: string; Title: string; title?: string; }[] | undefined)?.map((post) => (
                                 <li key={post.id}>
                                   <NavigationMenuLink asChild>
-                                    <Link href={`/blog/${post.documentId || post.id}`} className="block rounded-lg px-3 py-2 hover:bg-gray-50 transition-colors">
+                                    <Link data-liquid-control="" href={`/blog/${post.documentId || post.id}`} className="block rounded-lg px-3 py-2 hover:bg-gray-50 transition-colors">
                                       <div className="font-Inter text-[16px] text-[#111111]">{post.Title || post.title}</div>
                                     </Link>
                                   </NavigationMenuLink>
@@ -377,7 +385,7 @@ export const Header = () => {
                   <li className="flex-shrink-0 transition-transform duration-300 hover:scale-110" key={index}
                     onMouseEnter={() => handleShowMenu(item)}
                     onMouseLeave={handleCloseMenu}>
-                    <Link href={item.href} className={`flex h-full items-center  gap-2 text-nowrap ${textClasses}`} onClick={handleCloseMenu}>
+                    <Link data-water-item={liquidGlass ? '' : undefined} href={item.href} className={`flex h-full items-center  gap-2 text-nowrap ${textClasses}`} onClick={handleCloseMenu}>
                       {item.name === 'Create Your Own' && (
                         <GiPaintBrush size={18} className="text-orange-500" />
                       )}
@@ -387,10 +395,10 @@ export const Header = () => {
                 );
               })}
             </ul>
-          </div>
+          </WaterNavigation>
 
           {/* MOBILE QUICK NAV */}
-          <div className="lg:hidden bg-white border-t border-gray-100 px-4 py-3">
+          <WaterNavigation enabled={liquidGlass} className="home-header-mobile-nav lg:hidden bg-white border-t border-gray-100 px-4 py-3">
             <div className="flex gap-4 justify-center flex-wrap md:flex-nowrap">
               {[
                 { name: 'Easter Day', href: '/sell-your-product' },
@@ -399,6 +407,7 @@ export const Header = () => {
               ].map((item) => (
                 <Link
                   key={item.href}
+                  data-water-item={liquidGlass ? '' : undefined}
                   href={item.href}
                   className={`text-[16px] font-Inter transition-colors ${getSolidStyle(item.name)}`}
                 >
@@ -406,7 +415,7 @@ export const Header = () => {
                 </Link>
               ))}
             </div>
-          </div>
+          </WaterNavigation>
         </div>
       </header>
     </>

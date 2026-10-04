@@ -14,9 +14,9 @@ import {
     Copy,
     Minus,
     Plus,
-    ChevronDown,
 } from "lucide-react";
 import { RxTransparencyGrid } from "react-icons/rx";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/shared/ui/select';
 
 import {
     ActiveTool,
@@ -133,19 +133,10 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
 
                     {/* Font family picker */}
                     <div className="relative flex items-center shrink-0">
-                        <select
-                            value={fontFamily}
-                            onChange={(e) => editor?.changeFontFamily(e.target.value)}
-                            className="appearance-none h-8 pl-2 pr-7 border border-gray-200 rounded text-sm font-medium text-gray-800 bg-white cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400"
-                            style={{ fontFamily }}
-                        >
-                            {FONT_FAMILIES.map((f) => (
-                                <option key={f} value={f} style={{ fontFamily: f }}>
-                                    {f}
-                                </option>
-                            ))}
-                        </select>
-                        <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 size-3.5 text-gray-500 pointer-events-none" />
+                        <Select value={fontFamily} onValueChange={value => editor?.changeFontFamily(value)}>
+                            <SelectTrigger aria-label="Font family" className="h-8 w-44 bg-white/75 text-gray-800" style={{ fontFamily }}><SelectValue /></SelectTrigger>
+                            <SelectContent>{FONT_FAMILIES.map(f => <SelectItem key={f} value={f} style={{ fontFamily: f }}>{f}</SelectItem>)}</SelectContent>
+                        </Select>
                     </div>
 
                     <Sep />
@@ -278,19 +269,12 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
             {isImage && (
                 <>
                     <Sep />
-                    <select
-                        onChange={(e) => { if (e.target.value) editor?.changeFilter(e.target.value as any); }}
-                        className="h-8 px-2 border border-gray-200 rounded text-sm text-gray-700 focus:outline-none shrink-0"
-                    >
-                        <option value="">Bộ lọc...</option>
-                        <option value="sepia">Sepia</option>
-                        <option value="invert">Invert</option>
-                        <option value="brightness">Brightness</option>
-                        <option value="contrast">Contrast</option>
-                        <option value="saturation">Saturation</option>
-                        <option value="blur">Blur</option>
-                        <option value="pixelate">Pixelate</option>
-                    </select>
+                    <Select onValueChange={value => editor?.changeFilter(value)}>
+                        <SelectTrigger aria-label="Bộ lọc ảnh" className="h-8 w-36 text-gray-700"><SelectValue placeholder="Bộ lọc..." /></SelectTrigger>
+                        <SelectContent>
+                            {['sepia', 'invert', 'brightness', 'contrast', 'saturation', 'blur', 'pixelate'].map(filter => <SelectItem key={filter} value={filter}>{filter[0].toUpperCase() + filter.slice(1)}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
                 </>
             )}
 

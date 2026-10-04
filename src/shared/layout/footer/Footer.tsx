@@ -112,7 +112,7 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="bg-white border-t border-gray-200">
+    <footer className="liquid-footer bg-white border-t border-gray-200">
       {/* Features Section */}
       <div className="border-b border-gray-200 bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">

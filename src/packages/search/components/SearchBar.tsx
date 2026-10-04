@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useId } from "react";
 import { useRouter } from "next/navigation";
 import { FiSearch } from "react-icons/fi";
 import { SearchDropdown } from "./SearchDropdown";
@@ -8,7 +8,8 @@ import { useSearchData } from "../hook/useSearchData";
 import { MOCK_TRENDING } from "../mockData";
 import { MOCK_PRODUCTS_DATABASE } from "@/lib/mockProduct";
 
-export function SearchBar() {
+export function SearchBar({ liquidGlass = false }: { liquidGlass?: boolean }) {
+  const searchId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -57,7 +58,7 @@ export function SearchBar() {
   };
 
   return (
-    <div ref={wrapperRef} className="relative w-full">
+    <div ref={wrapperRef} className={`${liquidGlass ? 'home-glass-search' : ''} relative w-full`}>
       <form onSubmit={handleSubmit} className="relative">
         <div className="relative flex items-center w-full h-12 rounded-lg border-2 border-orange-500 bg-white overflow-hidden transition-all">
           <div className="grid place-items-center h-full w-12 text-gray-500">
@@ -66,11 +67,15 @@ export function SearchBar() {
           <input
             className="peer h-full w-full bg-transparent outline-none focus:outline-none focus:ring-0 border-none text-sm text-gray-700"
             type="text"
-            id="search"
+            id={searchId}
+            aria-label="Search products"
             placeholder="Tìm kiếm sản phẩm..."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             onFocus={() => setIsOpen(true)}
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') setIsOpen(false);
+            }}
             autoComplete="off"
           />
         </div>
@@ -78,6 +83,7 @@ export function SearchBar() {
 
       {isOpen && (
         <SearchDropdown
+          liquidGlass={liquidGlass}
           recentSearches={recentSearches}
 
           // Truyền data đã qua bộ lọc Fallback

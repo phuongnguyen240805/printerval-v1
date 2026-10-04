@@ -10,6 +10,7 @@ function Card({ className, ...props }: React.ComponentProps<'div'>) {
         className,
       )}
       data-slot="card"
+        data-liquid-card=""
       {...props}
     />
   )

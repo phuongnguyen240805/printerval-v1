@@ -6,18 +6,41 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  type CarouselApi,
 } from "@/shared/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { Pause, Play } from 'lucide-react';
+import { useReducedMotion } from 'framer-motion';
 
 const carouselImages = [
   'https://res.cloudinary.com/dm1wqczhm/image/upload/w_1200,q_80,c_limit/v1774876250/homepage-3-b5afe1433bf414d14c788e2a128a211f_1_nwmcg3.jpg',
   'https://res.cloudinary.com/dm1wqczhm/image/upload/w_1200,q_80,c_limit/v1774875809/banner-3-b11fbb0d4d4b99ee571bfaf6e54759e8_lrrruw.png',
 ];
 
-export const Hero = () => {
-  const plugin = React.useRef(
-    Autoplay({ delay: 1500, stopOnInteraction: false })
-  );
+export const Hero = ({ calm = false }: { calm?: boolean }) => {
+  const reducedMotion = useReducedMotion();
+  const [paused, setPaused] = React.useState(false);
+  const [carouselApi, setCarouselApi] = React.useState<CarouselApi>();
+  const plugin = React.useMemo(() => Autoplay({
+    delay: calm ? 6000 : 1500,
+    stopOnInteraction: calm,
+    stopOnMouseEnter: calm,
+    stopOnFocusIn: true,
+    playOnInit: !calm,
+  }), [calm]);
+
+  React.useEffect(() => {
+    if (!calm || !carouselApi) return;
+    const updatePlayback = () => {
+      const autoplay = carouselApi.plugins().autoplay;
+      if (!autoplay) return;
+      if (paused || reducedMotion) autoplay.stop();
+      else autoplay.play();
+    };
+    updatePlayback();
+    carouselApi.on('reInit', updatePlayback);
+    return () => { carouselApi.off('reInit', updatePlayback); };
+  }, [calm, paused, reducedMotion, carouselApi]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 my-4 lg:my-6">
@@ -28,7 +51,8 @@ export const Hero = () => {
         <div className="xl:col-span-2">
           <Carousel
             className="w-full"
-            plugins={[plugin.current]}
+            plugins={[plugin]}
+            setApi={setCarouselApi}
             opts={{ align: "start", loop: true }}
           >
             <CarouselContent>
@@ -50,6 +74,20 @@ export const Hero = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
+            {calm && (
+              <button
+                type="button"
+                className="home-hero-playback"
+                aria-label={reducedMotion ? 'Slideshow paused for reduced motion' : paused ? 'Play slideshow' : 'Pause slideshow'}
+                onClick={() => {
+                  if (reducedMotion) return;
+                  setPaused(!paused);
+                }}
+                disabled={!!reducedMotion}
+              >
+                {paused || reducedMotion ? <Play size={15} /> : <Pause size={15} />}
+              </button>
+            )}
           </Carousel>
         </div>
 
