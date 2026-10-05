@@ -1,6 +1,7 @@
 "use client"
 import Link from 'next/link';
 import Image from 'next/image';
+import effects from './PromotionsEffects.module.css';
 import FadeIn from '@/shared/components/FadeIn';
 import {
     Carousel,
@@ -69,11 +70,20 @@ export const SaleProduct = ({ TopSale, title }: { TopSale?: any[], title: string
                     {/* Countdown */}
                     <div className="flex items-center gap-1 text-white text-xs font-Inter">
                         <span className="hidden sm:inline">Fresh deals in</span>
-                        <span className="bg-black text-white font-semibold text-sm px-2 py-1 rounded">01</span>
+                        <span
+                            className={`bg-black text-white font-semibold text-sm px-2 py-1 rounded ${effects.countdownPulse}`}
+                            style={{ animationDelay: '0s' }}
+                        >01</span>
                         <span className="font-semibold">:</span>
-                        <span className="bg-black text-white font-semibold text-sm px-2 py-1 rounded">42</span>
+                        <span
+                            className={`bg-black text-white font-semibold text-sm px-2 py-1 rounded ${effects.countdownPulse}`}
+                            style={{ animationDelay: '0.16s' }}
+                        >42</span>
                         <span className="font-semibold">:</span>
-                        <span className="bg-black text-white font-semibold text-sm px-2 py-1 rounded">01</span>
+                        <span
+                            className={`bg-black text-white font-semibold text-sm px-2 py-1 rounded ${effects.countdownPulse}`}
+                            style={{ animationDelay: '0.32s' }}
+                        >01</span>
                     </div>
                 </div>
 
@@ -124,7 +134,7 @@ export const SaleProduct = ({ TopSale, title }: { TopSale?: any[], title: string
                                                         </div>
 
                                                         {discount > 0 && (
-                                                            <div data-liquid-badge="" className="inline-block w-fit bg-orange-100 text-orange-600 text-xs font-bold px-2 py-1 rounded">
+                                                            <div data-liquid-badge="" className={`inline-block w-fit bg-orange-100 text-orange-600 text-xs font-bold px-2 py-1 rounded ${effects.discountPulse}`}>
                                                                 {discount}% OFF
                                                             </div>
                                                         )}

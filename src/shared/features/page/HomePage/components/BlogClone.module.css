@@ -1,0 +1,25 @@
+.section { margin-bottom: 40px; padding: 20px; }
+.header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.heading { margin: 0; color: #0a0a0a; font-size: clamp(20px,2vw,28px); font-weight: 700; letter-spacing: -.02em; }
+.seeMore { display: inline-flex; align-items: center; gap: 4px; color: #525252; font-size: 14px; white-space: nowrap; }
+.grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 20px; }
+.item { display: flex; min-width: 0; flex-direction: column; gap: 16px; padding: 12px; }
+.imageLink { position: relative; display: block; overflow: hidden; border-radius: var(--liquid-radius-item); }
+.imageLink::after { content: ''; display: block; padding-bottom: 60%; }
+.image { object-fit: cover; transition: transform .25s ease; }
+.imageLink:hover .image { transform: scale(1.03); }
+.text { min-width: 0; }
+.category { display: -webkit-box; overflow: hidden; margin-bottom: 4px; color: #525252; font-size: 14px; line-height: 1.2; text-overflow: ellipsis; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
+.title { display: -webkit-box; min-height: 38px; overflow: hidden; color: #0a0a0a; font-size: 16px; font-weight: 500; line-height: 1.2; text-overflow: ellipsis; -webkit-box-orient: vertical; -webkit-line-clamp: 2; transition: color .2s ease; }
+.title:hover { color: #ff6600; }
+.readMore { display: inline-flex; width: fit-content; min-height: 40px; align-items: center; gap: 8px; border: 1px solid var(--liquid-field-edge); background-color: var(--liquid-field); padding: 8px 16px; color: #525252; font-size: 14px; margin-top: auto; }
+.readMore:hover { border-color: #ff6600; color: #ff6600; }
+@media (max-width: 1023px) { .grid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 560px) {
+  .section { padding: 16px; }
+  .grid { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 6px; }
+  .item { min-width: 78%; scroll-snap-align: start; }
+  .heading { font-size: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { .image { transition: none; } .imageLink:hover .image { transform: none; } }

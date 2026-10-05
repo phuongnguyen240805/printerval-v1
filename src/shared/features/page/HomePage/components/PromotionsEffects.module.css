@@ -1,0 +1,69 @@
+.countdownPulse {
+  animation: countdownSoftPulse 1.2s ease-in-out infinite alternate;
+  transform-origin: center;
+  will-change: opacity, transform, box-shadow, color, text-shadow;
+}
+
+.discountPulse {
+  animation: discountSoftPulse 1.55s ease-in-out infinite;
+  transform-origin: center;
+  will-change: opacity, transform, box-shadow, color, text-shadow;
+}
+
+@keyframes countdownSoftPulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    color: #ffffff;
+    box-shadow: 0 0 0 rgba(255, 209, 102, 0);
+    text-shadow: 0 0 0 rgba(255, 209, 102, 0);
+  }
+
+  45% {
+    color: #ffd166;
+    text-shadow:
+      0 0 5px rgba(255, 209, 102, 0.48),
+      0 0 10px rgba(255, 159, 28, 0.22);
+  }
+
+  100% {
+    opacity: 0.92;
+    transform: scale(1.035);
+    color: #ffb703;
+    box-shadow: 0 0 10px rgba(255, 183, 3, 0.18);
+    text-shadow:
+      0 0 6px rgba(255, 209, 102, 0.58),
+      0 0 12px rgba(255, 159, 28, 0.28);
+  }
+}
+
+@keyframes discountSoftPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    color: #f97316;
+    box-shadow: 0 0 0 rgba(255, 69, 58, 0);
+    text-shadow: 0 0 0 rgba(255, 69, 58, 0);
+  }
+
+  50% {
+    opacity: 0.94;
+    transform: scale(1.035);
+    color: #ff3b30;
+    box-shadow: 0 0 10px rgba(255, 69, 58, 0.18);
+    text-shadow:
+      0 0 5px rgba(255, 69, 58, 0.42),
+      0 0 10px rgba(249, 115, 22, 0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .countdownPulse,
+  .discountPulse {
+    animation: none;
+    transform: none;
+    box-shadow: none;
+    text-shadow: none;
+  }
+}

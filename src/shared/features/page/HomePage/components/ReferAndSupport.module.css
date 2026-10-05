@@ -1,0 +1,23 @@
+.section { display: grid; grid-template-columns: 2fr 3fr; gap: 20px; width: 100%; }
+.card { position: relative; min-width: 0; min-height: 300px; overflow: hidden; padding: 24px; isolation: isolate; }
+.referCard { --liquid-panel: linear-gradient(140deg, rgba(255,248,236,.94), rgba(255,238,214,.65)); }
+.supportCard { --liquid-panel: linear-gradient(140deg, rgba(246,246,255,.94), rgba(225,229,255,.65)); }
+.referContent { position: relative; z-index: 2; width: 50%; }
+.supportContent { position: relative; z-index: 2; width: 40%; }
+.heading { margin: 0 0 12px; color: #0a0a0a; font-size: clamp(24px,2vw,30px); font-weight: 700; line-height: 1.15; letter-spacing: -.02em; }
+.highlight { color: #504bff; }
+.description { margin: 0 0 24px; color: #525252; font-size: 16px; line-height: 1.4; }
+.button { display: inline-flex; min-height: 44px; height: auto; max-width: 100%; align-items: center; justify-content: center; gap: 8px; background-color: #ff6600; padding: 10px 16px; color: #fff; font-size: 15px; font-weight: 600; text-decoration: none; white-space: normal; }
+.button:hover { background-color: #e95d00; }
+.imageLayer { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.referImage { position: absolute; right: -15%; bottom: 0; width: min(62%,390px); height: auto; object-fit: contain; }
+.supportImage { position: absolute; right: 0; bottom: 0; width: auto; height: 100%; max-width: 62%; object-fit: contain; object-position: right bottom; }
+@media (max-width: 1023px) { .section { grid-template-columns: 1fr; } }
+@media (max-width: 640px) {
+  .card { min-height: 280px; padding: 20px; }
+  .referContent, .supportContent { width: 58%; }
+  .heading { font-size: 22px; }
+  .description { margin-bottom: 18px; font-size: 14px; }
+  .referImage { right: -22%; width: 70%; }
+  .supportImage { max-width: 58%; }
+}

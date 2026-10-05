@@ -7,7 +7,7 @@ import { FiHeart, FiShoppingBag, FiAlignJustify, FiX } from 'react-icons/fi';
 import { SearchBar } from '@/packages/search/components/SearchBar';
 import { TopBar } from './TopBar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../ui/dropdown-menu';
-import { HeartHandshakeIcon, MapIcon, Package, Sparkles, User, UserCircle } from 'lucide-react';
+import { HeartHandshakeIcon, MapIcon, Package, User, UserCircle } from 'lucide-react';
 import { GiFountainPen, GiPaintBrush } from 'react-icons/gi';
 import { Badge } from '../../ui/badge';
 import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from "@/shared/ui/drawer";
@@ -18,6 +18,7 @@ import { navLinks, campaign, categories, blog, NavLink } from './data';
 import { api } from '@/utils/api';
 import { keysToRemove } from '@/pages/user/account';
 import { WaterNavigation } from './WaterNavigation';
+import { CreatorStudioMenu } from './CreatorStudioMenu';
 
 export const Header = ({ liquidGlass = true }: { liquidGlass?: boolean }) => {
   const [open, setOpen] = useState(false);
@@ -26,14 +27,27 @@ export const Header = ({ liquidGlass = true }: { liquidGlass?: boolean }) => {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [cartCount, setCartCount] = useState(0);
+  const [wishlist, setWishlistCount] = useState(0);
+
+  useEffect(() => {
+    const syncWishlist = () => {
+      try {
+        const value: unknown = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        setWishlistCount(Array.isArray(value) ? value.length : 0);
+      } catch { setWishlistCount(0); }
+    };
+    syncWishlist();
+    window.addEventListener('wishlist:updated', syncWishlist);
+    window.addEventListener('storage', syncWishlist);
+    return () => {
+      window.removeEventListener('wishlist:updated', syncWishlist);
+      window.removeEventListener('storage', syncWishlist);
+    };
+  }, []);
 
   let cartId: string = "";
-  let wishlist: number = 0;
   if (typeof window !== "undefined") {
     cartId = localStorage.getItem("cart_id") || "";
-    const wishlistString = localStorage.getItem("wishlist");
-    const wishlistArray = wishlistString ? JSON.parse(wishlistString) : [];
-    wishlist = wishlistArray.length;
   }
 
   const getToken = () => {
@@ -310,6 +324,9 @@ export const Header = ({ liquidGlass = true }: { liquidGlass?: boolean }) => {
                     </div>
                   </Link>
                 )}
+
+                {/* Creator Studio - cloned from Printerval header reference */}
+                <CreatorStudioMenu />
 
                 {/* Wishlist & Cart Icons */}
                 {sideNavLinks.map(([url, Icon, number]) => {
