@@ -1,0 +1,58 @@
+/* Shared skin for cloned catalogs. Layout and responsive rules stay in each feature. */
+.page.page, .scope {
+  --catalog-accent: var(--liquid-focus);
+  --catalog-soft: rgba(250, 224, 205, .65);
+  --catalog-fill: linear-gradient(155deg, #cb6036, #ae4428);
+  --brand: var(--catalog-accent);
+  --brand-hover: #963b24;
+  --brand-soft: var(--catalog-soft);
+  --surface: var(--liquid-panel);
+  --muted: rgba(239, 231, 223, .55);
+  --page: var(--liquid-page-color);
+  --text: var(--liquid-field-ink);
+  --ink: var(--liquid-field-ink);
+  --subtle: var(--liquid-field-placeholder);
+  --border: var(--liquid-field-edge);
+  --line: var(--liquid-field-edge);
+}
+.page.page {
+  background: var(--liquid-page-image), var(--liquid-page-color);
+  color: var(--liquid-field-ink);
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+}
+.page :is(h1, h2, h3, h4) { letter-spacing: -.025em; text-wrap: pretty; }
+.page :is(h1, h2) { line-height: 1.25; }
+.page :global([data-catalog-title]) { font-size: clamp(2rem, 4.2vw, 3.5rem); line-height: 1.22; font-weight: 700; }
+.scope { font-family: var(--font-inter), Inter, system-ui, sans-serif; }
+.page :is(p, li) { text-wrap: pretty; }
+.page button { font-family: inherit; }
+.page > section { background: transparent; }
+.page :is(button, a, input, select):focus-visible { outline: 2px solid var(--liquid-focus); outline-offset: 3px; }
+.page :global([data-catalog-hero]) {
+  background: radial-gradient(ellipse at 10% 0%, rgba(255, 219, 194, .5), transparent 55%), radial-gradient(ellipse at 95% 0%, rgba(229, 221, 249, .4), transparent 50%), var(--liquid-panel);
+  color: var(--liquid-field-ink);
+}
+.page :global([data-catalog-band]) { background: var(--catalog-fill); color: #fff; }
+.page :global([data-catalog-muted]) { background: rgba(239, 231, 223, .35); }
+.page :global([data-catalog-glow]) { background: radial-gradient(ellipse, rgba(250, 213, 184, .45), rgba(230, 220, 247, .2)); }
+.page :global([data-liquid-field]) input { background: transparent; box-shadow: none; }
+.page :global([data-catalog-primary]) { background: var(--catalog-fill); color: #fff; }
+/* Map the cloned contract's primary utilities to the storefront palette. */
+.page :global(.text-green-500), .page :global(.text-green-600), .page :global(.text-green-700), .page :global(.text-green-800),
+.page :global(.text-blue-700), .page :global(.text-blue-800) { color: var(--catalog-accent); }
+.page :global(.text-green-300) { color: #ffd4b7; }
+.page :global(.bg-green-50), .page :global(.bg-green-100), .page :global(.bg-blue-100) { background: var(--catalog-soft); }
+.page :global([class~="bg-green-50/50"]) { background: rgba(250, 224, 205, .35); }
+.page :global(.bg-green-500), .page :global(.bg-green-600), .page :global(.bg-blue-500) { background: var(--catalog-fill); color: #fff; }
+.page :global(.border-green-100), .page :global(.border-green-200), .page :global(.border-green-500), .page :global(.border-blue-200) { border-color: var(--liquid-field-edge); }
+.page :global(.bg-clip-text) { background-image: none; color: var(--liquid-field-ink); }
+.page :global(h1 .bg-clip-text) { color: var(--catalog-accent); }
+.page :global([data-catalog-benefit]) { background: var(--liquid-panel); border-color: var(--liquid-edge); }
+.page :global([data-catalog-benefit]) :is(p, div[class*="text-"]) { color: var(--liquid-field-ink); }
+.page :global(button[class*="hover:text-green"]):hover { color: var(--catalog-accent); }
+.page :global(button[class*="hover:bg-green"]):hover { background-color: var(--catalog-soft); }
+.page :global(button[class*="bg-green-5"]):hover, .page :global(button[class*="bg-green-6"]):hover { background: var(--brand-hover); color: #fff; }
+@media (prefers-reduced-motion: reduce) {
+  .page *, .page *::before, .page *::after { animation: none !important; transition: none !important; }
+  .page :global(.hover\:-translate-y-1):hover { transform: none; }
+}

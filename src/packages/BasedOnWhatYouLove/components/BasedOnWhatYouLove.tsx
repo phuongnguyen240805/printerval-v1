@@ -56,14 +56,14 @@ export default function BasedOnWhatYouLove({
     }
 
     return (
-        <section className="py-12">
-            <div className="flex items-center justify-between gap-8 mb-8">
-                <h2 className="text-[24px] font-Inter text-gray-900 font-semibold">Based On What You Love</h2>
+        <section className="min-w-0 py-4 sm:py-6 lg:py-8">
+            <div className="mb-5 flex min-w-0 flex-wrap items-center justify-between gap-4 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl font-Inter text-gray-900 font-semibold">Based On What You Love</h2>
                 {/* Recently Viewed - nằm trên 1 hàng với text */}
                 {recentlyViewed.length > 0 && (
-                    <div className="flex items-center gap-3 flex-shrink-0">
+                    <div className="flex min-w-0 max-w-full flex-wrap items-center gap-3">
                         <p className="text-gray-500 whitespace-nowrap text-sm">Because you viewed:</p>
-                        <div className="flex gap-2">
+                        <div className="flex max-w-full flex-wrap gap-2">
                             {recentlyViewed.map((p) => (
                                 <img
                                     key={p.id}
@@ -78,7 +78,7 @@ export default function BasedOnWhatYouLove({
             </div>
 
             {/* Recommended Products Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-5 lg:gap-6 [&>*]:min-w-0">
                 {recommendedProducts.map((product, index) => (
                     <FadeIn key={product.id} delay={index * 0.05} direction="up">
                         <ProductCard key={product.id} product={product} />

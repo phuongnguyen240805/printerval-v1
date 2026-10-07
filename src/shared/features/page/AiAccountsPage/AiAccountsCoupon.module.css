@@ -1,0 +1,272 @@
+.floatingCoupon {
+  position: fixed;
+  right: 24px;
+  bottom: 106px;
+  z-index: 10002;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transform-origin: top center;
+  animation: pendulum 1s ease-in-out infinite alternate;
+  filter: drop-shadow(0 7px 16px rgba(0,0,0,.18));
+}
+.floatingCoupon img { display:block; width:100%; height:100%; object-fit:contain; }
+@keyframes pendulum { from { transform: rotate(14deg); } to { transform: rotate(-14deg); } }
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 92px 18px 24px;
+  background: rgba(0,0,0,.56);
+  backdrop-filter: blur(1px);
+}
+.dialog {
+  position: relative;
+  width: min(500px, calc(100vw - 28px));
+  filter: drop-shadow(0 22px 48px rgba(0,0,0,.28));
+}
+.hero {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: -112px;
+  width: 420px;
+  max-width: 92vw;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.heroArt { display:block; width:100%; height:auto; }
+.close {
+  position: absolute;
+  z-index: 5;
+  right: -12px;
+  top: -16px;
+  width: 34px;
+  height: 34px;
+  border: 2px solid rgba(255,255,255,.75);
+  border-radius: 50%;
+  background: rgba(42,42,42,.86);
+  color: #fff;
+  font-size: 27px;
+  line-height: 28px;
+  cursor: pointer;
+}
+.shell {
+  overflow: hidden;
+  border-radius: 17px;
+  background: linear-gradient(180deg,#ffd993 0%,#ffc071 62%,#f64f49 62%,#f64f49 100%);
+  padding: 18px 18px 0;
+}
+.tickets { display:grid; gap:10px; padding-top: 0; }
+.ticket {
+  min-height: 142px;
+  display:grid;
+  grid-template-columns: 1.45fr .82fr;
+  overflow:hidden;
+  border-radius: 10px;
+  background:#fff;
+}
+.ticketCopy {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:13px;
+  padding:24px 25px;
+  border-right:1px dashed #e4e4e4;
+}
+.ticketCopy::before,.ticketCopy::after {
+  content:"";
+  position:absolute;
+  right:-7px;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#ffd38e;
+}
+.ticketCopy::before { top:-7px; }
+.ticketCopy::after { bottom:-7px; }
+.ticketCopy strong { font-size:18px; line-height:1.2; color:#303030; }
+.ticketCopy span { font-size:15px; color:#9c9c9c; }
+.ticketDeal { position:relative; min-width:0; overflow:hidden; }
+.ticketDeal b {
+  position:absolute;
+  z-index:2;
+  top:17px;
+  left:50%;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  font-size:22px;
+  color:#fa4f49;
+}
+.miniGift { position:absolute; left:50%; bottom:-6px; width:145px; transform:translateX(-50%); }
+.footer {
+  margin: 14px -18px 0;
+  padding: 20px 28px 31px;
+  text-align:center;
+  background:#f64f49;
+}
+.footer strong { display:block; margin-bottom:20px; color:#fff; font-size:18px; }
+.footer button {
+  width:100%;
+  min-height:56px;
+  border:0;
+  border-radius:999px;
+  background:#ffdba0;
+  color:#3c352d;
+  font-size:18px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow: inset 0 0 0 1px rgba(255,188,88,.55);
+}
+.footer button:disabled { opacity:.72; cursor:default; }
+@media (max-width:640px) {
+  .floatingCoupon { right:14px; bottom:88px; width:54px; height:54px; }
+  .backdrop { padding-top:74px; }
+  .hero { top:-84px; width:330px; }
+  .ticket { min-height:120px; grid-template-columns:1.35fr .85fr; }
+  .ticketCopy { gap:8px; padding:17px 16px; }
+  .ticketCopy strong { font-size:15px; }
+  .ticketCopy span { font-size:12px; }
+  .ticketDeal b { top:14px; font-size:18px; }
+  .miniGift { width:120px; bottom:-4px; }
+  .footer { padding:16px 18px 23px; }
+  .footer strong { margin-bottom:14px; font-size:15px; }
+  .footer button { min-height:50px; font-size:16px; }
+}
+@media (prefers-reduced-motion: reduce) { .floatingCoupon { animation:none; } }
+
+/* Keep the floating coupon visually independent from Printerval liquid-glass controls. */
+.floatingCoupon {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  filter: none !important;
+  isolation: isolate;
+}
+.floatingCoupon::before,
+.floatingCoupon::after {
+  content: none !important;
+  display: none !important;
+}
+.floatingCoupon:hover,
+.floatingCoupon:focus,
+.floatingCoupon:active {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.discountLoader {
+  width: min(360px, calc(100vw - 36px));
+  padding: 28px 26px 24px;
+  border-radius: 18px;
+  background: #fff;
+  color: #2f2f2f;
+  text-align: center;
+  box-shadow: 0 24px 70px rgba(0,0,0,.24);
+  animation: discountLoaderIn .2s ease-out both;
+}
+.discountLoaderIcon {
+  position: relative;
+  width: 98px;
+  height: 72px;
+  margin: 0 auto 14px;
+}
+.discountLoaderIcon span {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 44px;
+  border-radius: 10px;
+  background: #f65350;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(246,83,80,.22);
+}
+.discountLoaderIcon span:first-child {
+  left: 2px;
+  top: 20px;
+  transform: rotate(-10deg);
+  animation: discountCardLeft .7s ease-in-out infinite alternate;
+}
+.discountLoaderIcon span:last-child {
+  right: 2px;
+  top: 6px;
+  background: #ffad32;
+  transform: rotate(9deg);
+  animation: discountCardRight .7s ease-in-out infinite alternate;
+}
+.discountLoader strong {
+  display: block;
+  font-size: 18px;
+  line-height: 1.25;
+}
+.discountLoader p {
+  margin: 7px 0 18px;
+  color: #8d8d8d;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.discountProgress {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #f2f2f2;
+}
+.discountProgress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg,#ffbc4a,#f65350);
+  transform-origin: left center;
+  animation: discountProgressFill .95s cubic-bezier(.2,.75,.25,1) both;
+}
+@keyframes discountLoaderIn {
+  from { opacity: 0; transform: translateY(8px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes discountProgressFill {
+  from { transform: scaleX(.05); }
+  to { transform: scaleX(1); }
+}
+@keyframes discountCardLeft {
+  from { transform: translateY(2px) rotate(-12deg); }
+  to { transform: translateY(-3px) rotate(-8deg); }
+}
+@keyframes discountCardRight {
+  from { transform: translateY(-1px) rotate(7deg); }
+  to { transform: translateY(3px) rotate(11deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .discountLoader,
+  .discountLoaderIcon span,
+  .discountProgress span { animation: none; }
+  .discountProgress span { transform: scaleX(1); }
+}
+
+/* Portal material uses the same tokens as both catalog pages. */
+.shell { background: var(--liquid-panel); border: 1px solid var(--liquid-edge); border-radius: var(--liquid-radius-panel); box-shadow: var(--liquid-shadow); backdrop-filter: blur(var(--liquid-blur)); }
+.ticket { background: var(--liquid-field); color: var(--liquid-field-ink); }
+.ticketCopy span { color: var(--liquid-field-placeholder); line-height: 1.4; }
+.ticketDeal b { color: var(--liquid-focus); }
+.footer, .footer::before { background: var(--catalog-fill); }
+.footer button { background: var(--liquid-field); color: var(--liquid-field-ink); animation: none; }
+.discountLoaderIcon span { background: var(--liquid-focus); }
+.discountProgress span { background: var(--catalog-fill); }

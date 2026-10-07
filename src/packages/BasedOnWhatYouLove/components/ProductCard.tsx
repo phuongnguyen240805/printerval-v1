@@ -17,11 +17,12 @@ export default function ProductCard({ product }: Props) {
     return (
         <Link href={productUrl}>
             <div data-liquid-card="" className="group cursor-pointer overflow-hidden">
-                <div className="relative w-full aspect-square h-[155px] sm:h-[220px] lg:h-[270px] overflow-hidden rounded-xl">
+                <div className="relative w-full aspect-square overflow-hidden rounded-xl">
                     <Image
                         src={imageUrl}
                         alt={product.title}
                         fill
+                        sizes="(max-width: 767px) 45vw, (max-width: 1279px) 30vw, 240px"
                         className='object-cover transition-transform duration-500 group-hover:scale-125'
                     />
                 </div>

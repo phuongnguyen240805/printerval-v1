@@ -10,7 +10,7 @@
 .carousel { position: relative; width: 100%; }
 .content { margin-left: 0; }
 .slide {
-  flex: 0 0 246.4px;
+  flex: 0 0 min(280px, 100%);
   padding-left: 0;
   margin-right: 12px;
 }

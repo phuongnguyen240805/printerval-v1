@@ -11,6 +11,8 @@
 
 ## Components
 
+`CatalogTheme.module.css` provides a scoped color and typography skin for cloned catalogs. Combine `theme.page` with the feature's existing root class; use `theme.scope` on portal backdrops to inherit catalog colors without applying the page background. Keep grids, ordering, spacing and breakpoints in the feature. Decorate existing panels with the shared material attributes instead of adding layout wrappers. `data-catalog-hero`, `data-catalog-title`, `data-catalog-primary`, `data-catalog-glow` and `data-catalog-benefit` identify the few themed accents. The contract utility aliases live only in this skin; semantic warning/error colors stay distinct.
+
 Use shared `Button`, `Input`, `Textarea`, `Select`, `Card` and popup components. They already expose the material attributes, preserve native props/refs, and need no page-specific effect code.
 
 ```tsx

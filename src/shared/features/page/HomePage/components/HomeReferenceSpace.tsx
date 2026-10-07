@@ -28,18 +28,18 @@ export const AdsSpace = () => (
       className="hidden h-64 w-full object-cover lg:block xl:h-72"
     />
 
-    <div className="relative h-[400px] bg-[url('/assets/spice-up-your-life.webp')] bg-cover bg-no-repeat lg:hidden">
+    <div className="relative h-52 bg-[url('/assets/spice-up-your-life.webp')] bg-cover bg-center bg-no-repeat sm:h-64 lg:hidden">
       <Image
         src="/assets/boy-back-to-school.webp"
         alt="Printerval marketplace"
         width={192}
         height={640}
-        className="absolute bottom-0 left-0"
+        className="absolute bottom-0 left-4 h-full w-auto object-contain sm:left-8"
       />
     </div>
 
-    <div className="absolute left-[50%] top-[50%] -translate-x-1 -translate-y-1/3 py-8 sm:-translate-x-1/3 sm:-translate-y-1 lg:-translate-x-1/4 lg:-translate-y-8 xl:py-0">
-      <p data-liquid-surface="" className="w-36 p-3 text-sm leading-relaxed md:w-[400px] md:text-md">
+    <div className="relative p-4 sm:p-6 lg:absolute lg:inset-y-0 lg:right-8 lg:flex lg:w-[45%] lg:items-center lg:p-0">
+      <p data-liquid-surface="" className="w-full p-4 text-sm leading-relaxed sm:p-5 sm:text-base">
         Printerval is an online marketplace where people connect to create, sell, buy, and collect unique items. It fosters a community dedicated to supporting independent creators while offering buyers peace of mind.
       </p>
     </div>

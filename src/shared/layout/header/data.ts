@@ -42,21 +42,32 @@ export const campaign: Campaign[] = [
 ];
 
 export const categories: ProductCategory[] = [
-  { id: 1, name: 'Custom T-Shirts', handle: 'custom-tshirts', product_category_image: [{ url: 'https://placehold.co/40x40/blue/white?text=T' }] },
-  { id: 2, name: 'Custom Mugs', handle: 'custom-mugs', product_category_image: [{ url: 'https://placehold.co/40x40/green/white?text=M' }] },
-  { id: 3, name: 'Custom Stainless Steel Tumblers', handle: 'custom-tumblers', product_category_image: [{ url: 'https://placehold.co/40x40/gray/white?text=ST' }] },
-  { id: 4, name: 'Custom Ugly Sweatshirts', handle: 'custom-sweatshirts', product_category_image: [{ url: 'https://placehold.co/40x40/red/white?text=SW' }] },
-  { id: 5, name: 'Custom Posters', handle: 'custom-posters', product_category_image: [{ url: 'https://placehold.co/40x40/yellow/black?text=P' }] },
-  { id: 6, name: 'Custom Doormats', handle: 'custom-doormats', product_category_image: [{ url: 'https://placehold.co/40x40/brown/white?text=D' }] },
-  { id: 7, name: 'Custom Metal Signs', handle: 'custom-metal-signs', product_category_image: [{ url: 'https://placehold.co/40x40/gray/black?text=MS' }] },
-  { id: 8, name: 'Custom Ornaments', handle: 'custom-ornaments', product_category_image: [{ url: 'https://placehold.co/40x40/pink/white?text=O' }] },
-  { id: 9, name: 'Custom Garden Flags', handle: 'custom-garden-flags', product_category_image: [{ url: 'https://placehold.co/40x40/green/white?text=GF' }] },
-  { id: 10, name: 'Custom Door Signs', handle: 'custom-door-signs', product_category_image: [{ url: 'https://placehold.co/40x40/blue/white?text=DS' }] },
-  { id: 11, name: 'Custom Aprons', handle: 'custom-aprons', product_category_image: [{ url: 'https://placehold.co/40x40/white/black?text=A' }] },
-  { id: 12, name: 'Custom Pillows', handle: 'custom-pillows', product_category_image: [{ url: 'https://placehold.co/40x40/gray/white?text=P' }] },
+  { id: 13, name: 'Tài khoản AI', handle: 'tai-khoan-ai', product_category_image: [{ url: '/assets/ai-accounts/chatgpt.webp' }] },
+  { id: 1, name: 'Custom T-Shirts', handle: 'custom-tshirts', product_category_image: [{ url: '/assets/clothes.webp' }] },
+  { id: 2, name: 'Custom Mugs', handle: 'custom-mugs', product_category_image: [{ url: '/assets/mug.webp' }] },
+  { id: 3, name: 'Custom Stainless Steel Tumblers', handle: 'custom-tumblers', product_category_image: [{ url: '/assets/accessories.webp' }] },
+  { id: 4, name: 'Custom Ugly Sweatshirts', handle: 'custom-sweatshirts', product_category_image: [{ url: '/assets/clothes.webp' }] },
+  { id: 5, name: 'Custom Posters', handle: 'custom-posters', product_category_image: [{ url: '/assets/home.webp' }] },
+  { id: 6, name: 'Custom Doormats', handle: 'custom-doormats', product_category_image: [{ url: '/assets/home.webp' }] },
+  { id: 7, name: 'Custom Metal Signs', handle: 'custom-metal-signs', product_category_image: [{ url: '/assets/home.webp' }] },
+  { id: 8, name: 'Custom Ornaments', handle: 'custom-ornaments', product_category_image: [{ url: '/assets/accessories.webp' }] },
+  { id: 9, name: 'Custom Garden Flags', handle: 'custom-garden-flags', product_category_image: [{ url: '/assets/home.webp' }] },
+  { id: 10, name: 'Custom Door Signs', handle: 'custom-door-signs', product_category_image: [{ url: '/assets/home.webp' }] },
+  { id: 11, name: 'Custom Aprons', handle: 'custom-aprons', product_category_image: [{ url: '/assets/clothes.webp' }] },
+  { id: 12, name: 'Custom Pillows', handle: 'custom-pillows', product_category_image: [{ url: '/assets/home.webp' }] },
 ];
 
 export const blog: BlogPost[] = [
   { id: 1, Title: 'All Blog', documentId: 'all-blog' },
   { id: 2, Title: 'Gift Ideas', documentId: 'gift-ideas' }
 ];
+
+// Standalone FE clone: keep Printerval Header/Footer and expose the cloned content from Categories.
+if (!categories.some((item) => item.handle === 'mau-hop-dong')) {
+  categories.unshift({
+    id: -100,
+    name: 'Mẫu hợp đồng',
+    handle: 'mau-hop-dong',
+    product_category_image: [{ url: '/mau-hop-dong/category-contract.svg' }],
+  });
+}

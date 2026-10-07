@@ -8,7 +8,7 @@ import { Hero } from '@/shared/features/page/HomePage/components/Hero';
 import { SaleProduct } from '@/shared/features/page/HomePage/components/Promotions';
 import { TopPick } from '@/shared/features/page/HomePage/components/TopPick';
 import { Trending } from '@/shared/features/page/HomePage/components/Trending';
-import { AdsFandom, AdsSpace } from '@/shared/features/page/HomePage/components/HomeReferenceSpace';
+import { AdsSpace } from '@/shared/features/page/HomePage/components/HomeReferenceSpace';
 import CreateYourOwn from '@/shared/features/page/HomePage/components/CreateYourOwn';
 import Blog from '@/shared/features/page/HomePage/components/BlogClone';
 import ReferAndSupport from '@/shared/features/page/HomePage/components/ReferAndSupport';
@@ -79,18 +79,12 @@ const Home: NextPageWithLayout = () => {
         </div>
       </div>
 
-      {/* Keep the current marketplace banner, but split the existing Fandom out
-          so the cloned Story section can sit in the exact missing position. */}
       <div className="home-glass-sections home-glass-section">
         <AdsSpace />
       </div>
 
       <div className="home-glass-sections home-glass-section">
         <InStory />
-      </div>
-
-      <div className="home-glass-sections home-glass-section">
-        <AdsFandom />
       </div>
 
       <div className="home-glass-sections home-glass-section">
