@@ -1,0 +1,61 @@
+.carousel {
+  position: relative;
+  min-width: 0;
+}
+.track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(182, 76, 44, 0.25) transparent;
+  padding: 4px 0 12px;
+}
+.track > * {
+  flex: 0 0 calc((100% - 72px) / 4);
+  min-width: 0;
+  scroll-snap-align: start;
+}
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+.controls button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 24px;
+  display: grid;
+  place-items: center;
+}
+.controls button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.compact .track {
+  gap: 12px;
+}
+.compact .track > * {
+  flex-basis: 100%;
+}
+.compact .controls {
+  justify-content: space-between;
+}
+@media (max-width: 1180px) {
+  .track > * {
+    flex-basis: calc((100% - 48px) / 3);
+  }
+}
+@media (max-width: 900px) {
+  .track > * {
+    flex-basis: calc((100% - 24px) / 2);
+  }
+}
+@media (max-width: 620px) {
+  .track > * {
+    flex-basis: 88%;
+  }
+}

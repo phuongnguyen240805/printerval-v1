@@ -1,0 +1,37 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: rgba(39, 30, 24, 0.42);
+  backdrop-filter: blur(8px);
+}
+.content.content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 401;
+  transform: translate(-50%, -50%);
+  width: min(var(--catalog-dialog-width, 640px), calc(100% - 32px));
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--liquid-panel, #fffaf6);
+  border: 1px solid var(--liquid-edge, #e6dcd4);
+  border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(50, 35, 24, 0.2);
+}
+.content[data-size='purchase'] {
+  --catalog-dialog-width: 640px;
+}
+.content[data-size='payment'] {
+  --catalog-dialog-width: 820px;
+}
+.content[data-size='card'] {
+  --catalog-dialog-width: 560px;
+}
+@media (max-width: 640px) {
+  .content.content {
+    max-height: calc(100dvh - 24px);
+    width: calc(100% - 24px);
+  }
+}

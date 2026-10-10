@@ -1,0 +1,34 @@
+{
+  "name": "@mona/cdp-blog-crawler",
+  "version": "4.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "crawl:mona": "tsx src/index.ts --config config.mona.json",
+    "crawl:mona:headed": "tsx src/index.ts --config config.mona.json --headed",
+    "crawl:mona:test": "tsx src/index.ts --config config.mona.json --output output/mona-test --no-resume --limit 10 --max-attempts 20 --concurrency 1 --archive-pages 5 --archive-concurrency 2 --headed",
+    "install:browsers": "playwright install chromium",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "crawl:mona:fresh": "tsx src/index.ts --config config.mona.json --no-resume",
+    "crawl:gamsgo": "tsx src/gamsgo/index.ts --config config.gamsgo.json",
+    "crawl:gamsgo:test": "tsx src/gamsgo/index.ts --config config.gamsgo.json --output output/gamsgo-ai-test --no-resume --limit 5 --max-attempts 5 --concurrency 1",
+    "crawl:gamsgo:fresh": "tsx src/gamsgo/index.ts --config config.gamsgo.json --no-resume",
+    "crawl:gamsgo:offline": "tsx src/gamsgo/index.ts --config config.gamsgo.json --output output/gamsgo-fixture --no-resume --offline-html fixtures/gamsgo/category-ai.html --offline-details fixtures/gamsgo/details --limit 2",
+    "test:gamsgo": "npm run crawl:gamsgo:offline && node tests/check-gamsgo.mjs",
+    "crawl:gamsgo:all-ai": "tsx src/gamsgo/index.ts --config config.gamsgo.json --include-ai-menu",
+    "test:gamsgo:complete": "tsx --test tests/gamsgo-complete.test.ts",
+    "audit:gamsgo": "tsx src/gamsgo/audit.ts",
+    "crawl:gamsgo:fixture-complete": "tsx src/gamsgo/index.ts --config config.gamsgo.json --offline-html fixtures/gamsgo-complete/category.html --offline-details fixtures/gamsgo-complete --output output/complete-fixture --no-resume"
+  },
+  "dependencies": {
+    "playwright": "^1.52.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.9",
+    "tsx": "^4.19.4",
+    "typescript": "~5.9.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

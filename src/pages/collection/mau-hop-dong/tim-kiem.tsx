@@ -1,25 +1,21 @@
-import type { GetStaticProps } from 'next';
-import type { ReactElement } from 'react';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import i18nConfig from '../../../../next-i18next.config';
-import type { NextPageWithLayout } from '../../_app';
-import { PrimaryLayout } from '@/layouts';
-import { ContractSearch } from '@/shared/features/page/contract-clone/ContractSearch';
+import type { GetServerSideProps } from 'next';
 
-export const getStaticProps: GetStaticProps = async ({ locale = 'en' }) => ({
-  props: {
-    ...(await serverSideTranslations(locale, undefined, i18nConfig)),
-  },
-});
-
-const MauHopDongSearchPage: NextPageWithLayout = () => <ContractSearch />;
-
-MauHopDongSearchPage.getLayout = function getLayout(page: ReactElement) {
-  return (
-    <PrimaryLayout appearance="liquid-glass" seo={{ title: 'Tìm kiếm mẫu hợp đồng', canonical: '/collection/mau-hop-dong/tim-kiem' }}>
-      {page}
-    </PrimaryLayout>
-  );
+/** Keep existing bookmarks and filter parameters after moving the collection. */
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const params = new URLSearchParams();
+  Object.entries(query).forEach(([key, value]) => {
+    if (Array.isArray(value)) value.forEach(item => params.append(key, item));
+    else if (typeof value === 'string') params.set(key, value);
+  });
+  const search = params.toString();
+  return {
+    redirect: {
+      destination: `/collection/mau-hop-dong${search ? `?${search}` : ''}`,
+      permanent: true,
+    },
+  };
 };
 
-export default MauHopDongSearchPage;
+export default function LegacyContractSearchPage() {
+  return null;
+}

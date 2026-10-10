@@ -2,7 +2,7 @@
   position: fixed;
   right: 24px;
   bottom: 106px;
-  z-index: 10002;
+  z-index: 200;
   width: 64px;
   height: 64px;
   padding: 0;
@@ -270,3 +270,4 @@
 .footer button { background: var(--liquid-field); color: var(--liquid-field-ink); animation: none; }
 .discountLoaderIcon span { background: var(--liquid-focus); }
 .discountProgress span { background: var(--catalog-fill); }
+.inlineHero { width: 260px; max-width: 85%; margin: 0 auto 8px; }

@@ -12,7 +12,7 @@ AiAccounts.getLayout = function getLayout(page: ReactElement) {
       seo={{
         title: 'Tài khoản AI',
         canonical: '/tai-khoan-ai',
-        description: 'Marketplace tài khoản AI với dữ liệu demo frontend để đánh giá UI/UX.',
+        description: 'Các gói AI được cập nhật từ danh mục Medusa.',
       }}
     >
       {page}

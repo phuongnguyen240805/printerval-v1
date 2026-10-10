@@ -24,8 +24,16 @@
 .page :is(h1, h2) { line-height: 1.25; }
 .page :global([data-catalog-title]) { font-size: clamp(2rem, 4.2vw, 3.5rem); line-height: 1.22; font-weight: 700; }
 .scope { font-family: var(--font-inter), Inter, system-ui, sans-serif; }
+.scope :global(.text-green-500), .scope :global(.text-green-600), .scope :global(.text-green-700), .scope :global(.text-green-800) { color: var(--catalog-accent); }
+.scope :global(.bg-green-50), .scope :global(.bg-green-100) { background: var(--catalog-soft); }
+.scope :global(.border-green-100), .scope :global(.border-green-200) { border-color: var(--liquid-field-edge); }
+.scope :is(button, a, input, select):focus-visible { outline: 2px solid var(--liquid-focus); outline-offset: 3px; }
 .page :is(p, li) { text-wrap: pretty; }
 .page button { font-family: inherit; }
+.page :global([data-catalog-variant="primary"]), .scope :global([data-catalog-variant="primary"]) { background: var(--catalog-fill) !important; color: #fff !important; border: 1px solid rgba(133, 48, 24, .25); min-height: 48px; border-radius: 999px; font-weight: 700; }
+.page :global([data-catalog-variant="text"]), .scope :global([data-catalog-variant="text"]) { background: transparent !important; background-image: none !important; box-shadow: none !important; border: 0; color: var(--catalog-accent); }
+.page :global([data-catalog-variant="text"])::before, .page :global([data-catalog-variant="text"])::after, .scope :global([data-catalog-variant="text"])::before, .scope :global([data-catalog-variant="text"])::after { display: none; }
+.page :global([data-catalog-variant="secondary"]), .scope :global([data-catalog-variant="secondary"]) { background: var(--liquid-panel); color: var(--liquid-field-ink); border: 1px solid var(--liquid-field-edge); }
 .page > section { background: transparent; }
 .page :is(button, a, input, select):focus-visible { outline: 2px solid var(--liquid-focus); outline-offset: 3px; }
 .page :global([data-catalog-hero]) {

@@ -1,16 +1,16 @@
+import Link from 'next/link';
 import Image from 'next/image';
 import { FiCheckCircle, FiDownload, FiEye, FiStar } from 'react-icons/fi';
 import type { ContractItem } from './mockData';
 import { formatVnd } from './mockData';
 
-export function ContractCard({ item, onPreview }: { item: ContractItem; onPreview?: (item: ContractItem) => void }) {
+export function ContractCard({ item }: { item: ContractItem }) {
   const discount = Math.max(0, Math.round((1 - item.price / item.oldPrice) * 100));
 
   return (
-    <button
+    <Link
       data-liquid-card=""
-      type="button"
-      onClick={() => onPreview?.(item)}
+      href={`/collection/mau-hop-dong/chi-tiet/${item.id}`}
       className="relative block w-full rounded-xl bg-white p-3 text-left transition-colors duration-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-white md:p-4"
     >
       {item.kind === 'bundle' ? (
@@ -63,6 +63,6 @@ export function ContractCard({ item, onPreview }: { item: ContractItem; onPrevie
           </div>
         </div>
       </div>
-    </button>
+    </Link>
   );
 }

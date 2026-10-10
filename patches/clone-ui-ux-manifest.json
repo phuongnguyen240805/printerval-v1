@@ -1,0 +1,186 @@
+{
+  "baseCommit": "2c060128ee2f10f67ddb14a6a19e02dc9c89514d",
+  "baseline": "Working tree before this implementation; includes the earlier local AI catalog edits.",
+  "files": [
+    {
+      "path": "src/shared/features/page/AiCheckout/adapters.ts",
+      "beforeSha256": null,
+      "afterSha256": "d8754e9924bfc2b596d2b8a253cf88a587459f629c40da0c89c31f0e95a5bca9"
+    },
+    {
+      "path": "src/shared/features/page/AiCheckout/AiCheckoutDialog.module.css",
+      "beforeSha256": null,
+      "afterSha256": "ff39c6c06086df1766fb0973595eafe519729fb6220a6dad742e1e1b275705b3"
+    },
+    {
+      "path": "src/shared/features/page/AiCheckout/AiCheckoutDialog.test.tsx",
+      "beforeSha256": null,
+      "afterSha256": "ae29d8bf835458e08285e4e20b9b8074e382e94d9ed1250c1913f8be3ea38eb0"
+    },
+    {
+      "path": "src/shared/features/page/AiCheckout/AiCheckoutDialog.tsx",
+      "beforeSha256": null,
+      "afterSha256": "f58e4ec2833d568277a42dc80892714b51fc2e5ec9fd8ad3db241396eedac993"
+    },
+    {
+      "path": "src/shared/features/page/AiCheckout/model.test.ts",
+      "beforeSha256": null,
+      "afterSha256": "3a2b10f740868c8ce1c70e355cc9593d84bc69311b8d1369baf3df5a5db72b50"
+    },
+    {
+      "path": "src/shared/features/page/AiCheckout/model.ts",
+      "beforeSha256": null,
+      "afterSha256": "af21bfe6d0895e84699b399a76da2ad8650b365ccf353933d0b1d0ff9e3ff216"
+    },
+    {
+      "path": "src/shared/features/page/AiAccountsPage/AiAccountsCoupon.module.css",
+      "beforeSha256": "79376c07c0eb38304d361531c35c0cdee06249d893fc89899a43e33143952562",
+      "afterSha256": "2326f3663c31553ad4fa2960055015cbd3cf6f4da0721544b0a07fa59b9d8be3"
+    },
+    {
+      "path": "src/shared/features/page/AiAccountsPage/AiAccountsCoupon.tsx",
+      "beforeSha256": "a51e1f25c78880adbc40286900021f2c38aa8f5fcae6e715e97a8226cff04c54",
+      "afterSha256": "46eb91f1cf9b50b68bffcc1cd915cd17e41d90b9695eb2377c486cb5db344096"
+    },
+    {
+      "path": "src/shared/features/page/AiAccountsPage/AiAccountsPage.module.css",
+      "beforeSha256": "01a18669cd8e1b9647ca729b3e43d55d85e043e27cc11b4573cd09f9b6859fa6",
+      "afterSha256": "9cceaf6a461dac21cd02a510b9aa15899a45f4cd90b65035445f7a1b9a941d0e"
+    },
+    {
+      "path": "src/shared/features/page/AiAccountsPage/AiAccountsPage.tsx",
+      "beforeSha256": "183eaed61db56be3341653f31be40b62b245dc888fb71ca46829436c5e2fb803",
+      "afterSha256": "70ea4f7179536771db080d5619385bb6c95184b8f849237bc4de1fa9d20bdf17"
+    },
+    {
+      "path": "src/shared/features/page/AiAccountsPage/mockData.ts",
+      "beforeSha256": "0c028346767a17d54d2ae3e47272fde73b18dfbedadbe14aec4a7c6351482eab",
+      "afterSha256": "a33e67f7cfcead3c2927a859fc468d3147006640d24eb9d96738d5f8fa215c26"
+    },
+    {
+      "path": "src/shared/features/page/AiAccountDetailPage/AiAccountDetailPage.module.css",
+      "beforeSha256": "fc00756921e348e95a3087455757746e00c1af49badedc9c8a9eeb2eef93de84",
+      "afterSha256": "dcd857e37cd51a424025d124243cd5b070cdb46f31c652db15d884b58c1ad9ab"
+    },
+    {
+      "path": "src/shared/features/page/AiAccountDetailPage/AiAccountDetailPage.tsx",
+      "beforeSha256": "1daebb5dcd6e10549c68d4ebebc8a99fa28169770426a4edee20bf48a6a2c270",
+      "afterSha256": "4fbabf10bfd8c5e826f217a375489c4fbe087ae7c8ca42668cb43830155351fa"
+    },
+    {
+      "path": "src/shared/features/page/AiAccountDetailPage/AiProductDetailPage.tsx",
+      "beforeSha256": null,
+      "afterSha256": "70a3cd1083b23ee35a16c67e827bf9f0dfa66b19e685685e142a2b12d22ae012"
+    },
+    {
+      "path": "src/shared/features/page/AiAccountDetailPage/mockDetailData.ts",
+      "beforeSha256": "fb5ff9aa3ae61c30065893b75a9b2951cfa559052bd3f96909bb58c5d0ae81bb",
+      "afterSha256": "6bdc8b6a19e201d9943e5eb3f1fd178f5eee5c762fcd8e16779c52da950752a3"
+    },
+    {
+      "path": "src/shared/features/page/AiAccountDetailPage/offerFilters.test.ts",
+      "beforeSha256": null,
+      "afterSha256": "f79682cd51d6b2f130cf81d230fadeef034f1b2c1746833e61f78261dfe580fc"
+    },
+    {
+      "path": "src/shared/features/page/AiAccountDetailPage/offerFilters.ts",
+      "beforeSha256": null,
+      "afterSha256": "55232ad158cc39c447b6152d6cb6f2fa267db2a3ccf100a889eb35f4e2c0482d"
+    },
+    {
+      "path": "src/shared/features/page/contract-clone/ContractCard.tsx",
+      "beforeSha256": "56e71b186fa1dda798b9fdd4ae9cb4f0c12b58a9c1cdd8ff97dfa14029346eab",
+      "afterSha256": "e1f5477f39d35a69058e41c74bb3180e8be16cbaa97c7887d1d8df8dd3557ae5"
+    },
+    {
+      "path": "src/shared/features/page/contract-clone/ContractDetailPage.tsx",
+      "beforeSha256": null,
+      "afterSha256": "b319fd437fe6ff4cb80520b0ed1049fdf203e771f5fdfa32e07be7ffd78c0ee1"
+    },
+    {
+      "path": "src/shared/features/page/contract-clone/ContractHome.tsx",
+      "beforeSha256": "dcbb3c3fad06edd81ae589ee6cc6565eab794d817577212d96aecf4ea40b1fa7",
+      "afterSha256": "2b93ab91411191e5c6391cfac1b691d7319dd7f0e35526ddb40bf1a40f07b87e"
+    },
+    {
+      "path": "src/shared/features/page/contract-clone/ContractPreviewModal.tsx",
+      "beforeSha256": "53a8e4fa79707637d859def7e2e2e81cf58ebcc3e1d86799716e0f7a34517226",
+      "afterSha256": "8f654224ccc5f18131ca23b66ca9d2a9c95c6efe830b13e7bc21c780e4c8635b"
+    },
+    {
+      "path": "src/shared/features/page/contract-clone/ContractSearch.tsx",
+      "beforeSha256": "de73f58e5dd2fbdbe04fd285e47d0e96f3cc10d956cb5f508bd628e0f318f42b",
+      "afterSha256": "5400c7f1897681cd758f9777190c7f66d7cf7b91e000e4061299c48043e157d0"
+    },
+    {
+      "path": "src/shared/features/page/contract-clone/ContractSearchControls.module.css",
+      "beforeSha256": null,
+      "afterSha256": "e39cfdb27c5e9b2aa5c120e5430be0c9ca9d6fa8daa721d751dfaf9d1e58c5b8"
+    },
+    {
+      "path": "src/shared/features/page/contract-clone/ContractSearchControls.tsx",
+      "beforeSha256": null,
+      "afterSha256": "fd1a241c3552fb29282dc01629971cb25f83e3d326a79c44f0a4921736545162"
+    },
+    {
+      "path": "src/shared/features/page/contract-clone/ContractSupportingSections.tsx",
+      "beforeSha256": null,
+      "afterSha256": "4f93aea5d57d6643692debdcc0df8d29fb2f690a6e6a842f859017365a8ea4bc"
+    },
+    {
+      "path": "src/shared/ui/liquid/CatalogCarousel.module.css",
+      "beforeSha256": null,
+      "afterSha256": "982c55d932d2a888c41cc005232614630c18f54741f69285eeb55c1d4169768f"
+    },
+    {
+      "path": "src/shared/ui/liquid/CatalogCarousel.tsx",
+      "beforeSha256": null,
+      "afterSha256": "f08a188a158ab626e91fddaf7ab15dceb175ef15eb42663a942522da853f81ce"
+    },
+    {
+      "path": "src/shared/ui/liquid/CatalogDialog.module.css",
+      "beforeSha256": null,
+      "afterSha256": "94420f380a84c0b9c39a689decc5f92954c666482ace6be8082c7c89fd74d890"
+    },
+    {
+      "path": "src/shared/ui/liquid/CatalogDialog.tsx",
+      "beforeSha256": null,
+      "afterSha256": "c64c466fd8a59015256d1bfb5aeff02a4fb8ec398e91f631d4bdf5291db6c342"
+    },
+    {
+      "path": "src/shared/ui/liquid/CatalogTheme.module.css",
+      "beforeSha256": "7938730f96940e7220e271f5e2e43446c820338890c07c8d17bf321b46e640fc",
+      "afterSha256": "d9de3ddc34fe34722daaae78d8395c58ee5b8efbc1777d71b286f8e1dfb03a2b"
+    },
+    {
+      "path": "src/pages/tai-khoan-ai/goi/[id].tsx",
+      "beforeSha256": null,
+      "afterSha256": "f12918554b7cb10e0e6b3d454eb8ea116d6ac2f06830e58760e9765494ce2887"
+    },
+    {
+      "path": "src/pages/collection/mau-hop-dong/index.tsx",
+      "beforeSha256": "db35e0570071f5df70717a02b2c86c561c405d0c8b2be77f06c8d9f5bf36872a",
+      "afterSha256": "d7b1dc1765f7aa0988074e24d3b1d3288933e200b0fbe93df3c9504c9bcbbe85"
+    },
+    {
+      "path": "src/pages/collection/mau-hop-dong/tim-kiem.tsx",
+      "beforeSha256": "369a91d702aefffa802cc0e29cb5222cbeed2d50d1eaad1762bbd7927834ce11",
+      "afterSha256": "80aa7bb854ea77cd050a26fbba0a6053cc0914f3d05dd7bcb5856828e387adf5"
+    },
+    {
+      "path": "src/pages/collection/mau-hop-dong/chi-tiet/[id].tsx",
+      "beforeSha256": null,
+      "afterSha256": "a3dddc98ff2735e8f1e767541cfd977f586c22c3b4927f6fa93bf196b971c742"
+    },
+    {
+      "path": "src/pages/collection/mau-hop-dong/tin-tuc/[id].tsx",
+      "beforeSha256": null,
+      "afterSha256": "1d4b9bb6f568a02b1adafeb5c5faabf43f5520cd66f7f92666e9d73e893c42e5"
+    }
+  ],
+  "checks": [
+    "reverse --check against current workspace",
+    "reverse/apply round trip in isolated copy",
+    "normalized source contents match before and after"
+  ]
+}

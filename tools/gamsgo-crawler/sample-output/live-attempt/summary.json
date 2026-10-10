@@ -1,0 +1,39 @@
+{
+  "summary": {
+    "startedAt": "2026-10-09T01:16:18.553Z",
+    "finishedAt": "2026-10-09T01:16:18.875Z",
+    "startUrl": "https://www.gamsgo.com/vi?category_id=ai",
+    "offline": false,
+    "discoveredProducts": 0,
+    "marketplaceOffers": 0,
+    "attempted": 0,
+    "succeeded": 0,
+    "errors": 1,
+    "skippedCompleted": 0,
+    "durationMs": 322,
+    "warning": "Category fetch/extraction failed: page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at https://www.gamsgo.com/vi?category_id=ai\nCall log:\n  - navigating to \"https://www.gamsgo.com/vi?category_id=ai\", waiting until \"domcontentloaded\"\n"
+  },
+  "config": {
+    "startUrl": "https://www.gamsgo.com/vi?category_id=ai",
+    "baseUrl": "https://www.gamsgo.com",
+    "outputDir": "/mnt/data/work_gamsgo/cdp-reverse-mona/output/gamsgo-live-attempt",
+    "headless": true,
+    "locale": "vi-VN",
+    "maxProducts": 3,
+    "maxAttempts": 0,
+    "concurrency": 1,
+    "delayMs": 900,
+    "retries": 1,
+    "navigationTimeoutMs": 45000,
+    "listingSettleMs": 1700,
+    "detailSettleMs": 1200,
+    "maxScrolls": 3,
+    "saveHtml": true,
+    "captureNetwork": true,
+    "capturePublicApiBodies": false,
+    "blockHeavyResources": true,
+    "respectRobots": false,
+    "resume": false,
+    "includeMarketplace": true
+  }
+}

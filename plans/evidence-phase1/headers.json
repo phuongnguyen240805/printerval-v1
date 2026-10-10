@@ -1,0 +1,22 @@
+[
+  {
+    "url": "https://placeit.net/mockups/print-on-demand",
+    "finalUrl": "https://placeit.net/mockups/print-on-demand",
+    "status": 200,
+    "headers": {
+      "content-security-policy": "default-src 'self' blob: commercial.cdn.aws.placeit.net commercial-staging.cdn.aws.placeit.net;    base-uri 'self' *.plasmic.app;    connect-src 'self' 'unsafe-inline' blob: *.googleapis.com *.googleadservices.com *.algolia.io *.algolia.net *.algolianet.com *.amazonaws.com *.bing.com *.braintree-api.com *.braintreegateway.com *.envato-staging.com *.envato.com *.envato.market *.envato.test *.facebook.com *.g.doubleclick.net *.doubleclick.net *.google-analytics.com *.analytics.google.com *.google.com google.com *.hotjar.com *.hotjar.io *.ip-api.com *.maxmind.com *.nr-data.net *.olark.com *.pinterest.com *.placeit.net *.recurly.com *.segment.io *.thenounproject.com *.uservoice.com code.jquery.com httpbin.org smart-templates.us nice.staging.placeit.net *.instagram.com *.pinpiaa.com wss://*.hotjar.com *.tiktok.com *.amplitude.com *.kaptcha.com wss://*.pusher.com *.paypal.com *.cookiebot.com *.googlesyndication.com *.googletagmanager.com googletagmanager.com *.placeitcode.net *.browser-intake-datadoghq.com browser-intake-datadoghq.com placeit.net *.plasmic.app sentry.io *.posthog.com *.plasmic.app *.cloudflare.com;    font-src 'self' data: *.amazonaws.com *.bootstrapcdn.com *.fontawesome.com *.googleapis.com *.gstatic.com *.olark.com *.placeit.net *.quadpay.com *.zscalerone.net github.com use.typekit.net *.hotjar.com *.placeitcode.net placeit.net *.plasmic.app;    frame-src 'self' *.braintreegateway.com *.doubleclick.net *.envato.market *.facebook.com *.freshdesk.com *.googlesyndication.com *.googletagmanager.com googletagmanager.com *.hotjar.com *.kaptcha.com *.olark.com *.paypal.com *.recurly.com *.twitter.com *.uservoice.com *.youtube.com *.youtube-nocookie.com cdn.wishpond.net *.pinterest.com gateway.zscalerone.net localhost:* *.googleapis.com *.instagram.com *.google.com google.com *.placeit.net *.accounts.google.com *.cookiebot.com *.placeitcode.net placeit.net *.stripe.com *.plasmic.app *.cloudflare.com;    frame-ancestors 'none';    media-src 'self' data: blob: *.olark.com *.placeit.net *.zscalerone.net ssl.gstatic.com *.amazonaws.com *.cloudfront.net *.placeitcode.net placeit.net *.mozilla.net *.plasmic.app *.cloudinary.com;    img-src 'self' blob: data: https: http: *.cloudinary.com;    script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: js.recurly.com js.braintreegateway.com *.algolia.net *.algolianet.com *.amazonaws.com *.bing.com *.bootstrapcdn.com *.cloudflare.com *.cloudfront.net *.doubleclick.net *.facebook.com *.facebook.net *.google-analytics.com *.google.com google.com *.googleapis.com *.googleadservices.com *.googlesyndication.com *.googletagmanager.com googletagmanager.com *.gstatic.com *.hotjar.com *.impactradius-event.com *.jsdelivr.net *.linkedin.com *.newrelic.com *.nr-data.net *.olark.com *.paypal.com *.pinimg.com *.placeit.net *.segment.com *.twitter.com *.uservoice.com *.youtube.com cdn.wishpond.net unpkg.com *.upscope.io *.clarity.ms *.tiktok.com *.amplitude.com *.kaptcha.com *.cookiebot.com *.jsdelivr.net placeit.net *.placeitcode.net *.plasmic.app *.stripe.com *.plasmic.app;    style-src 'self' 'unsafe-inline' *.olark.com *.googleapis.com *.olark.com *.amazonaws.com *.bootstrapcdn.com *.cloudflare.com *.placeit.net *.zscalerone.net fast.fonts.net *.typekit.net *.cloudfront.net *.google.com google.com *.jsdelivr.net *.placeitcode.net placeit.net *.plasmic.app *.plasmic.app;    form-action 'self' javascript: localhost:* *.twitter.com *.pinterest.com *.facebook.com *.envato-staging.com *.envato.com *.placeit.net *.placeitcode.net placeit.net *.plasmic.app;",
+      "x-frame-options": "DENY",
+      "content-type": "text/html; charset=utf-8"
+    }
+  },
+  {
+    "url": "https://printerval.gofiber-phuongnguyen.workers.dev/create-your-own",
+    "finalUrl": "https://printerval.gofiber-phuongnguyen.workers.dev/create-your-own",
+    "status": 200,
+    "headers": {
+      "content-security-policy": null,
+      "x-frame-options": null,
+      "content-type": "text/html; charset=utf-8"
+    }
+  }
+]

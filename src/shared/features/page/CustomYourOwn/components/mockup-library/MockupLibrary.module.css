@@ -1,0 +1,159 @@
+.modal {
+  width: 80%;
+  max-width: 1440px;
+  height: min(820px, calc(100dvh - 32px));
+  max-height: calc(100dvh - 32px);
+}
+.header {
+  flex-shrink: 0;
+  gap: 16px;
+}
+.close {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  flex-shrink: 0;
+  border-radius: 6px;
+}
+.close:focus-visible,
+.actions button:focus-visible,
+.actions a:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+.body {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.library {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-radius: 0 0 8px 8px;
+  background: #f9fafb;
+}
+.frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: white;
+}
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 32px 24px;
+  text-align: center;
+  color: #374151;
+  box-sizing: border-box;
+}
+.icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 20px;
+  background: #eff6ff;
+  color: #2563eb;
+  border-radius: 16px;
+}
+.state h3 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+.state p {
+  max-width: 540px;
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.state .note {
+  color: #6b7280;
+  font-size: 13px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+.actions button,
+.actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  font-size: 14px;
+  text-decoration: none;
+}
+.actions button {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+.loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background: #f9fafb;
+  color: #6b7280;
+  pointer-events: none;
+}
+.skeleton {
+  width: min(80%, 480px);
+  height: 140px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #e5e7eb, #f3f4f6, #e5e7eb);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+@media (max-width: 640px) {
+  .modal {
+    width: calc(100% - 24px);
+    height: calc(100dvh - 24px);
+    max-height: calc(100dvh - 24px);
+  }
+  .header {
+    padding: 16px;
+  }
+  .state {
+    padding: 24px 16px;
+  }
+  .state h3 {
+    font-size: 18px;
+  }
+}

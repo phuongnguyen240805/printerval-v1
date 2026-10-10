@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "source": "https://www.gamsgo.com/vi?category_id=ai",
+  "dataOrigin": "web-rendered-text-reference-not-browser-crawl",
+  "observedDate": "2026-10-09",
+  "notes": "This is a partial reference transcription of publicly visible category text for testing. It is NOT a complete live Playwright crawl. Prices are locale-dependent and may change.",
+  "products": [
+    {
+      "name": "ChatGPT",
+      "url": "https://www.gamsgo.com/vi/details/chatgpt",
+      "slug": "chatgpt",
+      "highlights": [
+        "Các gói ChatGPT Plus với nhiều thời hạn đăng ký cùng tùy chọn riêng tư và dùng chung",
+        "Tạo và chỉnh sửa hình ảnh với GPT Images"
+      ],
+      "price": {
+        "raw": "￥762/ tháng",
+        "amount": 762,
+        "currency": "JPY",
+        "period": "month",
+        "source": "listing"
+      }
+    },
+    {
+      "name": "Gemini",
+      "url": "https://www.gamsgo.com/vi/details/gemini",
+      "slug": "gemini",
+      "highlights": [
+        "Tài khoản Google AI Pro với nhiều lựa chọn kích hoạt",
+        "Tạo hình ảnh 4K với Nano Banana"
+      ],
+      "price": {
+        "raw": "￥315/ tháng",
+        "amount": 315,
+        "currency": "JPY",
+        "period": "month",
+        "source": "listing"
+      }
+    },
+    {
+      "name": "Perplexity AI",
+      "url": "https://www.gamsgo.com/vi/details/perplexity_ai",
+      "slug": "perplexity_ai",
+      "highlights": [
+        "Công cụ tìm kiếm AI đưa ra câu trả lời trực tiếp",
+        "Hỗ trợ nhiều nhu cầu xử lý ngôn ngữ tự nhiên"
+      ],
+      "price": {
+        "raw": "￥645/ tháng",
+        "amount": 645,
+        "currency": "JPY",
+        "period": "month",
+        "source": "listing"
+      }
+    },
+    {
+      "name": "Suno",
+      "url": "https://www.gamsgo.com/vi/details/suno",
+      "slug": "suno",
+      "highlights": [
+        "Tạo nhạc AI với gói Pro",
+        "Có 625 Suno credit mỗi người dùng mỗi tháng"
+      ],
+      "price": {
+        "raw": "￥787/ tháng",
+        "amount": 787,
+        "currency": "JPY",
+        "period": "month",
+        "source": "listing"
+      }
+    },
+    {
+      "name": "Cursor",
+      "url": "https://www.gamsgo.com/vi/details/cursor",
+      "slug": "cursor",
+      "highlights": [
+        "Có các tùy chọn Pro và Pro+",
+        "Hoàn thành mã và hỗ trợ phát triển phần mềm"
+      ],
+      "price": {
+        "raw": "￥2,840/ tháng",
+        "amount": 2840,
+        "currency": "JPY",
+        "period": "month",
+        "source": "listing"
+      }
+    },
+    {
+      "name": "Grok",
+      "url": "https://www.gamsgo.com/vi/details/grok",
+      "slug": "grok",
+      "highlights": [
+        "Gói SuperGrok",
+        "Hỗ trợ suy luận và thực thi thông minh"
+      ],
+      "price": {
+        "raw": "￥2,368/ tháng",
+        "amount": 2368,
+        "currency": "JPY",
+        "period": "month",
+        "source": "listing"
+      }
+    },
+    {
+      "name": "Codex",
+      "url": "https://www.gamsgo.com/vi/details/codex",
+      "slug": "codex",
+      "highlights": [
+        "Tài khoản Codex chính thức",
+        "Tự động lập kế hoạch và thực hiện tác vụ"
+      ],
+      "price": {
+        "raw": "￥2,445/ tháng",
+        "amount": 2445,
+        "currency": "JPY",
+        "period": "month",
+        "source": "listing"
+      }
+    },
+    {
+      "name": "ElevenLabs",
+      "url": "https://www.gamsgo.com/vi/details/elevenlabs",
+      "slug": "elevenlabs",
+      "highlights": [
+        "Gói ElevenLabs Creator",
+        "Công cụ chuyển văn bản thành giọng nói và lồng tiếng AI"
+      ],
+      "price": {
+        "raw": "￥2,129/ tháng",
+        "amount": 2129,
+        "currency": "JPY",
+        "period": "month",
+        "source": "listing"
+      }
+    },
+    {
+      "name": "Gemini Recharge",
+      "url": "https://www.gamsgo.com/vi/details/gemini-recharge",
+      "slug": "gemini-recharge",
+      "highlights": [
+        "Kích hoạt Google AI Pro trên tài khoản Google của bạn",
+        "Tài khoản không chia sẻ"
+      ],
+      "price": {
+        "raw": "￥386/ tháng",
+        "amount": 386,
+        "currency": "JPY",
+        "period": "month",
+        "source": "listing"
+      }
+    }
+  ],
+  "aiNavigation": [
+    {
+      "name": "ChatGPT",
+      "url": "https://www.gamsgo.com/vi/details/chatgpt"
+    },
+    {
+      "name": "Gemini",
+      "url": "https://www.gamsgo.com/vi/details/gemini"
+    },
+    {
+      "name": "Suno",
+      "url": "https://www.gamsgo.com/vi/details/suno"
+    },
+    {
+      "name": "Midjourney",
+      "url": "https://www.gamsgo.com/vi/details/midjourney_official"
+    },
+    {
+      "name": "Perplexity AI",
+      "url": "https://www.gamsgo.com/vi/details/perplexity_ai"
+    },
+    {
+      "name": "Grok",
+      "url": "https://www.gamsgo.com/vi/details/grok"
+    },
+    {
+      "name": "Claude",
+      "url": "https://www.gamsgo.com/vi/accounts/claude"
+    },
+    {
+      "name": "Kling AI",
+      "url": "https://www.gamsgo.com/vi/details/kling-ai"
+    },
+    {
+      "name": "Runway",
+      "url": "https://www.gamsgo.com/vi/details/runway-accounts"
+    },
+    {
+      "name": "ElevenLabs",
+      "url": "https://www.gamsgo.com/vi/details/elevenlabs"
+    },
+    {
+      "name": "Gama AI",
+      "url": "https://www.gamsgo.com/vi/details/gama_ai"
+    },
+    {
+      "name": "Higgsfield",
+      "url": "https://www.gamsgo.com/vi/accounts/higgsfield"
+    },
+    {
+      "name": "Poe",
+      "url": "https://www.gamsgo.com/vi/details/poe"
+    },
+    {
+      "name": "Genspark",
+      "url": "https://www.gamsgo.com/vi/details/genspark"
+    },
+    {
+      "name": "Dreamina",
+      "url": "https://www.gamsgo.com/vi/accounts/dreamina-subscription"
+    },
+    {
+      "name": "Meshy",
+      "url": "https://www.gamsgo.com/vi/details/meshy"
+    },
+    {
+      "name": "Cursor",
+      "url": "https://www.gamsgo.com/vi/details/cursor"
+    },
+    {
+      "name": "v0",
+      "url": "https://www.gamsgo.com/vi/details/v0"
+    },
+    {
+      "name": "OpenArt",
+      "url": "https://www.gamsgo.com/vi/details/openart"
+    },
+    {
+      "name": "Github Copilot",
+      "url": "https://www.gamsgo.com/vi/accounts/github-copilot-accounts"
+    },
+    {
+      "name": "Windows Copilot",
+      "url": "https://www.gamsgo.com/vi/accounts/windows-copilot-accounts"
+    },
+    {
+      "name": "Leonardo AI",
+      "url": "https://www.gamsgo.com/vi/accounts/leonardo-ai"
+    },
+    {
+      "name": "Hailuo AI",
+      "url": "https://www.gamsgo.com/vi/accounts/hailuo-ai"
+    },
+    {
+      "name": "luma",
+      "url": "https://www.gamsgo.com/vi/accounts/luma"
+    },
+    {
+      "name": "InVideo AI",
+      "url": "https://www.gamsgo.com/vi/accounts/invideo-ai-accounts"
+    }
+  ],
+  "aiNavigationUnknownUrl": [
+    "Lumina"
+  ],
+  "marketplaceGroupsObserved": [
+    {
+      "name": "Claude",
+      "url": "https://www.gamsgo.com/vi/accounts/claude"
+    },
+    {
+      "name": "Higgsfield",
+      "url": "https://www.gamsgo.com/vi/accounts/higgsfield"
+    }
+  ]
+}

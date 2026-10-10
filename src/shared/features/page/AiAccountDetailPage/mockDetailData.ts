@@ -1,35 +1,5 @@
-export interface DetailOffer {
-  id: string;
-  meta: string;
-  title: string;
-  seller: string;
-  sellerAvatar?: string;
-  rating: number;
-  positive: string;
-  reviews: string;
-  price: number;
-  delivery: string;
-  warranty: string;
-}
-
-export interface FilterItem {
-  label: string;
-  count?: number;
-}
-
-export interface AccountDetailData {
-  slug: string;
-  name: string;
-  title: string;
-  logo: string;
-  resultCount: number;
-  warning: string;
-  filters: Array<{ title: string; items: FilterItem[] }>;
-  offers: DetailOffer[];
-  introTitle: string;
-  intro: string[];
-  sections: Array<{ title: string; paragraphs?: string[]; bullets?: Array<{ title?: string; text: string }> }>;
-}
+import type { AccountDetailData, DetailOffer } from '../../ai-catalog/types';
+export type { AccountDetailData, DetailOffer, FilterItem } from '../../ai-catalog/types';
 
 const commonFilters = (plans: string[]): AccountDetailData['filters'] => [
   { title: 'Khoảng giá (VND)', items: [{ label: 'Từ 0₫' }, { label: 'Đến 10.000.000₫' }] },
@@ -51,7 +21,7 @@ const cursorAvatars = [
   '/assets/ai-accounts/detail/sellers/3186024.jpg',
 ];
 
-const cursorOffers: DetailOffer[] = [
+const cursorOffers: DetailOffer[] = ([
   { id: 'cursor-ultra-official', meta: '1 tháng-Toàn quyền truy cập-Ultra', title: 'Cursor Official Ultra Plan', seller: 'XiaTian Luo', sellerAvatar: cursorAvatars[0], rating: 5, positive: '100%', reviews: '(12)', price: 4650559, delivery: '12 giờ', warranty: '30 ngày' },
   { id: 'cursor-ultra-private', meta: '1 tháng-Toàn quyền truy cập-Ultra', title: 'Cursor Ultra 1 tháng | 0% Tự động và 0% API đã dùng | Truy cập qua email', seller: 'BNBGAMING', sellerAvatar: cursorAvatars[1], rating: 4.9, positive: '96.8%', reviews: '(178)', price: 5170174, delivery: 'Ngay lập tức', warranty: '20 ngày' },
   { id: 'cursor-pro-nexora', meta: '1 tháng-Toàn quyền truy cập-Pro', title: 'Cursor Tài khoản - 1 Tháng - Truy cập đầy đủ - Pro', seller: 'Nexora Digital Hub', sellerAvatar: cursorAvatars[2], rating: 5, positive: '100%', reviews: '(43)', price: 779163, delivery: '20 phút', warranty: '10 ngày' },
@@ -60,24 +30,30 @@ const cursorOffers: DetailOffer[] = [
   { id: 'cursor-year-email', meta: 'Toàn quyền truy cập-Pro-1 năm', title: 'Cursor Pro 1 Năm qua Email của bạn', seller: 'Sagar Aggarwal', sellerAvatar: cursorAvatars[5], rating: 4.5, positive: '87.6%', reviews: '(33)', price: 4676539, delivery: '20 phút', warranty: '90 ngày' },
   { id: 'cursor-private', meta: '1 tháng-Toàn quyền truy cập-Pro', title: 'Cursor AI Pro 1 Tháng Tài Khoản Riêng (Toàn cầu)', seller: 'Tool Nest', sellerAvatar: cursorAvatars[6], rating: 5, positive: '99.8%', reviews: '(347)', price: 779163, delivery: '20 phút', warranty: '10 ngày' },
   { id: 'cursor-pro-plus', meta: '1 tháng-Toàn quyền truy cập-Pro+', title: 'Cursor-Tài khoản Cursor-1 Tháng-Truy cập đầy đủ-Pro+', seller: 'Elvira Nitro', sellerAvatar: cursorAvatars[7], rating: 4.9, positive: '98%', reviews: '(1,977)', price: 1558846, delivery: '1 giờ', warranty: '10 ngày' },
-];
+] as Array<Omit<DetailOffer, 'availability' | 'duration' | 'sharing' | 'plan'>>).map((offer) => ({
+  ...offer,
+  availability: offer.delivery === 'Ngay lập tức' ? 'Đang trực tuyến' : 'Giờ phục vụ',
+  duration: offer.meta.includes('1 năm') ? '1 năm' : '1 tháng',
+  sharing: 'Toàn quyền truy cập',
+  plan: offer.meta.split('-').find((value) => ['Pro', 'Pro+', 'Nhóm', 'Ultra', 'Enterprise'].includes(value)) || 'Pro',
+}));
 
 const cursor: AccountDetailData = {
   slug: 'cursor',
   name: 'Cursor',
   title: 'Tài khoản Cursor',
   logo: '/assets/ai-accounts/detail/cursor.webp',
-  resultCount: 50,
+  resultCount: cursorOffers.length,
   warning: 'Để bảo vệ quyền lợi và mang lại trải nghiệm tốt hơn, chúng tôi khuyên bạn nên chọn gói đăng ký có thời gian sử dụng ngắn và thời gian bảo hành dài.',
   filters: commonFilters(['Pro', 'Pro+', 'Nhóm', 'Ultra', 'Enterprise']),
   offers: cursorOffers,
   introTitle: 'Tài khoản Cursor AI để bán',
   intro: [
-    'Cursor AI là một trong những công cụ nổi bật trong lĩnh vực lập trình hỗ trợ AI. Phiên bản Pro mở rộng đáng kể khả năng hoàn thành mã, Agent và phân tích dự án. Trang này mô phỏng giao diện marketplace bằng dữ liệu frontend để đánh giá trải nghiệm duyệt và so sánh ưu đãi.',
+    'Cursor AI là một trong những công cụ nổi bật trong lĩnh vực lập trình hỗ trợ AI. Phiên bản Pro mở rộng đáng kể khả năng hoàn thành mã, Agent và phân tích dự án. So sánh gói, thời hạn, người bán và thông tin bảo hành để tìm ưu đãi phù hợp với nhu cầu.',
   ],
   sections: [
     { title: 'Cursor AI là gì?', paragraphs: ['Cursor AI là trình soạn thảo mã được hỗ trợ bởi AI, xây dựng trên nền Visual Studio Code. Công cụ tập trung vào việc giúp lập trình viên viết mã, gỡ lỗi và hiểu codebase hiệu quả hơn thông qua lệnh ngôn ngữ tự nhiên và các mô hình AI hiện đại.'] },
-    { title: 'Cursor cung cấp những gói đăng ký nào?', paragraphs: ['Cursor AI có bốn nhóm gói phổ biến trong bản mô phỏng này: Hobby, Pro, Pro+ và Ultra.'], bullets: [
+    { title: 'Cursor cung cấp những gói đăng ký nào?', paragraphs: ['Các lựa chọn hiển thị bao gồm Pro, Pro+ và Ultra. Kiểm tra quyền truy cập của từng ưu đãi trước khi lựa chọn.'], bullets: [
       { title: 'Hobby', text: 'Phù hợp người mới bắt đầu, có giới hạn yêu cầu Agent và tính năng Tab.' },
       { title: 'Pro', text: 'Tự động hoàn thành Tab không giới hạn, ngữ cảnh dài hơn và hỗ trợ Agent nền.' },
       { title: 'Pro+', text: 'Hạn mức sử dụng cao hơn cho các mô hình OpenAI, Claude và Gemini.' },
@@ -89,7 +65,13 @@ const cursor: AccountDetailData = {
       { title: 'Hiểu codebase', text: 'Giải thích hàm, lớp và mối quan hệ phụ thuộc trong dự án bằng ngôn ngữ tự nhiên.' },
       { title: 'Linh hoạt mô hình', text: 'Cho phép lựa chọn nhiều mô hình AI tùy loại tác vụ và mức độ phức tạp.' },
     ] },
-    { title: 'Làm thế nào để chọn gói phù hợp?', paragraphs: ['So sánh thời hạn sử dụng, tốc độ giao hàng, bảo hành, đánh giá người bán và loại gói. Trong bản demo này, toàn bộ lựa chọn chỉ là mock data và không tạo giao dịch thật.'] },
+    { title: 'Làm thế nào để chọn gói phù hợp?', paragraphs: ['So sánh thời hạn sử dụng, tốc độ giao hàng, bảo hành, đánh giá người bán và loại gói. Đối chiếu thông tin chi tiết của từng ưu đãi trước khi tiếp tục.'] },
+    { title: 'Tài khoản riêng và quyền truy cập', paragraphs: ['Kiểm tra hình thức tài khoản, email nhận quyền truy cập và quyền quản lý dữ liệu. Không chia sẻ mật khẩu hoặc dữ liệu dự án nhạy cảm khi chưa rõ điều kiện sử dụng.'] },
+    { title: 'Thời hạn sử dụng và gia hạn', paragraphs: ['Đối chiếu thời lượng hiển thị trên card với mô tả chi tiết. Hạn mức và quyền sử dụng cần được xác nhận cho từng lựa chọn; không mặc định mọi gói có cùng điều kiện.'] },
+    { title: 'Thời gian giao tài khoản', paragraphs: ['Thời gian giao dự kiến xuất hiện ở cuối card. Bạn có thể lọc theo thời gian giao để chọn ưu đãi phù hợp với lịch sử dụng.'] },
+    { title: 'Bảo hành và hỗ trợ', paragraphs: ['Mở nhãn bảo hành để xem thời hạn được niêm yết. Kiểm tra phạm vi hỗ trợ và các trường hợp được bảo hành trước khi xác nhận lựa chọn.'] },
+    { title: 'Thông tin người bán', paragraphs: ['So sánh điểm đánh giá, số phản hồi và thông tin người bán. Các chỉ số hiển thị là thông tin tham khảo cho lựa chọn, không thay thế việc xác nhận điều kiện của gói.'] },
+    { title: 'Kiểm tra trước khi xác nhận', paragraphs: ['Kiểm tra tên gói, thời hạn, tổng tiền và quyền truy cập trong bước xem lại. Giao diện hiện chưa tạo đơn hoặc thực hiện thanh toán.'] },
   ],
 };
 
@@ -105,20 +87,24 @@ function genericDetail(slug: string, name: string, logo: string, plans: string[]
     price: Math.round(basePrice * (1 + index * 0.11) * (index % 3 === 0 ? 4.5 : 1)),
     delivery: index % 3 === 0 ? 'Ngay lập tức' : '20 phút',
     warranty: index % 3 === 0 ? '30 ngày' : '10 ngày',
+    availability: index % 3 === 0 ? 'Đang trực tuyến' : 'Giờ phục vụ',
+    duration: index % 3 === 0 ? '1 năm' : '1 tháng',
+    sharing: 'Toàn quyền truy cập',
+    plan: plans[index % plans.length],
   }));
   return {
     slug,
     name,
     title: `Tài khoản ${name}`,
     logo,
-    resultCount: 30 + offers.length * 2,
+    resultCount: offers.length,
     warning: 'Hãy ưu tiên người bán có đánh giá tốt, thời gian giao hàng rõ ràng và thời gian bảo hành phù hợp với nhu cầu sử dụng.',
     filters: commonFilters(plans),
     offers,
     introTitle: `Tài khoản ${name} để bán`,
-    intro: [`Trang ${name} sử dụng cùng layout marketplace với Cursor để mô phỏng trải nghiệm “Xem tất cả”: lọc ưu đãi, so sánh người bán, giá, thời gian giao và bảo hành hoàn toàn ở frontend.`],
+    intro: [`So sánh các ưu đãi ${name} theo người bán, mức giá, thời hạn, thời gian giao và thông tin bảo hành.`],
     sections: [
-      { title: `${name} là gì?`, paragraphs: [`${name} là dịch vụ số được mô phỏng trong khu vực Tài khoản AI của Printerval. Nội dung, giá và người bán trên trang này là mock data dùng để đánh giá frontend.`] },
+      { title: `${name} là gì?`, paragraphs: [`Trang này tập hợp các lựa chọn ${name}. Hãy kiểm tra loại gói, hình thức tài khoản và phạm vi quyền truy cập trong từng ưu đãi.`] },
       { title: 'Cách chọn ưu đãi phù hợp', bullets: [
         { title: 'Kiểm tra gói', text: 'Đối chiếu loại gói và thời hạn trước khi chọn.' },
         { title: 'Đánh giá người bán', text: 'Ưu tiên rating và tỷ lệ phản hồi tích cực cao.' },

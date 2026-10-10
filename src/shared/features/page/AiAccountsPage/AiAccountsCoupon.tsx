@@ -1,11 +1,10 @@
-import theme from '@/shared/ui/liquid/CatalogTheme.module.css';
-import { useEffect, useRef, useState } from 'react';
+import { CatalogDialog } from '@/shared/ui/liquid/CatalogDialog';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './AiAccountsCoupon.module.css';
 
 const SEEN_KEY = 'printerval-ai-landing-coupon-seen';
 const COLLECTED_KEY = 'printerval-ai-landing-coupon-collected';
-const LOAD_DELAY = 950;
 
 function GiftArt() {
   return (
@@ -60,121 +59,43 @@ function Ticket({ title, date, discount }: { title: string; date: string; discou
   );
 }
 
+/** One coupon experience and session state shared across the catalog and offer pages. */
 export function AiAccountsCoupon() {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [collected, setCollected] = useState(false);
-  const loadTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
-
-  const clearLoadTimer = () => {
-    if (loadTimer.current !== null) {
-      window.clearTimeout(loadTimer.current);
-      loadTimer.current = null;
-    }
-  };
-
-  const revealCoupon = () => {
-    clearLoadTimer();
-    setOpen(true);
-    setLoading(true);
-    loadTimer.current = window.setTimeout(() => {
-      setLoading(false);
-      loadTimer.current = null;
-    }, LOAD_DELAY);
-  };
-
   useEffect(() => {
     setMounted(true);
+    let timer: ReturnType<typeof setTimeout> | undefined;
     try {
-      setCollected(window.sessionStorage.getItem(COLLECTED_KEY) === '1');
-      if (window.sessionStorage.getItem(SEEN_KEY) !== '1') {
-        window.setTimeout(revealCoupon, 120);
-      }
-    } catch {
-      setOpen(false);
-    }
-    return () => {
-      clearLoadTimer();
-      setMounted(false);
-    };
+      setCollected(sessionStorage.getItem(COLLECTED_KEY) === '1' || sessionStorage.getItem('printerval-ai-cursor-coupon-collected') === '1');
+      if (sessionStorage.getItem(SEEN_KEY) !== '1') timer = setTimeout(() => setOpen(true), 120);
+    } catch { /* Manual opening remains available without storage. */ }
+    return () => clearTimeout(timer);
   }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    const previousOverflow = document.body.style.overflow;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        clearLoadTimer();
-        setLoading(false);
-        setOpen(false);
-      }
-    };
-    document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', onKeyDown);
-    };
-  }, [open]);
-
-  if (!mounted) return null;
-
   const close = () => {
-    clearLoadTimer();
-    setLoading(false);
     setOpen(false);
-    try { window.sessionStorage.setItem(SEEN_KEY, '1'); } catch { /* Closing still works when storage is unavailable. */ }
+    try { sessionStorage.setItem(SEEN_KEY, '1'); } catch { /* Storage is optional. */ }
   };
-
   const collect = () => {
     setCollected(true);
-    try {
-      window.sessionStorage.setItem(SEEN_KEY, '1');
-      window.sessionStorage.setItem(COLLECTED_KEY, '1');
-    } catch { /* Keep the collected state for this visit when storage is unavailable. */ }
-    window.setTimeout(() => setOpen(false), 650);
+    try { sessionStorage.setItem(SEEN_KEY, '1'); sessionStorage.setItem(COLLECTED_KEY, '1'); } catch { /* Keep the current session's state. */ }
   };
-
-  return createPortal(
-    <>
-      <button type="button" className={styles.floatingCoupon} onClick={revealCoupon} aria-label="Mở phiếu giảm giá">
-        <img src="/assets/ai-accounts/detail/coupon.svg" alt="Coupon" />
-      </button>
-
-      {open && (
-        <div className={`${styles.backdrop} ${theme.scope}`} onMouseDown={close} role="presentation">
-          {loading ? (
-            <div data-liquid-surface="" className={styles.discountLoader} role="status" aria-live="polite" onMouseDown={(event) => event.stopPropagation()}>
-              <div className={styles.discountLoaderIcon} aria-hidden="true">
-                <span>6%</span>
-                <span>15%</span>
-              </div>
-              <strong>Đang tải ưu đãi tốt nhất</strong>
-              <p>Đang kiểm tra discount dành cho tài khoản AI...</p>
-              <div className={styles.discountProgress} aria-hidden="true"><span /></div>
-            </div>
-          ) : (
-            <section className={styles.dialog} role="dialog" aria-modal="true" aria-label="Phiếu giảm giá" onMouseDown={(event) => event.stopPropagation()}>
-              <div className={styles.hero}><GiftArt /></div>
-              <button type="button" className={styles.close} onClick={close} aria-label="Đóng phiếu giảm giá">×</button>
-              <div data-liquid-surface="" className={styles.shell}>
-                <div className={styles.tickets}>
-                  <Ticket title="New User – 6% OFF on Top-Ups" date="2026/05/01–2026/12/31" discount="6% OFF" />
-                  <Ticket title="Marketplace Subscription Welcome Gift" date="2026/08/31–2026/12/31" discount="15% OFF" />
-                </div>
-                <div className={styles.footer}>
-                  <strong>Phiếu giảm giá sắp hết hạn</strong>
-                  <button type="button" onClick={collect} disabled={collected}>
-                    {collected ? 'Đã thu thập phiếu giảm giá' : 'Thu thập phiếu giảm giá'}
-                  </button>
-                </div>
-              </div>
-            </section>
-          )}
-        </div>
-      )}
-    </>,
-    document.body,
-  );
+  if (!mounted) return null;
+  return <>
+    {!open && createPortal(<button type="button" className={styles.floatingCoupon} onClick={() => setOpen(true)} aria-label="Mở phiếu giảm giá"><img src="/assets/ai-accounts/detail/coupon.svg" alt="" /></button>, document.body)}
+    <CatalogDialog open={open} onClose={close} title="Phiếu giảm giá" className="max-w-[500px] p-4 sm:p-6">
+      <button type="button" data-catalog-variant="text" className="absolute right-3 top-3 h-11 w-11 text-2xl" onClick={close} aria-label="Đóng phiếu giảm giá">×</button>
+      <div className={styles.inlineHero}><GiftArt /></div>
+      <div className={styles.tickets}>
+        <Ticket title="Người dùng mới · Nạp tiền" date="Tham khảo điều kiện của từng ưu đãi" discount="6% OFF" />
+        <Ticket title="Ưu đãi chào mừng Marketplace" date="Tham khảo điều kiện của từng ưu đãi" discount="15% OFF" />
+      </div>
+      <div className="mt-5 text-center">
+        <p role="status" className="mb-3 text-sm text-gray-600">{collected ? 'Đã lưu 2 phiếu trong phiên duyệt hiện tại.' : 'Lưu phiếu để xem lại khi lựa chọn gói.'}</p>
+        <button type="button" data-catalog-variant="primary" className="w-full px-5 py-3 disabled:opacity-60" onClick={collect} disabled={collected}>{collected ? 'Đã thu thập phiếu' : 'Thu thập phiếu giảm giá'}</button>
+        <p className="mt-3 text-xs leading-5 text-gray-500">Phiếu tham khảo chưa được áp dụng vào thanh toán.</p>
+      </div>
+    </CatalogDialog>
+  </>;
 }

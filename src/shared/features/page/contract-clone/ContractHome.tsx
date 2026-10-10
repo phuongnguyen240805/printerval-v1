@@ -1,10 +1,9 @@
 import theme from '@/shared/ui/liquid/CatalogTheme.module.css';
-import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FormEvent, useMemo, useState } from 'react';
 import {
   FiArrowRight,
-  FiCheck,
   FiCheckCircle,
   FiClock,
   FiFileText,
@@ -16,9 +15,9 @@ import {
   FiZap,
 } from 'react-icons/fi';
 import { ContractCard } from './ContractCard';
-import { ContractPreviewModal } from './ContractPreviewModal';
+import { ContractGuide, ContractTeam, ContractTestimonials } from './ContractSupportingSections';
 import { ContractSidebar } from './ContractSidebar';
-import { contracts, news, team, type ContractItem } from './mockData';
+import { contracts, news } from './mockData';
 
 type HomeTab = 'Mới' | 'Phổ biến' | 'Bán chạy' | 'Được quan tâm';
 
@@ -46,7 +45,6 @@ export function ContractHome() {
   const [keyword, setKeyword] = useState('');
   const [tab, setTab] = useState<HomeTab>('Mới');
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
-  const [preview, setPreview] = useState<ContractItem | null>(null);
 
   const visibleContracts = useMemo(() => {
     const items = selectedCategory === 'Tất cả' ? [...contracts] : contracts.filter((item) => item.category === selectedCategory);
@@ -56,7 +54,7 @@ export function ContractHome() {
     return items.slice(0, 7);
   }, [selectedCategory, tab]);
 
-  const goSearch = (query: Record<string, string> = {}) => router.push({ pathname: '/collection/mau-hop-dong/tim-kiem', query });
+  const goSearch = (query: Record<string, string> = {}) => router.push({ pathname: '/collection/mau-hop-dong', query });
   const submitSearch = (event: FormEvent) => {
     event.preventDefault();
     const q = keyword.trim();
@@ -83,7 +81,7 @@ export function ContractHome() {
             <form onSubmit={submitSearch} className="relative rounded-full border border-gray-200 bg-white p-1 pr-2 shadow-lg md:p-1.5 md:pr-2.5">
               <div className="flex items-center">
                 <FiSearch className="ml-3 h-5 w-5 flex-shrink-0 text-gray-400 md:h-6 md:w-6" />
-                <input value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="Tìm kiếm hợp đồng..." className="min-w-0 flex-1 bg-transparent px-2 py-2 text-base text-gray-700 outline-none md:px-4 md:py-2.5 md:text-lg" />
+                <input aria-label="Tìm kiếm hợp đồng" value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="Tìm kiếm hợp đồng..." className="min-w-0 flex-1 bg-transparent px-2 py-2 text-base text-gray-700 outline-none md:px-4 md:py-2.5 md:text-lg" />
                 <button data-catalog-primary="" type="submit" className="relative rounded-full border border-green-200/60 bg-gradient-to-br from-green-400 via-green-500 to-emerald-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wide text-white shadow-lg transition hover:brightness-105 md:px-8 md:py-3 md:text-sm">Tìm ngay</button>
               </div>
             </form>
@@ -98,20 +96,7 @@ export function ContractHome() {
           <div className="mb-12 px-2 md:mb-16">
             <div data-liquid-surface="" className="mx-auto max-w-4xl rounded-3xl bg-white p-4 pt-3 shadow-xl md:px-8 md:pb-7">
               <h3 className="mb-3 text-center text-lg font-bold text-gray-900 md:mb-5 md:text-2xl">Chỉ với <span className="text-green-600">3 bước</span> để tải về hợp đồng bạn cần</h3>
-              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-5 md:p-8">
-                <div className="grid gap-3 md:grid-cols-3">
-                  {[
-                    ['01', 'Tìm kiếm', 'Nhập từ khóa hoặc chọn danh mục', FiSearch],
-                    ['02', 'Chọn mẫu', 'Xem thông tin và mẫu phù hợp', FiFileText],
-                    ['03', 'Tải về', 'Nhận file Word để sử dụng', FiCheckCircle],
-                  ].map(([step, title, desc, Icon]: any) => (
-                    <div key={step} className="relative rounded-xl border border-white/10 bg-white/10 p-4 text-left text-white backdrop-blur-sm">
-                      <div className="mb-3 flex items-center justify-between"><span className="text-xs font-bold text-green-300">BƯỚC {step}</span><Icon className="text-green-300" /></div>
-                      <div className="font-bold">{title}</div><div className="mt-1 text-xs leading-5 text-slate-300">{desc}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <ContractGuide />
             </div>
           </div>
 
@@ -137,7 +122,7 @@ export function ContractHome() {
                       <ContractSidebar selected={selectedCategory} onSelect={(value) => { setSelectedCategory(value); setTab('Mới'); }} />
                     </div>
                     <div className="order-1 space-y-2 lg:order-2 lg:col-span-9">
-                      {visibleContracts.map((item) => <ContractCard key={item.id} item={item} onPreview={setPreview} />)}
+                      {visibleContracts.map((item) => <ContractCard key={item.id} item={item} />)}
                       {!visibleContracts.length ? <div data-liquid-surface="" className="rounded-xl bg-white py-16 text-center text-sm text-gray-500">Không có mẫu hợp đồng trong danh mục này.</div> : null}
                       <button type="button" onClick={() => goSearch(selectedCategory === 'Tất cả' ? {} : { category: selectedCategory })} className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-green-200 bg-white px-4 py-3 text-sm font-semibold text-green-700 transition hover:bg-green-50">Xem tất cả hợp đồng <FiArrowRight /></button>
                     </div>
@@ -156,7 +141,7 @@ export function ContractHome() {
             <h2 className="mt-2 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text p-2 text-center text-4xl font-bold text-transparent md:text-5xl">Giúp bạn xây dựng hợp đồng nhanh chóng</h2>
             <p className="mx-auto mt-2 max-w-3xl text-center text-lg leading-relaxed text-gray-600 md:text-xl">Với hơn 10,000 hợp đồng có sẵn, chúng tôi đảm bảo bạn có thể tìm thấy được hợp đồng phù hợp với nhu cầu của mình.</p>
           </div>
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {benefitCards.map(([metric, title, desc, gradient, border, tone, Icon]) => (
               <div data-catalog-benefit="" data-liquid-card="" key={title} className={`group relative overflow-hidden rounded-3xl border ${border} bg-gradient-to-br ${gradient} p-5 shadow-xl transition hover:-translate-y-1 md:p-7`}>
                 <div className="flex items-start justify-between"><div className={`text-3xl font-semibold ${tone} md:text-4xl`}>{metric}</div><div data-liquid-surface="" className="rounded-2xl bg-white/70 p-3 shadow-sm"><Icon className={`h-6 w-6 ${tone}`} /></div></div>
@@ -191,28 +176,27 @@ export function ContractHome() {
 
           <div className="mt-16 text-center md:mt-24"><h3 className="text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">Tại sao khách hàng tin tưởng chúng tôi?</h3><p className="mt-4 text-lg text-gray-600 md:text-xl">Mức độ tin cậy cao nhờ quy trình kiểm duyệt nghiêm ngặt</p></div>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {[
+            {([
               ['Kiểm duyệt bởi luật sư', 'Đội ngũ luật sư giàu kinh nghiệm kiểm tra từng tài liệu', FiShield],
               ['Chứng nhận chất lượng', 'Cam kết hoàn tiền 100% nếu không hài lòng', FiCheckCircle],
               ['Cập nhật liên tục', 'Theo dõi và cập nhật theo quy định pháp luật mới nhất', FiTrendingUp],
-            ].map(([title, desc, Icon]: any) => <div key={title} className="rounded-3xl border border-gray-100 bg-white p-7 text-center shadow-lg"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-green-600"><Icon size={26} /></div><h4 className="mt-5 text-xl font-semibold text-gray-900 md:text-2xl">{title}</h4><p className="mt-2 text-base text-gray-600 md:text-lg">{desc}</p></div>)}
+            ] as const).map(([title, desc, Icon]) => <div key={title} className="rounded-3xl border border-gray-100 bg-white p-7 text-center shadow-lg"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-green-600"><Icon size={26} /></div><h4 className="mt-5 text-xl font-semibold text-gray-900 md:text-2xl">{title}</h4><p className="mt-2 text-base text-gray-600 md:text-lg">{desc}</p></div>)}
           </div>
         </div>
       </section>
 
       <section className="relative w-full overflow-hidden bg-slate-50 px-6 py-16 md:px-12 md:py-20">
-        <div className="mx-auto max-w-6xl"><div className="mb-8 text-center"><div className="mb-2 flex justify-center gap-1 text-yellow-400">{Array.from({ length: 5 }).map((_, index) => <FiStar key={index} className="fill-current" />)}</div><h2 className="text-3xl font-bold tracking-tight md:text-4xl">Đánh giá từ khách hàng</h2><p className="mt-3 text-lg text-gray-600">Xem những đánh giá của khách hàng về dịch vụ của chúng tôi</p></div><div data-liquid-surface="" className="mx-auto max-w-4xl rounded-3xl bg-white p-7 shadow-xl md:p-10"><p className="relative z-10 text-lg italic leading-8 text-gray-700">“Mỗi hợp đồng tôi mua đều đáng giá từng đồng. Chỉ từ 45k tôi đã nhận được hợp đồng đảm bảo pháp lý vững chắc, giúp tôi loại bỏ hoàn toàn rủi ro cho công ty. Việc sử dụng cũng rất nhanh và dễ chỉnh sửa.”</p><h4 className="mt-6 font-medium text-gray-900">Anh Cường Ban - Chủ cơ sở kinh doanh dịch vụ lưu trú</h4></div></div>
+        <div className="mx-auto max-w-6xl"><div className="mb-8 text-center"><div className="mb-2 flex justify-center gap-1 text-yellow-400">{Array.from({ length: 5 }).map((_, index) => <FiStar key={index} className="fill-current" />)}</div><h2 className="text-3xl font-bold tracking-tight md:text-4xl">Đánh giá từ khách hàng</h2><p className="mt-3 text-lg text-gray-600">Xem những đánh giá của khách hàng về dịch vụ của chúng tôi</p></div><ContractTestimonials /></div>
       </section>
 
       <section className="relative overflow-hidden bg-white py-16 md:py-24">
-        <div className="mx-auto max-w-7xl px-4 md:px-6"><h2 className="text-pretty text-center text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">Đội ngũ phát triển</h2><p className="mx-auto mt-6 max-w-4xl text-center text-lg leading-8 text-gray-600 md:text-xl">Chúng tôi có các luật sư và biên tập viên chuyên nghiệp với nhiều kinh nghiệm, đã tham gia xây dựng hàng trăm mẫu hợp đồng cho các khách hàng trong và ngoài nước</p><div className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">{team.map((member) => <div key={member.name} className="group text-center"><div className="mx-auto aspect-square max-w-[160px] overflow-hidden rounded-3xl bg-slate-100 shadow-md"><Image src={member.image} alt={member.name} width={180} height={180} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" /></div><div className="mt-3 text-sm font-bold text-gray-900 md:text-base">{member.name}</div><p className="mt-1 text-xs font-normal leading-tight text-green-700 sm:text-sm">{member.role}</p></div>)}</div></div>
+        <div className="mx-auto max-w-7xl px-4 md:px-6"><h2 className="text-pretty text-center text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">Đội ngũ phát triển</h2><p className="mx-auto mt-6 max-w-4xl text-center text-lg leading-8 text-gray-600 md:text-xl">Chúng tôi có các luật sư và biên tập viên chuyên nghiệp với nhiều kinh nghiệm, đã tham gia xây dựng hàng trăm mẫu hợp đồng cho các khách hàng trong và ngoài nước</p><ContractTeam /></div>
       </section>
 
       <section className="bg-gradient-to-br from-slate-50 via-white to-slate-50 py-16 md:py-24">
-        <div className="mx-auto max-w-7xl px-4 md:px-6"><div className="text-center"><span className="text-sm font-semibold uppercase tracking-[0.2em] text-green-600">Tin tức mới nhất</span><h2 className="mt-2 text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">Tin tức & Cập nhật</h2><p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">Cập nhật những thông tin mới nhất về pháp luật, mẫu hợp đồng và các vấn đề pháp lý quan trọng</p></div><div className="mt-10 grid gap-5 lg:grid-cols-2"><article data-liquid-surface="" className="rounded-3xl border border-slate-100 bg-white p-7 shadow-lg"><div className="mb-4 flex items-center justify-between text-sm text-gray-500"><span>Admin - {news[0].date}</span><span className="rounded-full bg-green-50 px-3 py-1 text-green-700">{news[0].category}</span></div><h3 className="text-2xl font-bold leading-snug text-gray-900">{news[0].title}</h3><p className="mt-4 text-sm leading-6 text-gray-600">Tổng hợp nội dung, thủ tục, lưu ý pháp lý và mẫu văn bản để tham khảo khi thanh lý hoặc chấm dứt hợp đồng.</p><button className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-green-700">Xem chi tiết <FiArrowRight /></button></article><div className="space-y-3">{news.slice(1).map((item) => <article key={item.title} className="group rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition hover:shadow-md"><div className="flex-1 min-w-0"><h3 className="font-semibold leading-6 text-gray-900 group-hover:text-green-700">{item.title}</h3><div className="mt-2 flex items-center gap-3 text-xs text-gray-500"><span>{item.category}</span><span>{item.date}</span></div></div></article>)}</div></div></div>
+        <div className="mx-auto max-w-7xl px-4 md:px-6"><div className="text-center"><span className="text-sm font-semibold uppercase tracking-[0.2em] text-green-600">Tin tức mới nhất</span><h2 className="mt-2 text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">Tin tức & Cập nhật</h2><p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">Cập nhật những thông tin mới nhất về pháp luật, mẫu hợp đồng và các vấn đề pháp lý quan trọng</p></div><div className="mt-10 grid gap-5 lg:grid-cols-2"><article data-liquid-surface="" className="rounded-3xl border border-slate-100 bg-white p-4 shadow-lg"><div className="mb-4 flex items-center justify-between text-sm text-gray-500"><span>Admin - {news[0].date}</span><span className="rounded-full bg-green-50 px-3 py-1 text-green-700">{news[0].category}</span></div><h3 className="text-xl font-semibold leading-snug text-gray-900"><Link href="/collection/mau-hop-dong/tin-tuc/0">{news[0].title}</Link></h3><p className="mt-4 text-sm leading-6 text-gray-600">Tổng hợp nội dung, thủ tục, lưu ý pháp lý và mẫu văn bản để tham khảo khi thanh lý hoặc chấm dứt hợp đồng.</p><Link data-catalog-variant="text" href="/collection/mau-hop-dong/tin-tuc/0" className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-green-700">Xem chi tiết <FiArrowRight /></Link></article><div className="space-y-3">{news.slice(1).map((item, index) => <article key={item.title} className="group rounded-2xl border border-slate-100 bg-white p-3 shadow-sm transition hover:shadow-md"><div className="flex-1 min-w-0"><h3 className="text-sm font-semibold leading-6 text-gray-900 group-hover:text-green-700"><Link href={`/collection/mau-hop-dong/tin-tuc/${index + 1}`}>{item.title}</Link></h3><div className="mt-2 flex items-center gap-3 text-xs text-gray-500"><span>{item.category}</span><span>{item.date}</span></div></div></article>)}</div></div></div>
       </section>
 
-      <ContractPreviewModal item={preview} onClose={() => setPreview(null)} />
     </main>
   );
 }

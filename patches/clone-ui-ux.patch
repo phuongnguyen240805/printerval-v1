@@ -1,0 +1,4409 @@
+diff --git a/src/pages/collection/mau-hop-dong/chi-tiet/[id].tsx b/src/pages/collection/mau-hop-dong/chi-tiet/[id].tsx
+new file mode 100644
+index 0000000..2007b4e
+--- /dev/null
++++ b/src/pages/collection/mau-hop-dong/chi-tiet/[id].tsx
+@@ -0,0 +1,35 @@
++import type { GetStaticPaths, GetStaticProps } from 'next';
++import type { NextPageWithLayout } from '../../../_app';
++import { PrimaryLayout } from '@/layouts';
++import {
++  contracts,
++  bundles,
++  type ContractItem,
++} from '@/shared/features/page/contract-clone/mockData';
++import { ContractDetailPage } from '@/shared/features/page/contract-clone/ContractDetailPage';
++
++type Props = { item: ContractItem };
++const Page: NextPageWithLayout<Props> = ({ item }) => (
++  <PrimaryLayout
++    appearance="liquid-glass"
++    seo={{
++      title: item.title,
++      canonical: `/collection/mau-hop-dong/chi-tiet/${item.id}`,
++    }}
++  >
++    <ContractDetailPage item={item} />
++  </PrimaryLayout>
++);
++export const getStaticPaths: GetStaticPaths = async () => ({
++  paths: [...contracts, ...bundles].map(item => ({
++    params: { id: String(item.id) },
++  })),
++  fallback: false,
++});
++export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
++  const item = [...contracts, ...bundles].find(
++    item => String(item.id) === params?.id,
++  );
++  return item ? { props: { item } } : { notFound: true };
++};
++export default Page;
+diff --git a/src/pages/collection/mau-hop-dong/index.tsx b/src/pages/collection/mau-hop-dong/index.tsx
+index 269314e..a32c716 100644
+--- a/src/pages/collection/mau-hop-dong/index.tsx
++++ b/src/pages/collection/mau-hop-dong/index.tsx
+@@ -4,7 +4,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+ import i18nConfig from '../../../../next-i18next.config';
+ import type { NextPageWithLayout } from '../../_app';
+ import { PrimaryLayout } from '@/layouts';
+-import { ContractHome } from '@/shared/features/page/contract-clone/ContractHome';
++import { ContractSearch } from '@/shared/features/page/contract-clone/ContractSearch';
+ 
+ export const getStaticProps: GetStaticProps = async ({ locale = 'en' }) => ({
+   props: {
+@@ -12,7 +12,7 @@ export const getStaticProps: GetStaticProps = async ({ locale = 'en' }) => ({
+   },
+ });
+ 
+-const MauHopDongPage: NextPageWithLayout = () => <ContractHome />;
++const MauHopDongPage: NextPageWithLayout = () => <ContractSearch />;
+ 
+ MauHopDongPage.getLayout = function getLayout(page: ReactElement) {
+   return (
+diff --git a/src/pages/collection/mau-hop-dong/tim-kiem.tsx b/src/pages/collection/mau-hop-dong/tim-kiem.tsx
+index 2f838e2..56ef970 100644
+--- a/src/pages/collection/mau-hop-dong/tim-kiem.tsx
++++ b/src/pages/collection/mau-hop-dong/tim-kiem.tsx
+@@ -1,25 +1,21 @@
+-import type { GetStaticProps } from 'next';
+-import type { ReactElement } from 'react';
+-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+-import i18nConfig from '../../../../next-i18next.config';
+-import type { NextPageWithLayout } from '../../_app';
+-import { PrimaryLayout } from '@/layouts';
+-import { ContractSearch } from '@/shared/features/page/contract-clone/ContractSearch';
++import type { GetServerSideProps } from 'next';
+ 
+-export const getStaticProps: GetStaticProps = async ({ locale = 'en' }) => ({
+-  props: {
+-    ...(await serverSideTranslations(locale, undefined, i18nConfig)),
+-  },
+-});
+-
+-const MauHopDongSearchPage: NextPageWithLayout = () => <ContractSearch />;
+-
+-MauHopDongSearchPage.getLayout = function getLayout(page: ReactElement) {
+-  return (
+-    <PrimaryLayout appearance="liquid-glass" seo={{ title: 'Tìm kiếm mẫu hợp đồng', canonical: '/collection/mau-hop-dong/tim-kiem' }}>
+-      {page}
+-    </PrimaryLayout>
+-  );
++/** Keep existing bookmarks and filter parameters after moving the collection. */
++export const getServerSideProps: GetServerSideProps = async ({ query }) => {
++  const params = new URLSearchParams();
++  Object.entries(query).forEach(([key, value]) => {
++    if (Array.isArray(value)) value.forEach(item => params.append(key, item));
++    else if (typeof value === 'string') params.set(key, value);
++  });
++  const search = params.toString();
++  return {
++    redirect: {
++      destination: `/collection/mau-hop-dong${search ? `?${search}` : ''}`,
++      permanent: true,
++    },
++  };
+ };
+ 
+-export default MauHopDongSearchPage;
++export default function LegacyContractSearchPage() {
++  return null;
++}
+diff --git a/src/pages/collection/mau-hop-dong/tin-tuc/[id].tsx b/src/pages/collection/mau-hop-dong/tin-tuc/[id].tsx
+new file mode 100644
+index 0000000..4a1d536
+--- /dev/null
++++ b/src/pages/collection/mau-hop-dong/tin-tuc/[id].tsx
+@@ -0,0 +1,58 @@
++import Link from 'next/link';
++import type { GetStaticPaths, GetStaticProps } from 'next';
++import type { NextPageWithLayout } from '../../../_app';
++import { PrimaryLayout } from '@/layouts';
++import theme from '@/shared/ui/liquid/CatalogTheme.module.css';
++import { news } from '@/shared/features/page/contract-clone/mockData';
++
++type Props = { item: (typeof news)[number]; id: number };
++const Page: NextPageWithLayout<Props> = ({ item, id }) => (
++  <PrimaryLayout
++    appearance="liquid-glass"
++    seo={{
++      title: item.title,
++      canonical: `/collection/mau-hop-dong/tin-tuc/${id}`,
++    }}
++  >
++    <main className={`${theme.page} min-h-[60vh] px-4 py-10`}>
++      <article
++        data-liquid-surface=""
++        className="mx-auto max-w-4xl rounded-3xl p-6 md:p-10"
++      >
++        <Link
++          href="/collection/mau-hop-dong"
++          className="text-sm text-green-700"
++        >
++          ← Mẫu hợp đồng
++        </Link>
++        <p className="mt-8 text-sm text-gray-500">
++          {item.category} · {item.date}
++        </p>
++        <h1 className="mt-3 text-2xl font-semibold leading-snug md:text-4xl">
++          {item.title}
++        </h1>
++        <p role="status" className="mt-6 text-base leading-7 text-gray-600">
++          Nội dung bài viết đang được cập nhật.
++        </p>
++        <Link
++          href="/collection/mau-hop-dong"
++          data-catalog-variant="primary"
++          className="mt-8 inline-flex items-center justify-center px-6 py-3"
++        >
++          Khám phá mẫu hợp đồng
++        </Link>
++      </article>
++    </main>
++  </PrimaryLayout>
++);
++export const getStaticPaths: GetStaticPaths = async () => ({
++  paths: news.map((_, id) => ({ params: { id: String(id) } })),
++  fallback: false,
++});
++export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
++  const id = Number(params?.id);
++  return Number.isInteger(id) && news[id]
++    ? { props: { item: news[id], id } }
++    : { notFound: true };
++};
++export default Page;
+diff --git a/src/pages/tai-khoan-ai/goi/[id].tsx b/src/pages/tai-khoan-ai/goi/[id].tsx
+new file mode 100644
+index 0000000..632456f
+--- /dev/null
++++ b/src/pages/tai-khoan-ai/goi/[id].tsx
+@@ -0,0 +1,34 @@
++import type { GetStaticPaths, GetStaticProps } from 'next';
++import { PrimaryLayout } from '@/layouts';
++import type { NextPageWithLayout } from '../../_app';
++import {
++  products,
++  type AiProduct,
++} from '@/shared/features/page/AiAccountsPage/mockData';
++import { AiProductDetailPage } from '@/shared/features/page/AiAccountDetailPage/AiProductDetailPage';
++
++type Props = { product: AiProduct };
++const Page: NextPageWithLayout<Props> = ({ product }) => (
++  <PrimaryLayout
++    appearance="liquid-glass"
++    seo={{
++      title: `${product.name} | Printerval`,
++      canonical: `/tai-khoan-ai/goi/${product.id}`,
++    }}
++  >
++    <AiProductDetailPage product={product} />
++  </PrimaryLayout>
++);
++export const getStaticPaths: GetStaticPaths = async () => ({
++  paths: products
++    .filter(product => product.type === 'official')
++    .map(product => ({ params: { id: product.id } })),
++  fallback: false,
++});
++export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
++  const product = products.find(
++    item => item.id === params?.id && item.type === 'official',
++  );
++  return product ? { props: { product } } : { notFound: true };
++};
++export default Page;
+diff --git a/src/shared/features/page/AiAccountDetailPage/AiAccountDetailPage.module.css b/src/shared/features/page/AiAccountDetailPage/AiAccountDetailPage.module.css
+index 0264dad..beb6475 100644
+--- a/src/shared/features/page/AiAccountDetailPage/AiAccountDetailPage.module.css
++++ b/src/shared/features/page/AiAccountDetailPage/AiAccountDetailPage.module.css
+@@ -13,7 +13,7 @@
+ .page button, .page select, .page input { font: inherit; }
+ 
+ .container {
+-  width: min(calc(100% - 40px), 1500px);
++  width: min(calc(100% - 40px), 1366px);
+   margin: 0 auto;
+   padding: 24px 0 72px;
+ }
+@@ -33,7 +33,7 @@
+ .marketLayout {
+   display: grid;
+   grid-template-columns: 276px minmax(0, 1fr);
+-  gap: 26px;
++  gap: 24px;
+   align-items: start;
+ }
+ 
+@@ -156,7 +156,7 @@
+ .offerGrid {
+   display: grid;
+   grid-template-columns: repeat(3, minmax(0, 1fr));
+-  gap: 22px 26px;
++  gap: 24px;
+ }
+ 
+ .offerCard {
+@@ -165,7 +165,7 @@
+   min-height: 248px;
+   display: flex;
+   flex-direction: column;
+-  padding: 22px 18px 14px;
++  padding: 20px 24px 12px;
+   border: 1px solid #dfdfdf;
+   border-radius: 16px;
+   background: #fff;
+@@ -204,7 +204,7 @@
+ .offerTop {
+   min-height: 116px;
+   display: grid;
+-  grid-template-columns: minmax(0, 1fr) 72px;
++  grid-template-columns: minmax(0, 1fr) 64px;
+   gap: 14px;
+   align-items: center;
+   padding-top: 4px;
+@@ -235,8 +235,8 @@
+ }
+ 
+ .productLogo {
+-  width: 72px;
+-  height: 72px;
++  width: 64px;
++  height: 64px;
+   align-self: center;
+   justify-self: end;
+   display: grid;
+@@ -345,306 +345,6 @@
+   .description h3 { font-size: 17px; }
+ }
+ 
+-/* Coupon experience cloned from the GamsGo receive-dialog/floating-coupon reference. */
+-.floatingCoupon {
+-  position: fixed;
+-  right: 25px;
+-  bottom: 110px;
+-  z-index: 10002;
+-  width: 60px;
+-  height: 60px;
+-  display: grid;
+-  place-items: center;
+-  padding: 0;
+-  border: 0;
+-  background: transparent;
+-  cursor: pointer;
+-  opacity: 1;
+-  visibility: visible;
+-  pointer-events: auto;
+-  transform-origin: top center;
+-  animation: couponPendulum 1s ease-in-out infinite alternate;
+-  filter: drop-shadow(0 3px 14px rgba(0, 0, 0, .1));
+-}
+-
+-.floatingCoupon img {
+-  display: block;
+-  width: 60px;
+-  height: 60px;
+-}
+-
+-@keyframes couponPendulum {
+-  from { transform: rotate(20deg); }
+-  to { transform: rotate(-20deg); }
+-}
+-
+-.couponBackdrop {
+-  position: fixed;
+-  inset: 0;
+-  z-index: 10000;
+-  display: grid;
+-  place-items: center;
+-  padding: 100px 20px 28px;
+-  overflow-y: auto;
+-  background: rgba(18, 18, 18, .56);
+-  animation: couponBackdropFade .18s ease-out both;
+-}
+-
+-@keyframes couponBackdropFade {
+-  from { opacity: 0; }
+-  to { opacity: 1; }
+-}
+-
+-.couponDialog {
+-  position: relative;
+-  width: min(494px, calc(100vw - 32px));
+-  padding-top: 72px;
+-  animation: couponDialogIn .38s cubic-bezier(.22, .74, .26, 1) both;
+-}
+-
+-@keyframes couponDialogIn {
+-  from { opacity: 0; transform: translateY(28px) scale(.96); }
+-  to { opacity: 1; transform: translateY(0) scale(1); }
+-}
+-
+-.couponHeroArt {
+-  position: absolute;
+-  z-index: 4;
+-  top: -82px;
+-  left: 50%;
+-  width: 420px;
+-  max-width: 108%;
+-  transform: translateX(-50%);
+-  pointer-events: none;
+-}
+-
+-.couponHeroSvg {
+-  display: block;
+-  width: 100%;
+-  height: auto;
+-  filter: drop-shadow(0 12px 12px rgba(183, 74, 19, .18));
+-}
+-
+-.couponClose {
+-  position: absolute;
+-  z-index: 8;
+-  top: 68px;
+-  right: -18px;
+-  width: 32px;
+-  height: 32px;
+-  display: grid;
+-  place-items: center;
+-  padding: 0 0 2px;
+-  border: 2px solid rgba(255, 255, 255, .86);
+-  border-radius: 50%;
+-  background: rgba(63, 63, 63, .86);
+-  color: #fff;
+-  font-size: 24px;
+-  font-weight: 300;
+-  line-height: 1;
+-  cursor: pointer;
+-  box-shadow: 0 4px 14px rgba(0, 0, 0, .22);
+-}
+-
+-.couponShell {
+-  position: relative;
+-  overflow: hidden;
+-  border: 1px solid rgba(255, 255, 255, .45);
+-  border-radius: 16px;
+-  background: linear-gradient(180deg, #fedaa5 0%, #ffc166 64%, #f65350 64%, #f65350 100%);
+-  box-shadow: 0 28px 80px rgba(91, 45, 10, .32);
+-}
+-
+-.couponTickets {
+-  position: relative;
+-  z-index: 2;
+-  padding: 18px 18px 20px;
+-  background: linear-gradient(180deg, #fedaa5 0%, #ffc166 100%);
+-}
+-
+-.couponTicket {
+-  position: relative;
+-  min-height: 140px;
+-  display: grid;
+-  grid-template-columns: minmax(0, 1fr) 150px;
+-  overflow: hidden;
+-  border-radius: 10px;
+-  background: #fff;
+-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .52);
+-}
+-
+-.couponTicket + .couponTicket { margin-top: 9px; }
+-
+-.couponTicket::before,
+-.couponTicket::after {
+-  position: absolute;
+-  z-index: 3;
+-  left: calc(100% - 150px);
+-  width: 18px;
+-  height: 18px;
+-  border-radius: 50%;
+-  background: #ffc875;
+-  content: '';
+-  transform: translateX(-50%);
+-}
+-
+-.couponTicket::before { top: -9px; }
+-.couponTicket::after { bottom: -9px; }
+-
+-.couponTicketCopy {
+-  min-width: 0;
+-  display: flex;
+-  flex-direction: column;
+-  justify-content: center;
+-  padding: 22px 22px 20px 26px;
+-  text-align: left;
+-}
+-
+-.couponTicketCopy strong {
+-  color: #444;
+-  font-size: 18px;
+-  font-weight: 500;
+-  line-height: 1.25;
+-}
+-
+-.couponTicketCopy span {
+-  margin-top: 11px;
+-  color: #aaa;
+-  font-size: 14px;
+-  line-height: 1.25;
+-}
+-
+-.couponTicketDeal {
+-  position: relative;
+-  min-width: 0;
+-  overflow: hidden;
+-  display: flex;
+-  justify-content: center;
+-  padding: 18px 8px 0;
+-  border-left: 1px dashed #efd4a7;
+-}
+-
+-.couponTicketDeal b {
+-  position: relative;
+-  z-index: 2;
+-  color: #ef534f;
+-  font-size: 21px;
+-  font-weight: 800;
+-  line-height: 1.1;
+-  white-space: nowrap;
+-}
+-
+-.couponTicketGift {
+-  position: absolute;
+-  right: 5px;
+-  bottom: -4px;
+-  width: 138px;
+-  height: auto;
+-}
+-
+-.couponFooter {
+-  position: relative;
+-  z-index: 3;
+-  min-height: 154px;
+-  display: flex;
+-  flex-direction: column;
+-  align-items: center;
+-  justify-content: flex-end;
+-  padding: 34px 28px 28px;
+-  background: radial-gradient(62% 70% at 47% -18%, #ff8779 0%, #f75f59 36%, #ef534f 100%);
+-  text-align: center;
+-}
+-
+-.couponFooter::before {
+-  position: absolute;
+-  top: -25px;
+-  left: -4%;
+-  width: 108%;
+-  height: 47px;
+-  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+-  background: #ef534f;
+-  content: '';
+-}
+-
+-.couponFooter strong {
+-  position: relative;
+-  z-index: 2;
+-  margin-bottom: 21px;
+-  color: #fff;
+-  font-size: 17px;
+-  font-weight: 800;
+-  line-height: 1.2;
+-}
+-
+-.couponFooter button {
+-  position: relative;
+-  z-index: 2;
+-  width: 100%;
+-  height: 56px;
+-  border: 0;
+-  border-radius: 999px;
+-  background: #ffdda1;
+-  color: #5b3a1c;
+-  font-size: 17px;
+-  font-weight: 800;
+-  cursor: pointer;
+-  box-shadow: 0 6px 18px rgba(147, 56, 15, .12);
+-  animation: couponButtonPulse .55s cubic-bezier(.33, 0, .67, 1) .55s infinite alternate;
+-}
+-
+-.couponFooter button:disabled {
+-  cursor: default;
+-  opacity: .76;
+-  animation: none;
+-}
+-
+-@keyframes couponButtonPulse {
+-  from { transform: scale(1); }
+-  to { transform: scale(1.025); }
+-}
+-
+-@media (max-width: 768px) {
+-  .floatingCoupon {
+-    right: 25px;
+-    bottom: 100px;
+-    width: 48px;
+-    height: 48px;
+-  }
+-
+-  .floatingCoupon img { width: 48px; height: 48px; }
+-}
+-
+-@media (max-width: 560px) {
+-  .couponBackdrop { padding: 70px 16px 20px; }
+-  .couponDialog { width: min(375px, calc(100vw - 24px)); padding-top: 56px; }
+-  .couponHeroArt { top: -58px; width: 330px; }
+-  .couponClose { top: 56px; right: 8px; width: 30px; height: 30px; font-size: 21px; }
+-  .couponShell { border-radius: 12px; }
+-  .couponTickets { padding: 13px 12px 16px; }
+-  .couponTicket { min-height: 112px; grid-template-columns: minmax(0, 1fr) 112px; border-radius: 8px; }
+-  .couponTicket + .couponTicket { margin-top: 7px; }
+-  .couponTicket::before, .couponTicket::after { left: calc(100% - 112px); width: 14px; height: 14px; }
+-  .couponTicket::before { top: -7px; }
+-  .couponTicket::after { bottom: -7px; }
+-  .couponTicketCopy { padding: 16px 12px 14px 18px; }
+-  .couponTicketCopy strong { font-size: 14px; }
+-  .couponTicketCopy span { margin-top: 7px; font-size: 11px; }
+-  .couponTicketDeal { padding-top: 14px; }
+-  .couponTicketDeal b { font-size: 17px; }
+-  .couponTicketGift { right: 0; bottom: -2px; width: 106px; }
+-  .couponFooter { min-height: 120px; padding: 27px 18px 18px; }
+-  .couponFooter::before { top: -19px; height: 37px; }
+-  .couponFooter strong { margin-bottom: 14px; font-size: 14px; }
+-  .couponFooter button { height: 46px; font-size: 15px; }
+-}
+-
+-@media (prefers-reduced-motion: reduce) {
+-  .floatingCoupon,
+-  .couponBackdrop,
+-  .couponDialog,
+-  .couponFooter button { animation: none; }
+-}
+-
+ /* Shared catalog material; preserve the cloned sidebar and offer grid. */
+ .page :is(.searchBox, .priceField) { background: var(--liquid-field); border-radius: var(--liquid-radius-field); box-shadow: var(--liquid-control-shadow); color: var(--liquid-field-ink); }
+ .page .searchBox input { background: transparent; box-shadow: none; }
+@@ -655,10 +355,36 @@
+ .page .offerHeading { line-height: 1.4; font-weight: 600; }
+ .page .offerFooter .price { line-height: 1.2; }
+ .page .description h2 { line-height: 1.35; }
+-.couponShell { background: var(--liquid-panel); border-color: var(--liquid-edge); border-radius: var(--liquid-radius-panel); box-shadow: var(--liquid-shadow); backdrop-filter: blur(var(--liquid-blur)); }
+-.couponTickets { background: transparent; }
+-.couponTicket { background: var(--liquid-field); color: var(--liquid-field-ink); box-shadow: var(--liquid-control-shadow); }
+-.couponTicketDeal b { color: var(--liquid-focus); }
+-.couponTicketCopy span { color: var(--liquid-field-placeholder); line-height: 1.4; }
+-.couponFooter, .couponFooter::before { background: var(--catalog-fill); }
+-.couponFooter button { background: var(--liquid-field); color: var(--liquid-field-ink); animation: none; }
++/* Scoped interaction and density rules shared by all marketplace routes. */
++.filterToggle { display: flex; width: 100%; justify-content: space-between; align-items: center; text-align: left; padding: 0; min-height: 32px; font-weight: 700; }
++.filterItems[hidden] { display: none; }
++.priceLabel { display: grid; gap: 6px; font-size: 12px; color: var(--liquid-field-placeholder); }
++.priceField { width: 100%; min-width: 0; }
++.resetFilter { margin-top: 16px; min-height: 44px; font-size: 14px; text-decoration: underline; }
++.offerSelect { position: absolute; inset: 0; z-index: 1; border-radius: inherit; background: transparent !important; box-shadow: none !important; }
++.offerSelect::before, .offerSelect::after { display: none !important; }
++.offerSelect:focus-visible { outline: 2px solid var(--brand); outline-offset: -3px; }
++.page .warrantyBadge { z-index: 2; cursor: pointer; border-radius: 0 20px 0 12px; }
++.page .offerDescription { font-size: 14px; line-height: 20px; }
++.page .sellerName { font-size: 14px; line-height: 20px; }
++.page .delivery { font-size: 14px; line-height: 18px; }
++.emptyState { padding: 48px 24px; text-align: center; border-radius: 24px; margin: 16px 0; }
++.emptyState h2 { font-size: 20px; }
++.emptyState p { margin: 12px 0 20px; color: var(--liquid-field-placeholder); }
++.emptyState button { padding: 12px 24px; }
++.description { padding: 32px; }
++.description p, .description li { font-size: 16px; line-height: 24px; }
++@media (max-width: 640px) {
++  .page .offerCard { padding: 20px 20px 12px; }
++  .page .offerTop { grid-template-columns: minmax(0, 1fr) 58px; }
++  .page .productLogo { width: 58px; height: 58px; }
++  .page .description { padding: 16px 20px; }
++  .description p, .description li { font-size: 14px; line-height: 22px; }
++  .page .resultHeader { align-items: flex-start; flex-wrap: wrap; gap: 12px; }
++  .page .pagination { gap: 6px; flex-wrap: wrap; }
++}
++.activeFilters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
++.activeFilters:empty { display: none; }
++.activeFilters button { min-height: 36px; border-radius: 999px; padding: 6px 12px; font-size: 12px; }
++.activeFilters button span { margin-left: 8px; }
++@media (max-width: 900px) { .page .mobileToolbar button { min-height: 44px; border-radius: 999px; } .page .applyFilter { min-height: 48px; border-radius: 999px; } .activeFilters button { min-height: 44px; } }
+diff --git a/src/shared/features/page/AiAccountDetailPage/AiAccountDetailPage.tsx b/src/shared/features/page/AiAccountDetailPage/AiAccountDetailPage.tsx
+index 9423a92..c631fc5 100644
+--- a/src/shared/features/page/AiAccountDetailPage/AiAccountDetailPage.tsx
++++ b/src/shared/features/page/AiAccountDetailPage/AiAccountDetailPage.tsx
+@@ -1,142 +1,25 @@
+ import Link from 'next/link';
++import { useRouter } from 'next/router';
+ import { useEffect, useMemo, useState } from 'react';
+-import { createPortal } from 'react-dom';
+ import styles from './AiAccountDetailPage.module.css';
+ import theme from '@/shared/ui/liquid/CatalogTheme.module.css';
+ import type { AccountDetailData, DetailOffer } from './mockDetailData';
++import { AiAccountsCoupon } from '../AiAccountsPage/AiAccountsCoupon';
++import { AiCheckoutDialog } from '../AiCheckout/AiCheckoutDialog';
++import { offerCheckout } from '../AiCheckout/adapters';
++import { CatalogDialog } from '@/shared/ui/liquid/CatalogDialog';
++import { filterOffers, offerFacet, type OfferFilters } from './offerFilters';
+ 
+ const money = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 });
+-const CURSOR_COUPON_SEEN_KEY = 'printerval-ai-cursor-coupon-seen';
+-const CURSOR_COUPON_COLLECTED_KEY = 'printerval-ai-cursor-coupon-collected';
+-
+ function initials(name: string) {
+   return name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('');
+ }
+ 
+-function CouponHeroArt() {
+-  return (
+-    <svg viewBox="0 0 420 170" className={styles.couponHeroSvg} aria-hidden="true">
+-      <ellipse cx="210" cy="145" rx="155" ry="21" fill="#f6a43b" opacity=".32" />
+-      <polygon points="72,16 79,32 96,34 83,46 87,64 72,55 57,64 61,46 48,34 65,32" fill="#ffd62a" />
+-      <polygon points="337,18 344,34 361,36 348,48 352,65 337,56 322,65 326,48 313,36 330,34" fill="#ffd62a" />
+-      <polygon points="271,2 278,18 295,20 282,32 286,49 271,40 256,49 260,32 247,20 264,18" fill="#ffe054" opacity=".95" />
+-      <path d="M108 53 129 45 141 91 113 96Z" fill="#ff963d" />
+-      <path d="m103 58-17 9 15 28 19-10Z" fill="#ff7f3d" />
+-      <path d="m312 52-22-9-13 50 29 7Z" fill="#ff973d" />
+-      <path d="m319 58 17 8-14 30-20-10Z" fill="#ff783d" />
+-      <rect x="151" y="72" width="118" height="70" rx="9" fill="#ff6b35" />
+-      <path d="M151 91h118v51H151Z" fill="#ff4f38" />
+-      <rect x="198" y="72" width="24" height="70" fill="#ffb91c" />
+-      <rect x="151" y="84" width="118" height="19" fill="#ff9b1e" />
+-      <path d="M210 77c-31-9-43-34-24-43 18-8 31 13 24 43Z" fill="#ffc51d" />
+-      <path d="M210 77c31-9 43-34 24-43-18-8-31 13-24 43Z" fill="#ffd32b" />
+-      <circle cx="210" cy="73" r="12" fill="#ffab16" />
+-      <path d="M260 75c8-20 25-29 35-17 10 13-3 31-35 31Z" fill="#ff7761" />
+-      <circle cx="286" cy="64" r="16" fill="#ff6a56" />
+-      <path d="M162 110c-27 2-49 13-58 29h214c-7-17-27-28-55-30Z" fill="#f6a34b" opacity=".28" />
+-      <path d="m122 15 10 9-8 11-10-9Z" fill="#ffcf2a" opacity=".8" />
+-      <path d="m308 88 11 7-7 12-11-7Z" fill="#ffd32b" opacity=".9" />
+-      <circle cx="101" cy="111" r="7" fill="#ffba23" />
+-      <circle cx="328" cy="109" r="6" fill="#ffb221" />
+-    </svg>
+-  );
+-}
+-
+-function CouponTicketGift() {
++function OfferCard({ offer, logo, onSelect, onWarranty }: { offer: DetailOffer; logo: string; onSelect: () => void; onWarranty: () => void }) {
+   return (
+-    <svg viewBox="0 0 150 110" className={styles.couponTicketGift} aria-hidden="true">
+-      <ellipse cx="76" cy="101" rx="58" ry="8" fill="#f4b24f" opacity=".28" />
+-      <circle cx="53" cy="48" r="11" fill="#ffc24a" /><circle cx="72" cy="39" r="9" fill="#ffd05a" /><circle cx="93" cy="48" r="11" fill="#ffb93d" />
+-      <circle cx="108" cy="42" r="7" fill="#ffd76a" /><circle cx="40" cy="60" r="7" fill="#ffd76a" />
+-      <rect x="48" y="59" width="66" height="43" rx="4" fill="#ff6a3d" />
+-      <rect x="45" y="57" width="72" height="14" rx="4" fill="#ff8c30" />
+-      <rect x="76" y="57" width="12" height="45" fill="#ffc126" />
+-      <path d="M82 58c-19-5-27-19-15-24 11-5 19 7 15 24Z" fill="#ffd32b" />
+-      <path d="M82 58c20-5 28-19 16-24-11-5-20 7-16 24Z" fill="#ffbf1f" />
+-      <path d="M33 74c-8-5-11-10-6-14 6-4 12 2 13 11Z" fill="#ffb223" />
+-      <path d="M119 68c10-6 16-6 18 0 1 7-8 10-18 8Z" fill="#ffbd28" />
+-    </svg>
+-  );
+-}
+-
+-function CouponTicket({ title, date, discount }: { title: string; date: string; discount: string }) {
+-  return (
+-    <article className={styles.couponTicket}>
+-      <div className={styles.couponTicketCopy}>
+-        <strong>{title}</strong>
+-        <span>{date}</span>
+-      </div>
+-      <div className={styles.couponTicketDeal}>
+-        <b>{discount}</b>
+-        <CouponTicketGift />
+-      </div>
+-    </article>
+-  );
+-}
+-
+-function CursorCouponExperience({
+-  open,
+-  collected,
+-  onOpen,
+-  onClose,
+-  onCollect,
+-}: {
+-  open: boolean;
+-  collected: boolean;
+-  onOpen: () => void;
+-  onClose: () => void;
+-  onCollect: () => void;
+-}) {
+-  const [mounted, setMounted] = useState(false);
+-
+-  useEffect(() => {
+-    setMounted(true);
+-    return () => setMounted(false);
+-  }, []);
+-
+-  if (!mounted) return null;
+-
+-  return createPortal(
+-    <>
+-      <button type="button" className={styles.floatingCoupon} onClick={onOpen} aria-label="Mở phiếu giảm giá">
+-        <img src="/assets/ai-accounts/detail/coupon.svg" alt="Coupon" />
+-      </button>
+-
+-      {open && (
+-        <div className={`${styles.couponBackdrop} ${theme.scope}`} onMouseDown={onClose} role="presentation">
+-          <section className={styles.couponDialog} role="dialog" aria-modal="true" aria-label="Phiếu giảm giá" onMouseDown={(event) => event.stopPropagation()}>
+-            <div className={styles.couponHeroArt}><CouponHeroArt /></div>
+-            <button type="button" className={styles.couponClose} onClick={onClose} aria-label="Đóng phiếu giảm giá">×</button>
+-
+-          <div data-liquid-surface="" className={styles.couponShell}>
+-              <div className={styles.couponTickets}>
+-                <CouponTicket title="New User – 6% OFF on Top-Ups" date="2026/05/01–2026/12/31" discount="6% OFF" />
+-                <CouponTicket title="Marketplace Subscription Welcome Gift" date="2026/08/31–2026/12/31" discount="15% OFF" />
+-              </div>
+-              <div className={styles.couponFooter}>
+-                <strong>Phiếu giảm giá sắp hết hạn</strong>
+-                <button type="button" onClick={onCollect} disabled={collected}>
+-                  {collected ? 'Đã thu thập phiếu giảm giá' : 'Thu thập phiếu giảm giá'}
+-                </button>
+-              </div>
+-            </div>
+-          </section>
+-        </div>
+-      )}
+-    </>,
+-    document.body,
+-  );
+-}
+-
+-function OfferCard({ offer, logo, onSelect }: { offer: DetailOffer; logo: string; onSelect: () => void }) {
+-  return (
+-    <article data-liquid-card="" className={styles.offerCard} onClick={onSelect} tabIndex={0} onKeyDown={(event) => {
+-      if (event.key === 'Enter' || event.key === ' ') {
+-        event.preventDefault();
+-        onSelect();
+-      }
+-    }}>
+-      <div className={styles.warrantyBadge}><span>♢</span> {offer.warranty} <b>›</b></div>
++    <article data-liquid-card="" className={styles.offerCard}>
++      <button type="button" className={styles.offerSelect} aria-label={`Xem ưu đãi ${offer.title} từ ${offer.seller}`} onClick={onSelect} />
++      <button type="button" data-catalog-variant="secondary" className={styles.warrantyBadge} onClick={onWarranty} aria-label={`Thông tin bảo hành ${offer.warranty}`}><span>♢</span> {offer.warranty} <b>›</b></button>
+ 
+       <div className={styles.offerTop}>
+         <div className={styles.offerCopy}>
+@@ -171,84 +54,48 @@ function OfferCard({ offer, logo, onSelect }: { offer: DetailOffer; logo: string
+ }
+ 
+ export function AiAccountDetailPage({ data }: { data: AccountDetailData }) {
++  const router = useRouter();
+   const [sort, setSort] = useState<'recommended' | 'low' | 'high'>('recommended');
+   const [page, setPage] = useState(1);
+   const [mobileFilters, setMobileFilters] = useState(false);
+   const [selected, setSelected] = useState<DetailOffer | null>(null);
+-  const [toast, setToast] = useState('');
+   const [search, setSearch] = useState('');
+-  const [couponOpen, setCouponOpen] = useState(false);
+-  const [couponCollected, setCouponCollected] = useState(false);
+-
+-  const couponEnabled = data.slug === 'cursor';
+-
++  const [filters, setFilters] = useState<OfferFilters>({});
++  const [minPrice, setMinPrice] = useState('');
++  const [maxPrice, setMaxPrice] = useState('');
++  const [collapsed, setCollapsed] = useState<string[]>([]);
++  const [warranty, setWarranty] = useState<DetailOffer | null>(null);
++  const pageSize = 6;
++
++  useEffect(() => { setFilters({}); setSearch(''); setMinPrice(''); setMaxPrice(''); setPage(1); setSelected(null); setWarranty(null); }, [data.slug]);
+   useEffect(() => {
+-    if (!couponEnabled) {
+-      setCouponOpen(false);
+-      return;
+-    }
+-    try {
+-      setCouponCollected(window.sessionStorage.getItem(CURSOR_COUPON_COLLECTED_KEY) === '1');
+-      setCouponOpen(window.sessionStorage.getItem(CURSOR_COUPON_SEEN_KEY) !== '1');
+-    } catch {
+-      setCouponOpen(true);
+-    }
+-  }, [couponEnabled, data.slug]);
+-
+-  useEffect(() => {
+-    if (!couponOpen) return;
+-    const previousOverflow = document.body.style.overflow;
+-    const handleEscape = (event: KeyboardEvent) => {
+-      if (event.key === 'Escape') setCouponOpen(false);
+-    };
+-    document.body.style.overflow = 'hidden';
+-    window.addEventListener('keydown', handleEscape);
+-    return () => {
+-      document.body.style.overflow = previousOverflow;
+-      window.removeEventListener('keydown', handleEscape);
+-    };
+-  }, [couponOpen]);
+-
+-  const closeCoupon = () => {
+-    setCouponOpen(false);
+-    try { window.sessionStorage.setItem(CURSOR_COUPON_SEEN_KEY, '1'); } catch { /* noop */ }
+-  };
++    if (!router.isReady) return;
++    const value = typeof router.query.q === 'string' ? router.query.q : '';
++    const group = data.filters.find((filter) => filter.title !== 'Khoảng giá (VND)' && filter.items.some((item) => item.label === value));
++    setFilters(group ? { [group.title]: [value] } : {});
++    setSearch(group ? '' : value);
++    setPage(1);
++  }, [router.isReady, router.query.q, data.slug, data.filters]);
+ 
+-  const collectCoupons = () => {
+-    if (couponCollected) return;
+-    setCouponCollected(true);
+-    setToast('Đã thu thập 2 phiếu giảm giá demo');
+-    try {
+-      window.sessionStorage.setItem(CURSOR_COUPON_COLLECTED_KEY, '1');
+-      window.sessionStorage.setItem(CURSOR_COUPON_SEEN_KEY, '1');
+-    } catch { /* noop */ }
+-    window.setTimeout(() => setCouponOpen(false), 700);
+-    window.setTimeout(() => setToast(''), 2400);
+-  };
++  const couponEnabled = data.slug === 'cursor';
+ 
+   const offers = useMemo(() => {
+-    const query = search.trim().toLowerCase();
+-    const list = data.offers.filter((offer) => !query || `${offer.meta} ${offer.title} ${offer.seller}`.toLowerCase().includes(query));
++    const list = filterOffers(data.offers, search, filters, minPrice, maxPrice);
+     if (sort === 'low') list.sort((a, b) => a.price - b.price);
+     if (sort === 'high') list.sort((a, b) => b.price - a.price);
+     return list;
+-  }, [data.offers, search, sort]);
+-
+-  const pageOffers = useMemo(() => offers.map((offer, index) => {
+-    if (page === 1) return offer;
+-    const multiplier = 1 + (page - 1) * 0.035 + index * 0.002;
+-    return {
+-      ...offer,
+-      id: `${offer.id}-page-${page}`,
+-      price: Math.round(offer.price * multiplier),
+-      reviews: `(${Number(offer.reviews.replace(/[^0-9]/g, '') || 20) + page * 17 + index})`,
+-    };
+-  }), [offers, page]);
+-
+-  const confirm = () => {
+-    setSelected(null);
+-    setToast('Đã thêm ưu đãi demo vào giỏ frontend');
+-    window.setTimeout(() => setToast(''), 2200);
++  }, [data.offers, search, sort, filters, minPrice, maxPrice]);
++
++  const totalPages = Math.max(1, Math.ceil(offers.length / pageSize));
++  const safePage = Math.min(page, totalPages);
++  const pageOffers = offers.slice((safePage - 1) * pageSize, safePage * pageSize);
++  const resetFilters = () => {
++    setFilters({}); setSearch(''); setMinPrice(''); setMaxPrice(''); setPage(1);
++    if (router.query.q) { const { q, ...query } = router.query; void q; void router.replace({ pathname: router.pathname, query }, undefined, { shallow: true }); }
++  };
++  const toggleFilter = (group: string, value: string) => {
++    setFilters((previous) => ({ ...previous, [group]: previous[group]?.includes(value) ? previous[group].filter((item) => item !== value) : [...(previous[group] || []), value] }));
++    setPage(1);
+   };
+ 
+   return (
+@@ -261,41 +108,43 @@ export function AiAccountDetailPage({ data }: { data: AccountDetailData }) {
+         </nav>
+ 
+         <div className={styles.mobileToolbar}>
+-          <button type="button" onClick={() => setMobileFilters((value) => !value)}>☰ Bộ lọc</button>
+-          <span>{data.resultCount} mục</span>
++          <button type="button" aria-expanded={mobileFilters} aria-controls="account-filters" onClick={() => setMobileFilters((value) => !value)}>☰ Bộ lọc</button>
++          <span aria-live="polite">{offers.length} mục</span>
+         </div>
+ 
+         <div className={styles.marketLayout}>
+-          <aside className={`${styles.filters} ${mobileFilters ? styles.filtersOpen : ''}`}>
++          <aside id="account-filters" aria-label="Lọc ưu đãi" className={`${styles.filters} ${mobileFilters ? styles.filtersOpen : ''}`}>
+             <div className={styles.filterSearchBlock}>
+               <h2>Tên mục</h2>
+               <label className={styles.searchBox}>
+-                <input value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Tìm kiếm mục" />
++                <input aria-label="Tìm tên gói hoặc người bán" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Tìm kiếm mục" />
+                 <span>⌕</span>
+               </label>
+             </div>
+ 
+-            {data.filters.map((filter) => (
++            {data.filters.map((filter, groupIndex) => (
+               <section className={styles.filterGroup} key={filter.title}>
+-                <h2>{filter.title}<span>⌄</span></h2>
+-                <div className={styles.filterItems}>
++                <h2><button type="button" data-catalog-variant="text" className={styles.filterToggle} aria-expanded={!collapsed.includes(filter.title)} aria-controls={`filter-group-${groupIndex}`} onClick={() => setCollapsed((previous) => previous.includes(filter.title) ? previous.filter((item) => item !== filter.title) : [...previous, filter.title])}>{filter.title}<span>{collapsed.includes(filter.title) ? '+' : '−'}</span></button></h2>
++                <div id={`filter-group-${groupIndex}`} className={styles.filterItems} hidden={collapsed.includes(filter.title)}>
+                   {filter.items.map((item, index) => filter.title === 'Khoảng giá (VND)' ? (
+-                    <div className={styles.priceField} key={item.label}>{item.label}</div>
++                    <label key={item.label} className={styles.priceLabel}><span>{index === 0 ? 'Giá từ' : 'Giá đến'}</span><input type="number" min="0" step="1000" inputMode="numeric" className={styles.priceField} value={index === 0 ? minPrice : maxPrice} placeholder={index === 0 ? '0' : 'Không giới hạn'} onChange={(event) => { (index === 0 ? setMinPrice : setMaxPrice)(event.target.value); setPage(1); }} /></label>
+                   ) : (
+                     <label key={item.label} className={styles.filterItem}>
+-                      <input type="checkbox" defaultChecked={index === 0 && filter.title === 'Tình trạng có sẵn'} />
+-                      <span>{item.label}</span>{typeof item.count === 'number' && <small>{item.count}</small>}
++                      <input type="checkbox" checked={filters[filter.title]?.includes(item.label) || false} onChange={() => toggleFilter(filter.title, item.label)} />
++                      <span>{item.label}</span><small>{data.offers.filter((offer) => offerFacet(offer, filter.title) === item.label).length}</small>
+                     </label>
+                   ))}
+                 </div>
+               </section>
+             ))}
++            {minPrice !== '' && maxPrice !== '' && Number(minPrice) > Number(maxPrice) && <p role="alert">Giá đến cần lớn hơn hoặc bằng giá từ.</p>}
++            <button type="button" data-catalog-variant="text" className={styles.resetFilter} onClick={resetFilters}>Xóa bộ lọc</button>
+             <button type="button" className={styles.applyFilter} onClick={() => setMobileFilters(false)}>Áp dụng bộ lọc</button>
+           </aside>
+ 
+           <main className={styles.results}>
+             <div className={styles.resultHeader}>
+-              <strong><span>{data.resultCount}</span> đã tìm thấy mục</strong>
++              <strong role="status"><span>{offers.length}</span> ưu đãi phù hợp</strong>
+               <label><b>⇵</b> Sắp xếp theo:
+                 <select value={sort} onChange={(event) => { setSort(event.target.value as typeof sort); setPage(1); }}>
+                   <option value="recommended">Được đề xuất</option>
+@@ -305,14 +154,19 @@ export function AiAccountDetailPage({ data }: { data: AccountDetailData }) {
+               </label>
+             </div>
+ 
++            <div className={styles.activeFilters} aria-label="Bộ lọc đã chọn">
++              {Object.entries(filters).flatMap(([group, values]) => values.map((value) => <button type="button" data-catalog-variant="secondary" key={`${group}-${value}`} onClick={() => toggleFilter(group, value)} aria-label={`Bỏ lọc ${group}: ${value}`}>{value} <span aria-hidden="true">×</span></button>))}
++            </div>
++
+             <div className={styles.offerGrid}>
+-              {pageOffers.map((offer) => <OfferCard key={offer.id} offer={offer} logo={data.logo} onSelect={() => setSelected(offer)} />)}
++              {pageOffers.map((offer) => <OfferCard key={offer.id} offer={offer} logo={data.logo} onSelect={() => setSelected(offer)} onWarranty={() => setWarranty(offer)} />)}
+             </div>
++            {!offers.length && <div data-liquid-surface="" className={styles.emptyState}><h2>Không có ưu đãi phù hợp</h2><p>Thử khoảng giá rộng hơn hoặc xóa một số bộ lọc.</p><button type="button" data-catalog-variant="primary" onClick={resetFilters}>Xóa bộ lọc</button></div>}
+ 
+             <div className={styles.pagination} aria-label="Phân trang">
+-              <button type="button" disabled={page === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>Trước</button>
+-              {[1, 2, 3].map((item) => <button type="button" key={item} className={page === item ? styles.pageActive : ''} onClick={() => setPage(item)}>{item}</button>)}
+-              <button type="button" disabled={page === 3} onClick={() => setPage((value) => Math.min(3, value + 1))}>Tiếp theo</button>
++              <button type="button" disabled={safePage === 1} onClick={() => setPage(safePage - 1)}>Trước</button>
++              {Array.from({ length: totalPages }, (_, index) => index + 1).map((item) => <button type="button" key={item} aria-current={safePage === item ? 'page' : undefined} className={safePage === item ? styles.pageActive : ''} onClick={() => setPage(item)}>{item}</button>)}
++              <button type="button" disabled={safePage === totalPages} onClick={() => setPage(safePage + 1)}>Tiếp theo</button>
+             </div>
+           </main>
+         </div>
+@@ -330,32 +184,17 @@ export function AiAccountDetailPage({ data }: { data: AccountDetailData }) {
+         </article>
+       </div>
+ 
+-      {selected && (
+-        <div className={styles.modalBackdrop} onMouseDown={() => setSelected(null)} role="presentation">
+-          <section data-liquid-surface="" className={styles.modal} role="dialog" aria-modal="true" onMouseDown={(event) => event.stopPropagation()}>
+-            <button type="button" className={styles.modalClose} onClick={() => setSelected(null)} aria-label="Đóng">×</button>
+-            <div className={styles.modalHead}><img src={data.logo} alt={data.name} /><div><span>{selected.meta}</span><h2>{selected.title}</h2></div></div>
+-            <div className={styles.modalSeller}><span>Người bán</span><strong>{selected.seller}</strong></div>
+-            <div className={styles.modalLine}><span>Giao hàng</span><strong>{selected.delivery}</strong></div>
+-            <div className={styles.modalLine}><span>Bảo hành</span><strong>{selected.warranty}</strong></div>
+-            <div className={styles.modalTotal}><span>Tổng cộng</span><strong>{money.format(selected.price)}</strong></div>
+-            <button type="button" className={styles.confirmButton} onClick={confirm}>Thêm vào giỏ demo</button>
+-            <p>Mock frontend: không tạo đơn và không gọi API thanh toán.</p>
+-          </section>
+-        </div>
+-      )}
++      {selected && <AiCheckoutDialog item={offerCheckout(data, selected)} onClose={() => setSelected(null)} />}
++
++      <CatalogDialog open={!!warranty} onClose={() => setWarranty(null)} title="Thông tin bảo hành" className={styles.modal}>
++        <button type="button" className={styles.modalClose} onClick={() => setWarranty(null)} aria-label="Đóng">×</button>
++        <h2>Bảo hành {warranty?.warranty}</h2><p>Người bán: {warranty?.seller}</p><p>Kiểm tra phạm vi bảo hành, điều kiện hỗ trợ và thông tin gói trước khi xác nhận. Thời hạn hiển thị thuộc dữ liệu tham khảo; chưa có giao dịch thực tế.</p>
++      </CatalogDialog>
+ 
+       {couponEnabled && (
+-        <CursorCouponExperience
+-          open={couponOpen}
+-          collected={couponCollected}
+-          onOpen={() => setCouponOpen(true)}
+-          onClose={closeCoupon}
+-          onCollect={collectCoupons}
+-        />
++        <AiAccountsCoupon />
+       )}
+ 
+-      {toast && <div className={styles.toast} role="status">{toast}</div>}
+     </div>
+   );
+ }
+diff --git a/src/shared/features/page/AiAccountDetailPage/AiProductDetailPage.tsx b/src/shared/features/page/AiAccountDetailPage/AiProductDetailPage.tsx
+new file mode 100644
+index 0000000..2f37421
+--- /dev/null
++++ b/src/shared/features/page/AiAccountDetailPage/AiProductDetailPage.tsx
+@@ -0,0 +1,80 @@
++import Link from 'next/link';
++import { useState } from 'react';
++import { AiCheckoutDialog } from '../AiCheckout/AiCheckoutDialog';
++import { productCheckout } from '../AiCheckout/adapters';
++import theme from '@/shared/ui/liquid/CatalogTheme.module.css';
++import type { AiProduct } from '../AiAccountsPage/mockData';
++
++const money = (value: number) =>
++  new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
++    value,
++  );
++
++export function AiProductDetailPage({ product }: { product: AiProduct }) {
++  const [open, setOpen] = useState(false);
++  return (
++    <main className={`${theme.page} min-h-[60vh] px-4 py-8 md:py-12`}>
++      <div className="mx-auto max-w-5xl">
++        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-gray-500">
++          <Link href="/collection/tai-khoan-ai">Tài khoản AI</Link>
++          <span aria-hidden="true"> / </span>
++          {product.name}
++        </nav>
++        <article
++          data-liquid-card=""
++          className="grid gap-8 rounded-3xl p-6 md:grid-cols-2 md:p-10"
++        >
++          <div
++            data-liquid-surface=""
++            className="flex min-h-56 items-center justify-center rounded-3xl p-8"
++          >
++            <img
++              src={product.logo}
++              alt={product.name}
++              className="max-h-40 w-full max-w-xs object-contain"
++            />
++          </div>
++          <div>
++            <span className="text-sm text-green-700">Gói đăng ký</span>
++            <h1 className="mt-2 text-3xl font-semibold">{product.name}</h1>
++            <p className="mt-4 text-3xl font-semibold text-green-700">
++              {money(product.price)}{' '}
++              <span className="text-sm font-normal text-gray-500">
++                {product.duration}
++              </span>
++            </p>
++            <ul className="my-6 space-y-3">
++              {product.features.map(feature => (
++                <li key={feature} className="flex gap-3 text-sm leading-6">
++                  <span className="text-green-600" aria-hidden="true">
++                    ✓
++                  </span>
++                  <span>{feature}</span>
++                </li>
++              ))}
++            </ul>
++            <button
++              type="button"
++              data-catalog-variant="primary"
++              className="w-full px-6 py-3"
++              onClick={() => {
++                setOpen(true);
++              }}
++            >
++              Chọn gói
++            </button>
++          </div>
++        </article>
++        <section className="mt-8 rounded-3xl p-6" data-liquid-surface="">
++          <h2 className="text-xl font-semibold">Trước khi lựa chọn</h2>
++          <p className="mt-3 text-sm leading-6 text-gray-600">
++            Đối chiếu thời hạn, quyền truy cập, hình thức tài khoản và thông tin
++            bảo hành. Giá và quyền lợi hiển thị là dữ liệu tham khảo; chưa có
++            thanh toán thực tế.
++          </p>
++        </section>
++      </div>
++      {open && <AiCheckoutDialog item={productCheckout(product)} onClose={() => setOpen(false)} />}
++    </main>
++  );
++}
+diff --git a/src/shared/features/page/AiAccountDetailPage/mockDetailData.ts b/src/shared/features/page/AiAccountDetailPage/mockDetailData.ts
+index 2f46ec3..314e5f7 100644
+--- a/src/shared/features/page/AiAccountDetailPage/mockDetailData.ts
++++ b/src/shared/features/page/AiAccountDetailPage/mockDetailData.ts
+@@ -10,6 +10,10 @@ export interface DetailOffer {
+   price: number;
+   delivery: string;
+   warranty: string;
++  availability: string;
++  duration: string;
++  sharing: string;
++  plan: string;
+ }
+ 
+ export interface FilterItem {
+@@ -51,7 +55,7 @@ const cursorAvatars = [
+   '/assets/ai-accounts/detail/sellers/3186024.jpg',
+ ];
+ 
+-const cursorOffers: DetailOffer[] = [
++const cursorOffers: DetailOffer[] = ([
+   { id: 'cursor-ultra-official', meta: '1 tháng-Toàn quyền truy cập-Ultra', title: 'Cursor Official Ultra Plan', seller: 'XiaTian Luo', sellerAvatar: cursorAvatars[0], rating: 5, positive: '100%', reviews: '(12)', price: 4650559, delivery: '12 giờ', warranty: '30 ngày' },
+   { id: 'cursor-ultra-private', meta: '1 tháng-Toàn quyền truy cập-Ultra', title: 'Cursor Ultra 1 tháng | 0% Tự động và 0% API đã dùng | Truy cập qua email', seller: 'BNBGAMING', sellerAvatar: cursorAvatars[1], rating: 4.9, positive: '96.8%', reviews: '(178)', price: 5170174, delivery: 'Ngay lập tức', warranty: '20 ngày' },
+   { id: 'cursor-pro-nexora', meta: '1 tháng-Toàn quyền truy cập-Pro', title: 'Cursor Tài khoản - 1 Tháng - Truy cập đầy đủ - Pro', seller: 'Nexora Digital Hub', sellerAvatar: cursorAvatars[2], rating: 5, positive: '100%', reviews: '(43)', price: 779163, delivery: '20 phút', warranty: '10 ngày' },
+@@ -60,24 +64,30 @@ const cursorOffers: DetailOffer[] = [
+   { id: 'cursor-year-email', meta: 'Toàn quyền truy cập-Pro-1 năm', title: 'Cursor Pro 1 Năm qua Email của bạn', seller: 'Sagar Aggarwal', sellerAvatar: cursorAvatars[5], rating: 4.5, positive: '87.6%', reviews: '(33)', price: 4676539, delivery: '20 phút', warranty: '90 ngày' },
+   { id: 'cursor-private', meta: '1 tháng-Toàn quyền truy cập-Pro', title: 'Cursor AI Pro 1 Tháng Tài Khoản Riêng (Toàn cầu)', seller: 'Tool Nest', sellerAvatar: cursorAvatars[6], rating: 5, positive: '99.8%', reviews: '(347)', price: 779163, delivery: '20 phút', warranty: '10 ngày' },
+   { id: 'cursor-pro-plus', meta: '1 tháng-Toàn quyền truy cập-Pro+', title: 'Cursor-Tài khoản Cursor-1 Tháng-Truy cập đầy đủ-Pro+', seller: 'Elvira Nitro', sellerAvatar: cursorAvatars[7], rating: 4.9, positive: '98%', reviews: '(1,977)', price: 1558846, delivery: '1 giờ', warranty: '10 ngày' },
+-];
++] as Array<Omit<DetailOffer, 'availability' | 'duration' | 'sharing' | 'plan'>>).map((offer) => ({
++  ...offer,
++  availability: offer.delivery === 'Ngay lập tức' ? 'Đang trực tuyến' : 'Giờ phục vụ',
++  duration: offer.meta.includes('1 năm') ? '1 năm' : '1 tháng',
++  sharing: 'Toàn quyền truy cập',
++  plan: offer.meta.split('-').find((value) => ['Pro', 'Pro+', 'Nhóm', 'Ultra', 'Enterprise'].includes(value)) || 'Pro',
++}));
+ 
+ const cursor: AccountDetailData = {
+   slug: 'cursor',
+   name: 'Cursor',
+   title: 'Tài khoản Cursor',
+   logo: '/assets/ai-accounts/detail/cursor.webp',
+-  resultCount: 50,
++  resultCount: cursorOffers.length,
+   warning: 'Để bảo vệ quyền lợi và mang lại trải nghiệm tốt hơn, chúng tôi khuyên bạn nên chọn gói đăng ký có thời gian sử dụng ngắn và thời gian bảo hành dài.',
+   filters: commonFilters(['Pro', 'Pro+', 'Nhóm', 'Ultra', 'Enterprise']),
+   offers: cursorOffers,
+   introTitle: 'Tài khoản Cursor AI để bán',
+   intro: [
+-    'Cursor AI là một trong những công cụ nổi bật trong lĩnh vực lập trình hỗ trợ AI. Phiên bản Pro mở rộng đáng kể khả năng hoàn thành mã, Agent và phân tích dự án. Trang này mô phỏng giao diện marketplace bằng dữ liệu frontend để đánh giá trải nghiệm duyệt và so sánh ưu đãi.',
++    'Cursor AI là một trong những công cụ nổi bật trong lĩnh vực lập trình hỗ trợ AI. Phiên bản Pro mở rộng đáng kể khả năng hoàn thành mã, Agent và phân tích dự án. So sánh gói, thời hạn, người bán và thông tin bảo hành để tìm ưu đãi phù hợp với nhu cầu.',
+   ],
+   sections: [
+     { title: 'Cursor AI là gì?', paragraphs: ['Cursor AI là trình soạn thảo mã được hỗ trợ bởi AI, xây dựng trên nền Visual Studio Code. Công cụ tập trung vào việc giúp lập trình viên viết mã, gỡ lỗi và hiểu codebase hiệu quả hơn thông qua lệnh ngôn ngữ tự nhiên và các mô hình AI hiện đại.'] },
+-    { title: 'Cursor cung cấp những gói đăng ký nào?', paragraphs: ['Cursor AI có bốn nhóm gói phổ biến trong bản mô phỏng này: Hobby, Pro, Pro+ và Ultra.'], bullets: [
++    { title: 'Cursor cung cấp những gói đăng ký nào?', paragraphs: ['Các lựa chọn hiển thị bao gồm Pro, Pro+ và Ultra. Kiểm tra quyền truy cập của từng ưu đãi trước khi lựa chọn.'], bullets: [
+       { title: 'Hobby', text: 'Phù hợp người mới bắt đầu, có giới hạn yêu cầu Agent và tính năng Tab.' },
+       { title: 'Pro', text: 'Tự động hoàn thành Tab không giới hạn, ngữ cảnh dài hơn và hỗ trợ Agent nền.' },
+       { title: 'Pro+', text: 'Hạn mức sử dụng cao hơn cho các mô hình OpenAI, Claude và Gemini.' },
+@@ -89,7 +99,13 @@ const cursor: AccountDetailData = {
+       { title: 'Hiểu codebase', text: 'Giải thích hàm, lớp và mối quan hệ phụ thuộc trong dự án bằng ngôn ngữ tự nhiên.' },
+       { title: 'Linh hoạt mô hình', text: 'Cho phép lựa chọn nhiều mô hình AI tùy loại tác vụ và mức độ phức tạp.' },
+     ] },
+-    { title: 'Làm thế nào để chọn gói phù hợp?', paragraphs: ['So sánh thời hạn sử dụng, tốc độ giao hàng, bảo hành, đánh giá người bán và loại gói. Trong bản demo này, toàn bộ lựa chọn chỉ là mock data và không tạo giao dịch thật.'] },
++    { title: 'Làm thế nào để chọn gói phù hợp?', paragraphs: ['So sánh thời hạn sử dụng, tốc độ giao hàng, bảo hành, đánh giá người bán và loại gói. Đối chiếu thông tin chi tiết của từng ưu đãi trước khi tiếp tục.'] },
++    { title: 'Tài khoản riêng và quyền truy cập', paragraphs: ['Kiểm tra hình thức tài khoản, email nhận quyền truy cập và quyền quản lý dữ liệu. Không chia sẻ mật khẩu hoặc dữ liệu dự án nhạy cảm khi chưa rõ điều kiện sử dụng.'] },
++    { title: 'Thời hạn sử dụng và gia hạn', paragraphs: ['Đối chiếu thời lượng hiển thị trên card với mô tả chi tiết. Hạn mức và quyền sử dụng cần được xác nhận cho từng lựa chọn; không mặc định mọi gói có cùng điều kiện.'] },
++    { title: 'Thời gian giao tài khoản', paragraphs: ['Thời gian giao dự kiến xuất hiện ở cuối card. Bạn có thể lọc theo thời gian giao để chọn ưu đãi phù hợp với lịch sử dụng.'] },
++    { title: 'Bảo hành và hỗ trợ', paragraphs: ['Mở nhãn bảo hành để xem thời hạn được niêm yết. Kiểm tra phạm vi hỗ trợ và các trường hợp được bảo hành trước khi xác nhận lựa chọn.'] },
++    { title: 'Thông tin người bán', paragraphs: ['So sánh điểm đánh giá, số phản hồi và thông tin người bán. Các chỉ số hiển thị là thông tin tham khảo cho lựa chọn, không thay thế việc xác nhận điều kiện của gói.'] },
++    { title: 'Kiểm tra trước khi xác nhận', paragraphs: ['Kiểm tra tên gói, thời hạn, tổng tiền và quyền truy cập trong bước xem lại. Giao diện hiện chưa tạo đơn hoặc thực hiện thanh toán.'] },
+   ],
+ };
+ 
+@@ -105,20 +121,24 @@ function genericDetail(slug: string, name: string, logo: string, plans: string[]
+     price: Math.round(basePrice * (1 + index * 0.11) * (index % 3 === 0 ? 4.5 : 1)),
+     delivery: index % 3 === 0 ? 'Ngay lập tức' : '20 phút',
+     warranty: index % 3 === 0 ? '30 ngày' : '10 ngày',
++    availability: index % 3 === 0 ? 'Đang trực tuyến' : 'Giờ phục vụ',
++    duration: index % 3 === 0 ? '1 năm' : '1 tháng',
++    sharing: 'Toàn quyền truy cập',
++    plan: plans[index % plans.length],
+   }));
+   return {
+     slug,
+     name,
+     title: `Tài khoản ${name}`,
+     logo,
+-    resultCount: 30 + offers.length * 2,
++    resultCount: offers.length,
+     warning: 'Hãy ưu tiên người bán có đánh giá tốt, thời gian giao hàng rõ ràng và thời gian bảo hành phù hợp với nhu cầu sử dụng.',
+     filters: commonFilters(plans),
+     offers,
+     introTitle: `Tài khoản ${name} để bán`,
+-    intro: [`Trang ${name} sử dụng cùng layout marketplace với Cursor để mô phỏng trải nghiệm “Xem tất cả”: lọc ưu đãi, so sánh người bán, giá, thời gian giao và bảo hành hoàn toàn ở frontend.`],
++    intro: [`So sánh các ưu đãi ${name} theo người bán, mức giá, thời hạn, thời gian giao và thông tin bảo hành.`],
+     sections: [
+-      { title: `${name} là gì?`, paragraphs: [`${name} là dịch vụ số được mô phỏng trong khu vực Tài khoản AI của Printerval. Nội dung, giá và người bán trên trang này là mock data dùng để đánh giá frontend.`] },
++      { title: `${name} là gì?`, paragraphs: [`Trang này tập hợp các lựa chọn ${name}. Hãy kiểm tra loại gói, hình thức tài khoản và phạm vi quyền truy cập trong từng ưu đãi.`] },
+       { title: 'Cách chọn ưu đãi phù hợp', bullets: [
+         { title: 'Kiểm tra gói', text: 'Đối chiếu loại gói và thời hạn trước khi chọn.' },
+         { title: 'Đánh giá người bán', text: 'Ưu tiên rating và tỷ lệ phản hồi tích cực cao.' },
+diff --git a/src/shared/features/page/AiAccountDetailPage/offerFilters.test.ts b/src/shared/features/page/AiAccountDetailPage/offerFilters.test.ts
+new file mode 100644
+index 0000000..eb7ed35
+--- /dev/null
++++ b/src/shared/features/page/AiAccountDetailPage/offerFilters.test.ts
+@@ -0,0 +1,45 @@
++import { filterOffers } from './offerFilters';
++import { accountDetails } from './mockDetailData';
++
++const offers = accountDetails.cursor.offers;
++describe('marketplace offer filters', () => {
++  it('returns actual inventory and does not mutate prices', () => {
++    const prices = offers.map(offer => offer.price);
++    expect(filterOffers(offers, '', {}, '', '')).toHaveLength(8);
++    expect(offers.map(offer => offer.price)).toEqual(prices);
++  });
++  it('combines alternatives within a group and intersects groups', () => {
++    const result = filterOffers(
++      offers,
++      '',
++      { Gói: ['Pro', 'Pro+'], 'Thời lượng': ['1 năm'] },
++      '',
++      '',
++    );
++    expect(result.map(offer => offer.id)).toEqual([
++      'cursor-year',
++      'cursor-year-email',
++    ]);
++  });
++  it('matches Pro exactly without including Pro+ or Ultra', () => {
++    expect(filterOffers(offers, '', { Gói: ['Pro'] }, '', '')).toHaveLength(5);
++    expect(
++      filterOffers(offers, '', { Gói: ['Pro'] }, '', '').every(
++        offer => offer.plan === 'Pro',
++      ),
++    ).toBe(true);
++    expect(filterOffers(offers, '', { Gói: ['Enterprise'] }, '', '')).toEqual(
++      [],
++    );
++  });
++  it('supports inclusive price boundaries and invalid intervals', () => {
++    expect(filterOffers(offers, '', {}, '779163', '779163')).toHaveLength(2);
++    expect(filterOffers(offers, '', {}, '1000000', '0')).toEqual([]);
++  });
++  it('searches sellers and allows clearing all constraints', () => {
++    expect(
++      filterOffers(offers, '  NEXORA  ', {}, '', '').map(offer => offer.id),
++    ).toEqual(['cursor-pro-nexora']);
++    expect(filterOffers(offers, '', {}, '', '')).toHaveLength(offers.length);
++  });
++});
+diff --git a/src/shared/features/page/AiAccountDetailPage/offerFilters.ts b/src/shared/features/page/AiAccountDetailPage/offerFilters.ts
+new file mode 100644
+index 0000000..5ac3a3a
+--- /dev/null
++++ b/src/shared/features/page/AiAccountDetailPage/offerFilters.ts
+@@ -0,0 +1,43 @@
++import type { DetailOffer } from './mockDetailData';
++
++export type OfferFilters = Record<string, string[]>;
++export function offerFacet(offer: DetailOffer, group: string): string {
++  switch (group) {
++    case 'Giao hàng cam kết':
++      return offer.delivery;
++    case 'Tình trạng có sẵn':
++      return offer.availability;
++    case 'Thời lượng':
++      return offer.duration;
++    case 'Phương thức chia sẻ':
++      return offer.sharing;
++    case 'Gói':
++      return offer.plan;
++    default:
++      return '';
++  }
++}
++export function filterOffers(
++  offers: DetailOffer[],
++  query: string,
++  filters: OfferFilters,
++  min: string,
++  max: string,
++) {
++  const text = query.trim().toLocaleLowerCase('vi');
++  const lower = min === '' ? 0 : Math.max(0, Number(min));
++  const upper = max === '' ? Infinity : Math.max(0, Number(max));
++  return offers.filter(
++    offer =>
++      (!text ||
++        `${offer.meta} ${offer.title} ${offer.seller}`
++          .toLocaleLowerCase('vi')
++          .includes(text)) &&
++      offer.price >= lower &&
++      offer.price <= upper &&
++      Object.entries(filters).every(
++        ([group, values]) =>
++          !values.length || values.includes(offerFacet(offer, group)),
++      ),
++  );
++}
+diff --git a/src/shared/features/page/AiAccountsPage/AiAccountsCoupon.module.css b/src/shared/features/page/AiAccountsPage/AiAccountsCoupon.module.css
+index 9576a1c..a49f9bd 100644
+--- a/src/shared/features/page/AiAccountsPage/AiAccountsCoupon.module.css
++++ b/src/shared/features/page/AiAccountsPage/AiAccountsCoupon.module.css
+@@ -2,7 +2,7 @@
+   position: fixed;
+   right: 24px;
+   bottom: 106px;
+-  z-index: 10002;
++  z-index: 200;
+   width: 64px;
+   height: 64px;
+   padding: 0;
+@@ -270,3 +270,4 @@
+ .footer button { background: var(--liquid-field); color: var(--liquid-field-ink); animation: none; }
+ .discountLoaderIcon span { background: var(--liquid-focus); }
+ .discountProgress span { background: var(--catalog-fill); }
++.inlineHero { width: 260px; max-width: 85%; margin: 0 auto 8px; }
+diff --git a/src/shared/features/page/AiAccountsPage/AiAccountsCoupon.tsx b/src/shared/features/page/AiAccountsPage/AiAccountsCoupon.tsx
+index 06cec59..810e105 100644
+--- a/src/shared/features/page/AiAccountsPage/AiAccountsCoupon.tsx
++++ b/src/shared/features/page/AiAccountsPage/AiAccountsCoupon.tsx
+@@ -1,11 +1,10 @@
+-import theme from '@/shared/ui/liquid/CatalogTheme.module.css';
+-import { useEffect, useRef, useState } from 'react';
++import { CatalogDialog } from '@/shared/ui/liquid/CatalogDialog';
++import { useEffect, useState } from 'react';
+ import { createPortal } from 'react-dom';
+ import styles from './AiAccountsCoupon.module.css';
+ 
+ const SEEN_KEY = 'printerval-ai-landing-coupon-seen';
+ const COLLECTED_KEY = 'printerval-ai-landing-coupon-collected';
+-const LOAD_DELAY = 950;
+ 
+ function GiftArt() {
+   return (
+@@ -60,121 +59,43 @@ function Ticket({ title, date, discount }: { title: string; date: string; discou
+   );
+ }
+ 
++/** One coupon experience and session state shared across the catalog and offer pages. */
+ export function AiAccountsCoupon() {
+   const [mounted, setMounted] = useState(false);
+   const [open, setOpen] = useState(false);
+-  const [loading, setLoading] = useState(false);
+   const [collected, setCollected] = useState(false);
+-  const loadTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+-
+-  const clearLoadTimer = () => {
+-    if (loadTimer.current !== null) {
+-      window.clearTimeout(loadTimer.current);
+-      loadTimer.current = null;
+-    }
+-  };
+-
+-  const revealCoupon = () => {
+-    clearLoadTimer();
+-    setOpen(true);
+-    setLoading(true);
+-    loadTimer.current = window.setTimeout(() => {
+-      setLoading(false);
+-      loadTimer.current = null;
+-    }, LOAD_DELAY);
+-  };
+-
+   useEffect(() => {
+     setMounted(true);
++    let timer: ReturnType<typeof setTimeout> | undefined;
+     try {
+-      setCollected(window.sessionStorage.getItem(COLLECTED_KEY) === '1');
+-      if (window.sessionStorage.getItem(SEEN_KEY) !== '1') {
+-        window.setTimeout(revealCoupon, 120);
+-      }
+-    } catch {
+-      setOpen(false);
+-    }
+-    return () => {
+-      clearLoadTimer();
+-      setMounted(false);
+-    };
++      setCollected(sessionStorage.getItem(COLLECTED_KEY) === '1' || sessionStorage.getItem('printerval-ai-cursor-coupon-collected') === '1');
++      if (sessionStorage.getItem(SEEN_KEY) !== '1') timer = setTimeout(() => setOpen(true), 120);
++    } catch { /* Manual opening remains available without storage. */ }
++    return () => clearTimeout(timer);
+   }, []);
+-
+-  useEffect(() => {
+-    if (!open) return;
+-    const previousOverflow = document.body.style.overflow;
+-    const onKeyDown = (event: KeyboardEvent) => {
+-      if (event.key === 'Escape') {
+-        clearLoadTimer();
+-        setLoading(false);
+-        setOpen(false);
+-      }
+-    };
+-    document.body.style.overflow = 'hidden';
+-    window.addEventListener('keydown', onKeyDown);
+-    return () => {
+-      document.body.style.overflow = previousOverflow;
+-      window.removeEventListener('keydown', onKeyDown);
+-    };
+-  }, [open]);
+-
+-  if (!mounted) return null;
+-
+   const close = () => {
+-    clearLoadTimer();
+-    setLoading(false);
+     setOpen(false);
+-    try { window.sessionStorage.setItem(SEEN_KEY, '1'); } catch { /* Closing still works when storage is unavailable. */ }
++    try { sessionStorage.setItem(SEEN_KEY, '1'); } catch { /* Storage is optional. */ }
+   };
+-
+   const collect = () => {
+     setCollected(true);
+-    try {
+-      window.sessionStorage.setItem(SEEN_KEY, '1');
+-      window.sessionStorage.setItem(COLLECTED_KEY, '1');
+-    } catch { /* Keep the collected state for this visit when storage is unavailable. */ }
+-    window.setTimeout(() => setOpen(false), 650);
++    try { sessionStorage.setItem(SEEN_KEY, '1'); sessionStorage.setItem(COLLECTED_KEY, '1'); } catch { /* Keep the current session's state. */ }
+   };
+-
+-  return createPortal(
+-    <>
+-      <button type="button" className={styles.floatingCoupon} onClick={revealCoupon} aria-label="Mở phiếu giảm giá">
+-        <img src="/assets/ai-accounts/detail/coupon.svg" alt="Coupon" />
+-      </button>
+-
+-      {open && (
+-        <div className={`${styles.backdrop} ${theme.scope}`} onMouseDown={close} role="presentation">
+-          {loading ? (
+-            <div data-liquid-surface="" className={styles.discountLoader} role="status" aria-live="polite" onMouseDown={(event) => event.stopPropagation()}>
+-              <div className={styles.discountLoaderIcon} aria-hidden="true">
+-                <span>6%</span>
+-                <span>15%</span>
+-              </div>
+-              <strong>Đang tải ưu đãi tốt nhất</strong>
+-              <p>Đang kiểm tra discount dành cho tài khoản AI...</p>
+-              <div className={styles.discountProgress} aria-hidden="true"><span /></div>
+-            </div>
+-          ) : (
+-            <section className={styles.dialog} role="dialog" aria-modal="true" aria-label="Phiếu giảm giá" onMouseDown={(event) => event.stopPropagation()}>
+-              <div className={styles.hero}><GiftArt /></div>
+-              <button type="button" className={styles.close} onClick={close} aria-label="Đóng phiếu giảm giá">×</button>
+-              <div data-liquid-surface="" className={styles.shell}>
+-                <div className={styles.tickets}>
+-                  <Ticket title="New User – 6% OFF on Top-Ups" date="2026/05/01–2026/12/31" discount="6% OFF" />
+-                  <Ticket title="Marketplace Subscription Welcome Gift" date="2026/08/31–2026/12/31" discount="15% OFF" />
+-                </div>
+-                <div className={styles.footer}>
+-                  <strong>Phiếu giảm giá sắp hết hạn</strong>
+-                  <button type="button" onClick={collect} disabled={collected}>
+-                    {collected ? 'Đã thu thập phiếu giảm giá' : 'Thu thập phiếu giảm giá'}
+-                  </button>
+-                </div>
+-              </div>
+-            </section>
+-          )}
+-        </div>
+-      )}
+-    </>,
+-    document.body,
+-  );
++  if (!mounted) return null;
++  return <>
++    {!open && createPortal(<button type="button" className={styles.floatingCoupon} onClick={() => setOpen(true)} aria-label="Mở phiếu giảm giá"><img src="/assets/ai-accounts/detail/coupon.svg" alt="" /></button>, document.body)}
++    <CatalogDialog open={open} onClose={close} title="Phiếu giảm giá" className="max-w-[500px] p-4 sm:p-6">
++      <button type="button" data-catalog-variant="text" className="absolute right-3 top-3 h-11 w-11 text-2xl" onClick={close} aria-label="Đóng phiếu giảm giá">×</button>
++      <div className={styles.inlineHero}><GiftArt /></div>
++      <div className={styles.tickets}>
++        <Ticket title="Người dùng mới · Nạp tiền" date="Tham khảo điều kiện của từng ưu đãi" discount="6% OFF" />
++        <Ticket title="Ưu đãi chào mừng Marketplace" date="Tham khảo điều kiện của từng ưu đãi" discount="15% OFF" />
++      </div>
++      <div className="mt-5 text-center">
++        <p role="status" className="mb-3 text-sm text-gray-600">{collected ? 'Đã lưu 2 phiếu trong phiên duyệt hiện tại.' : 'Lưu phiếu để xem lại khi lựa chọn gói.'}</p>
++        <button type="button" data-catalog-variant="primary" className="w-full px-5 py-3 disabled:opacity-60" onClick={collect} disabled={collected}>{collected ? 'Đã thu thập phiếu' : 'Thu thập phiếu giảm giá'}</button>
++        <p className="mt-3 text-xs leading-5 text-gray-500">Phiếu tham khảo chưa được áp dụng vào thanh toán.</p>
++      </div>
++    </CatalogDialog>
++  </>;
+ }
+diff --git a/src/shared/features/page/AiAccountsPage/AiAccountsPage.module.css b/src/shared/features/page/AiAccountsPage/AiAccountsPage.module.css
+index 7a9aa26..b34066f 100644
+--- a/src/shared/features/page/AiAccountsPage/AiAccountsPage.module.css
++++ b/src/shared/features/page/AiAccountsPage/AiAccountsPage.module.css
+@@ -464,3 +464,26 @@
+ .page .offerInfo strong { font-size: 13px; font-weight: 500; line-height: 1.4; }
+ .page .offerInfo > span { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+ .page .joined { opacity: 1; }
++/* Card density follows the reference; rows grow independently with full feature text. */
++.page .productsGrid { grid-auto-rows: auto; }
++.page .offerPanel { border: 0; overflow: visible; }
++.offerSlide { min-height: 176px; border: 1px solid var(--liquid-field-edge); border-radius: 16px; overflow: hidden; }
++.page .offerRow { gap: 16px; padding: 8px 16px; min-height: 88px; }
++.page .offerThumb { width: 64px; height: 64px; flex-basis: 64px; }
++.page .offerInfo strong { font-size: 14px; font-weight: 500; line-height: 20px; }
++.page .offerInfo > span { font-size: 20px; line-height: 24px; font-weight: 700; }
++.page .tags { gap: 8px; }
++.page .tags a { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; background: var(--catalog-soft); color: var(--brand); font-size: 12px; line-height: 18px; font-weight: 500; text-decoration: none; }
++.page .tabs button { min-height: 66px; }
++.page .tabIcon { font-size: 28px; line-height: 32px; }
++.page .price { font-size: 28px; font-weight: 600; line-height: 34px; }
++.page .reviewsTrack { max-width: 1366px; padding: 0; }
++.page .reviewCard { display: block !important; height: auto; min-height: 240px; }
++.page .reviewCard p { display: block; overflow: visible; -webkit-line-clamp: unset; }
++@media (max-width: 620px) {
++  .page .marketCard, .page .productCard { min-height: 0; }
++  .page .offerThumb { width: 58px; height: 58px; flex-basis: 58px; }
++  .page .offerInfo > span { font-size: 18px; }
++  .page .tags a { min-height: 32px; }
++  .page .cardActions .buyButton { height: 48px; }
++}
+diff --git a/src/shared/features/page/AiAccountsPage/AiAccountsPage.tsx b/src/shared/features/page/AiAccountsPage/AiAccountsPage.tsx
+index 7c70b44..e04b4fd 100644
+--- a/src/shared/features/page/AiAccountsPage/AiAccountsPage.tsx
++++ b/src/shared/features/page/AiAccountsPage/AiAccountsPage.tsx
+@@ -1,14 +1,16 @@
+ import Link from 'next/link';
+ import { useEffect, useMemo, useState } from 'react';
++import { CatalogCarousel } from '@/shared/ui/liquid/CatalogCarousel';
++import { AiCheckoutDialog } from '../AiCheckout/AiCheckoutDialog';
++import { productCheckout } from '../AiCheckout/adapters';
+ import styles from './AiAccountsPage.module.css';
+ import theme from '@/shared/ui/liquid/CatalogTheme.module.css';
+ import { AiAccountsCoupon } from './AiAccountsCoupon';
++import { accountDetails } from '../AiAccountDetailPage/mockDetailData';
+ import {
+   catalogTabs,
+   faqs,
+   products,
+-  reviews,
+-  whyItems,
+   type AiProduct,
+   type CatalogCategory,
+ } from './mockData';
+@@ -19,15 +21,6 @@ const money = new Intl.NumberFormat('vi-VN', {
+   maximumFractionDigits: 0,
+ });
+ 
+-function initials(name: string) {
+-  return name
+-    .split(/\s+/)
+-    .filter(Boolean)
+-    .slice(0, 2)
+-    .map((part) => part[0]?.toUpperCase())
+-    .join('');
+-}
+-
+ function CardActions({ href, onPrimary, onSecondary, primaryLabel, secondaryLabel, ariaLabel }: {
+   href?: string;
+   onPrimary: () => void;
+@@ -40,13 +33,13 @@ function CardActions({ href, onPrimary, onSecondary, primaryLabel, secondaryLabe
+     <div className={styles.cardActions}>
+       {href ? (
+         <>
+-          <Link href={href} className={styles.buyButton} data-liquid-control="" data-liquid-shape="pill" aria-label={ariaLabel}>{primaryLabel}</Link>
+-          <Link href={href} className={styles.detailsButton}>{secondaryLabel}</Link>
++          <Link href={href} className={styles.buyButton} data-catalog-variant="primary" data-liquid-control="" data-liquid-shape="pill" aria-label={ariaLabel}>{primaryLabel}</Link>
++          <Link href={href} data-catalog-variant="text" className={styles.detailsButton}>{secondaryLabel}</Link>
+         </>
+       ) : (
+         <>
+-          <button className={styles.buyButton} data-liquid-shape="pill" type="button" onClick={onPrimary}>{primaryLabel}</button>
+-          <button className={styles.detailsButton} type="button" onClick={onSecondary}>{secondaryLabel}</button>
++          <button className={styles.buyButton} data-catalog-variant="primary" data-liquid-shape="pill" type="button" onClick={onPrimary}>{primaryLabel}</button>
++          <button className={styles.detailsButton} data-catalog-variant="text" type="button" onClick={onSecondary}>{secondaryLabel}</button>
+         </>
+       )}
+     </div>
+@@ -84,7 +77,10 @@ function OfficialCard({
+             </li>
+           ))}
+         </ul>
+-        <CardActions onPrimary={onBuy} onSecondary={onBuy} primaryLabel="Mua ngay" secondaryLabel="Xem thêm chi tiết" />
++        <div className={styles.cardActions}>
++          <button className={styles.buyButton} data-catalog-variant="primary" type="button" onClick={onBuy}>Mua ngay</button>
++          <Link href={`/tai-khoan-ai/goi/${product.id}`} data-catalog-variant="text" className={styles.detailsButton}>Xem thêm chi tiết</Link>
++        </div>
+       </div>
+     </article>
+   );
+@@ -96,7 +92,10 @@ function MarketplaceCard({ product, onBuy }: { product: AiProduct; onBuy: (price
+       <span data-liquid-badge="" className={styles.marketLabel}>Thị trường🛒</span>
+       <div className={styles.marketLogo}><img src={product.logo} alt={product.name} /></div>
+       <div className={styles.offerPanel}>
+-        {product.offers?.slice(0, 3).map((offer) => (
++        <CatalogCarousel label={`Các gói ${product.name}`} compact>
++        {Array.from({ length: Math.ceil((product.offers?.length || 0) / 2) }, (_, index) => (
++          <div key={index} className={styles.offerSlide}>
++          {product.offers?.slice(index * 2, index * 2 + 2).map((offer) => (
+           <button key={offer.id} className={styles.offerRow} type="button" onClick={() => onBuy(offer.price, offer.title)}>
+             <span className={styles.offerThumb}><img src={product.logo} alt="" /></span>
+             <span className={styles.offerInfo}>
+@@ -104,17 +103,20 @@ function MarketplaceCard({ product, onBuy }: { product: AiProduct; onBuy: (price
+               <span>{money.format(offer.price)}</span>
+             </span>
+           </button>
++          ))}
++          </div>
+         ))}
++        </CatalogCarousel>
+       </div>
+       <div className={styles.tags}>
+-        {product.tags?.map((tag) => <span key={tag}>{tag}</span>)}
++        {product.tags?.map((tag) => <Link key={tag} data-catalog-variant="secondary" href={{ pathname: `/tai-khoan-ai/${product.detailSlug}`, query: { q: tag } }}>{tag}</Link>)}
+       </div>
+       <CardActions
+         href={product.detailSlug ? `/tai-khoan-ai/${product.detailSlug}` : undefined}
+         onPrimary={() => onBuy()}
+         onSecondary={() => onBuy()}
+         primaryLabel="Xem TẤT CẢ"
+-        secondaryLabel={`${product.offerCount ?? 0} ưu đãi`}
++        secondaryLabel={`${accountDetails[product.detailSlug || '']?.offers.length ?? product.offers?.length ?? 0} ưu đãi`}
+         ariaLabel={`Xem tất cả ưu đãi ${product.name}`}
+       />
+     </article>
+@@ -125,40 +127,22 @@ export function AiAccountsPage() {
+   const [category, setCategory] = useState<CatalogCategory>('all');
+   const [visibleCount, setVisibleCount] = useState(8);
+   const [openFaq, setOpenFaq] = useState(0);
+-  const [reviewIndex, setReviewIndex] = useState(0);
+   const [selectedProduct, setSelectedProduct] = useState<AiProduct | null>(null);
+   const [selectedOfferTitle, setSelectedOfferTitle] = useState('');
+   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
+-  const [term, setTerm] = useState(1);
+-  const [toast, setToast] = useState('');
+ 
+   const filtered = useMemo(
+-    () => products.filter((product) => category === 'all' || product.category === category),
++    () => products.filter((product) => category === 'all' || product.category === category || (category === 'marketplace' && product.type === 'marketplace') || (category === 'topup' && product.id.includes('recharge')) || (category === 'new' && product.isNew)),
+     [category],
+   );
+ 
+   useEffect(() => setVisibleCount(8), [category]);
+-  useEffect(() => {
+-    if (!toast) return;
+-    const timer = window.setTimeout(() => setToast(''), 2200);
+-    return () => window.clearTimeout(timer);
+-  }, [toast]);
+-
+   const visibleProducts = filtered.slice(0, visibleCount);
+-  const visibleReviews = Array.from({ length: 4 }, (_, index) => reviews[(reviewIndex + index) % reviews.length]);
+ 
+   const openPurchase = (product: AiProduct, price?: number, title?: string) => {
+     setSelectedProduct(product);
+     setSelectedPrice(price ?? product.price);
+     setSelectedOfferTitle(title ?? product.name);
+-    setTerm(1);
+-  };
+-
+-  const total = Math.round((selectedPrice ?? 0) * term * (term >= 12 ? 0.78 : term >= 6 ? 0.86 : term >= 3 ? 0.93 : 1));
+-
+-  const confirmMockPurchase = () => {
+-    setSelectedProduct(null);
+-    setToast('Đã thêm gói demo vào giỏ hàng frontend');
+   };
+ 
+   return (
+@@ -168,13 +152,12 @@ export function AiAccountsPage() {
+ 
+         <section id="catalog" className={styles.catalog}>
+           <div className={styles.tabsWrap}>
+-            <div className={styles.tabs} role="tablist" aria-label="Danh mục sản phẩm">
++            <div className={styles.tabs} role="group" aria-label="Danh mục sản phẩm">
+               {catalogTabs.map((tab) => (
+                 <button
+                   key={tab.id}
+                   type="button"
+-                  role="tab"
+-                  aria-selected={category === tab.id}
++                  aria-pressed={category === tab.id}
+                   className={category === tab.id ? styles.activeTab : ''}
+                   onClick={() => setCategory(tab.id)}
+                 >
+@@ -215,42 +198,6 @@ export function AiAccountsPage() {
+           </div>
+         </section>
+ 
+-        <section className={styles.whySection}>
+-          <h2>Vì sao hàng triệu người lựa chọn <span>GamsGo</span>?</h2>
+-          <ul>
+-            {whyItems.map((item) => (
+-              <li key={item.title}>
+-                <article data-liquid-card="" className={styles.whyCard}>
+-                  <span className={styles.whyIcon}>{item.icon}</span>
+-                  <div>
+-                    <h3>{item.title}</h3>
+-                    <p>{item.description}</p>
+-                  </div>
+-                </article>
+-              </li>
+-            ))}
+-          </ul>
+-        </section>
+-
+-        <section className={styles.reviewsSection}>
+-          <h2>Hơn <span>10 triệu</span> người dùng hài lòng</h2>
+-          <div className={styles.reviewsTrack}>
+-            <button type="button" className={`${styles.reviewNav} ${styles.reviewPrev}`} onClick={() => setReviewIndex((value) => (value - 1 + reviews.length) % reviews.length)} aria-label="Đánh giá trước">‹</button>
+-            <div className={styles.reviewsGrid}>
+-              {visibleReviews.map((review, index) => (
+-                <article data-liquid-card="" className={styles.reviewCard} key={`${review.name}-${reviewIndex}-${index}`}>
+-                  <header>
+-                    <span className={styles.avatar}>{initials(review.name)}</span>
+-                    <span><strong>{review.name}</strong><small>{review.country}</small></span>
+-                  </header>
+-                  <p>{review.text}</p>
+-                </article>
+-              ))}
+-            </div>
+-            <button type="button" className={`${styles.reviewNav} ${styles.reviewNext}`} onClick={() => setReviewIndex((value) => (value + 1) % reviews.length)} aria-label="Đánh giá tiếp theo">›</button>
+-          </div>
+-        </section>
+-
+         <section id="faq" className={styles.faqSection}>
+           <h2>Câu hỏi thường gặp</h2>
+           <div className={styles.faqList}>
+@@ -270,32 +217,10 @@ export function AiAccountsPage() {
+         </section>
+       </main>
+ 
+-      {selectedProduct && (
+-        <div className={styles.modalBackdrop} role="presentation" onMouseDown={() => setSelectedProduct(null)}>
+-          <section data-liquid-surface="" className={styles.purchaseModal} role="dialog" aria-modal="true" aria-labelledby="purchase-title" onMouseDown={(event) => event.stopPropagation()}>
+-            <button className={styles.modalClose} type="button" onClick={() => setSelectedProduct(null)} aria-label="Đóng">×</button>
+-            <div className={styles.modalProduct}>
+-              <img src={selectedProduct.logo} alt={selectedProduct.name} />
+-              <div><span>Gói đang chọn</span><h3 id="purchase-title">{selectedOfferTitle || selectedProduct.name}</h3></div>
+-            </div>
+-            <div className={styles.termLabel}>Thời hạn</div>
+-            <div className={styles.termGrid}>
+-              {[1, 3, 6, 12].map((month) => (
+-                <button key={month} type="button" className={term === month ? styles.termActive : ''} onClick={() => setTerm(month)}>{month} tháng</button>
+-              ))}
+-            </div>
+-            <div className={styles.summaryRow}><span>Giá gốc</span><strong>{money.format((selectedPrice ?? 0) * term)}</strong></div>
+-            <div className={styles.summaryRow}><span>Ưu đãi mock</span><strong>{term >= 12 ? '-22%' : term >= 6 ? '-14%' : term >= 3 ? '-7%' : '0%'}</strong></div>
+-            <div className={`${styles.summaryRow} ${styles.summaryTotal}`}><span>Tổng cộng</span><strong>{money.format(total)}</strong></div>
+-            <button className={styles.confirmButton} type="button" onClick={confirmMockPurchase}>Thêm vào giỏ demo</button>
+-            <p className={styles.modalNote}>Không tạo đơn thật, không gọi API thanh toán và không gửi dữ liệu ra ngoài.</p>
+-          </section>
+-        </div>
+-      )}
++      {selectedProduct && <AiCheckoutDialog item={productCheckout(selectedProduct, selectedPrice ?? selectedProduct.price, selectedOfferTitle)} onClose={() => setSelectedProduct(null)} />}
+ 
+       <AiAccountsCoupon />
+ 
+-      {toast && <div className={styles.toast} role="status">{toast}</div>}
+     </div>
+   );
+ }
+diff --git a/src/shared/features/page/AiAccountsPage/mockData.ts b/src/shared/features/page/AiAccountsPage/mockData.ts
+index 8aa5eae..85b04a0 100644
+--- a/src/shared/features/page/AiAccountsPage/mockData.ts
++++ b/src/shared/features/page/AiAccountsPage/mockData.ts
+@@ -1,4 +1,4 @@
+-export type CatalogCategory = 'all' | 'ai' | 'software' | 'music' | 'gaming';
++export type CatalogCategory = 'all' | 'svod' | 'ai' | 'software' | 'music' | 'gaming' | 'marketplace' | 'topup' | 'new';
+ 
+ export interface MarketplaceOffer {
+   id: string;
+@@ -21,14 +21,19 @@ export interface AiProduct {
+   offerCount?: number;
+   offers?: MarketplaceOffer[];
+   detailSlug?: string;
++  isNew?: boolean;
+ }
+ 
+ export const catalogTabs: Array<{ id: CatalogCategory; label: string; icon: string }> = [
+   { id: 'all', label: 'Tất cả', icon: '✦' },
++  { id: 'svod', label: 'SVOD', icon: '▶' },
+   { id: 'ai', label: 'AI', icon: 'AI' },
+-  { id: 'software', label: 'Phần mềm', icon: '⌘' },
+   { id: 'music', label: 'Âm nhạc', icon: '♫' },
++  { id: 'marketplace', label: 'Marketplace', icon: '▦' },
++  { id: 'topup', label: 'Nạp tiền', icon: '+' },
++  { id: 'software', label: 'Phần mềm', icon: '⌘' },
+   { id: 'gaming', label: 'Trò chơi', icon: '◈' },
++  { id: 'new', label: 'Mới', icon: '✧' },
+ ];
+ 
+ export const products: AiProduct[] = [
+@@ -45,7 +50,7 @@ export const products: AiProduct[] = [
+       'Các gói ChatGPT Plus với nhiều thời hạn đăng ký cùng tùy chọn riêng tư và dùng chung.',
+       'GPT Images tạo hình ảnh nhanh, hỗ trợ chỉnh sửa và tinh chỉnh qua nhiều lượt trao đổi.',
+       'Trò chuyện, viết nội dung, phân tích dữ liệu và tìm kiếm trên web trong một nơi.',
+-      'Mock FE: trạng thái mua hàng và thời hạn được mô phỏng hoàn toàn ở phía trình duyệt.',
++      'So sánh thời hạn và quyền truy cập trước khi chọn gói.',
+     ],
+   },
+   {
+@@ -145,7 +150,7 @@ export const products: AiProduct[] = [
+       'Gói Premium với thư viện nhân vật phong phú.',
+       'Tạo người bạn đồng hành theo thiết lập riêng.',
+       'Trò chuyện cá nhân hóa với hình ảnh và tin nhắn thoại.',
+-      'Quản lý gói và trạng thái hoàn toàn bằng dữ liệu mock.',
++      'Xem rõ thời hạn và thông tin gói trước khi lựa chọn.',
+     ],
+   },
+   {
+@@ -178,7 +183,7 @@ export const products: AiProduct[] = [
+       'Gói SuperGrok với tần suất truy vấn cao hơn.',
+       'Khả năng lập trình, suy luận và thực thi nâng cao.',
+       'Cửa sổ ngữ cảnh lớn hơn cho tác vụ phức tạp.',
+-      'Mở khóa DeepSearch và Think Mode trong bản demo nội dung.',
++      'Hỗ trợ tìm kiếm và suy luận theo quyền truy cập của gói.',
+     ],
+   },
+   {
+@@ -224,19 +229,19 @@ export const products: AiProduct[] = [
+     features: [
+       'Nạp Plus cho tài khoản ChatGPT cá nhân.',
+       'Giữ lịch sử trò chuyện và dữ liệu riêng trên tài khoản của bạn.',
+-      'Quyền truy cập các tính năng Plus theo gói demo.',
+-      'Luồng thanh toán trong trang chỉ là mô phỏng frontend.',
++      'Xem thông tin quyền truy cập của gói trước khi đăng ký.',
++      'Kiểm tra tài khoản nhận nâng cấp trước khi tiếp tục.',
+     ],
+   },
+ ];
+ 
+ export const whyItems = [
+-  { icon: '⚡', title: 'Truy cập tức thì', description: 'Mô phỏng trạng thái giao tài khoản ngay sau khi hoàn tất thao tác mua. UI phản hồi tức thì mà không cần backend.' },
+-  { icon: '▦', title: 'Tất cả trong một nơi', description: 'Dịch vụ AI, phần mềm, âm nhạc và tài khoản số được gom vào cùng một trải nghiệm duyệt và tìm kiếm.' },
+-  { icon: '↓', title: 'Dịch vụ cao cấp giá thấp hơn', description: 'Card sản phẩm hiển thị giá, thời hạn và lựa chọn gói rõ ràng để người dùng so sánh nhanh.' },
+-  { icon: '◉', title: 'Truy cập an toàn và đáng tin cậy', description: 'Trang demo không gửi dữ liệu thanh toán hay thông tin cá nhân ra ngoài; mọi thao tác đều dừng ở frontend.' },
+-  { icon: '24', title: 'Hỗ trợ 24/7', description: 'Các trạng thái hỗ trợ, bảo hành và lịch sử giao dịch được mô phỏng để đánh giá đầy đủ UX sau mua.' },
+-  { icon: '✓', title: 'Bảo vệ người mua', description: 'Luồng demo thể hiện rõ chính sách bảo hành, hoàn tiền và xác nhận đơn trước khi người dùng tiếp tục.' },
++  { icon: '⚡', title: 'Thời gian giao rõ ràng', description: 'So sánh thời gian giao dự kiến của từng ưu đãi ngay trong danh sách.' },
++  { icon: '▦', title: 'Tất cả trong một nơi', description: 'Duyệt các dịch vụ AI, phần mềm và âm nhạc theo từng danh mục.' },
++  { icon: '↓', title: 'Dễ dàng so sánh giá', description: 'Giá, thời hạn và quyền truy cập được trình bày cùng nhau để lựa chọn dễ hơn.' },
++  { icon: '◉', title: 'Thông tin minh bạch', description: 'Xem người bán, đánh giá và thời gian bảo hành trước khi chọn ưu đãi.' },
++  { icon: '24', title: 'Chọn theo nhu cầu', description: 'Lọc theo gói, thời lượng hoặc ngân sách để tìm lựa chọn phù hợp.' },
++  { icon: '✓', title: 'Kiểm tra trước khi xác nhận', description: 'Đối chiếu thông tin gói và tổng tiền trong bước xác nhận.' },
+ ];
+ 
+ export const reviews = [
+@@ -251,36 +256,18 @@ export const reviews = [
+ ];
+ 
+ export const faqs = [
+-  {
+-    question: 'Trang Tài khoản AI này hoạt động như thế nào?',
+-    answer: 'Đây là bản clone frontend phục vụ đánh giá UI/UX. Tìm kiếm, lọc danh mục, mở rộng mô tả, chọn gói, modal mua hàng, bộ đếm giỏ và FAQ đều chạy ở phía trình duyệt bằng mock data; không gọi API thanh toán hoặc backend sản phẩm.',
+-  },
+-  {
+-    question: 'Dữ liệu sản phẩm trong trang có phải dữ liệu thật không?',
+-    answer: 'Không. Tên dịch vụ, kiểu card và mức giá được dựng từ bundle tham chiếu để kiểm thử giao diện. Trạng thái tồn kho, thời hạn, ưu đãi và quá trình mua đều là dữ liệu mô phỏng.',
+-  },
+-  {
+-    question: 'Tôi có thể tìm kiếm và lọc sản phẩm không?',
+-    answer: 'Có. Ô tìm kiếm lọc theo tên, badge và nội dung tính năng. Thanh danh mục cho phép chuyển nhanh giữa AI, phần mềm, âm nhạc và trò chơi; bộ lọc hoạt động hoàn toàn ở frontend.',
+-  },
+-  {
+-    question: 'Nút Mua ngay có tạo đơn thật không?',
+-    answer: 'Không. Nút Mua ngay mở modal chọn thời hạn, tính tổng tiền mock và mô phỏng thao tác thêm vào giỏ. Không có request thanh toán, không lưu thẻ và không tạo đơn trên hệ thống backend.',
+-  },
+-  {
+-    question: 'Marketplace và Official khác nhau thế nào trong bản demo?',
+-    answer: 'Card Official tập trung vào một sản phẩm với giá và quyền lợi chính. Card Marketplace mô phỏng nhiều người bán/gói trong cùng một card, có danh sách offer, tag và tổng số ưu đãi để kiểm tra UX so sánh.',
+-  },
+-  {
+-    question: 'Trang có responsive cho mobile không?',
+-    answer: 'Có. Header chuyển sang menu mobile, lưới sản phẩm thay đổi từ 4 cột xuống 1 cột, tabs có thể cuộn ngang và các section FAQ/review/benefit tự co theo chiều rộng màn hình.',
+-  },
+-  {
+-    question: 'Trang này có phụ thuộc GamsGo hoặc CDN bên ngoài không?',
+-    answer: 'Không đối với phần clone. Các logo được chép vào public/assets/ai-accounts và toàn bộ UI chính dùng dữ liệu local. Điều này giúp đánh giá frontend ngay cả khi không kết nối API GamsGo.',
+-  },
+-  {
+-    question: 'Có thể nối backend thật sau này không?',
+-    answer: 'Có. Mock data đã được tách riêng khỏi component. Có thể thay nguồn products/offers bằng API mà không cần đổi cấu trúc layout và các state tương tác chính của trang.',
+-  },
++  { question: 'Làm thế nào để chọn gói phù hợp?', answer: 'Chọn danh mục, mở danh sách ưu đãi và so sánh quyền truy cập, thời hạn, giá cùng thông tin người bán.' },
++  { question: 'Gói đăng ký và Marketplace khác nhau thế nào?', answer: 'Card gói đăng ký giới thiệu quyền lợi chính của dịch vụ. Marketplace tập hợp các lựa chọn để so sánh theo gói và người bán.' },
++  { question: 'Tôi có thể xem tất cả ưu đãi của một dịch vụ ở đâu?', answer: 'Chọn Xem tất cả trên card dịch vụ để mở danh sách ưu đãi tương ứng.' },
++  { question: 'Làm sao tìm ưu đãi trong ngân sách?', answer: 'Nhập giá từ và giá đến trong bộ lọc; bạn cũng có thể sắp xếp theo giá thấp đến cao.' },
++  { question: 'Có thể lọc theo thời hạn không?', answer: 'Chọn thời lượng ở bộ lọc bên trái danh sách. Trên điện thoại, mở Bộ lọc để xem các lựa chọn.' },
++  { question: 'Toàn quyền truy cập nghĩa là gì?', answer: 'Đây là thuộc tính của ưu đãi. Hãy kiểm tra mô tả cụ thể về quyền sử dụng, tài khoản và phạm vi tính năng trước khi lựa chọn.' },
++  { question: 'Tài khoản riêng và dùng chung khác nhau thế nào?', answer: 'Các hình thức có thể khác nhau về quyền quản lý, dữ liệu và số người sử dụng. Đối chiếu mô tả của từng gói trước khi tiếp tục.' },
++  { question: 'Thời gian giao được hiển thị ở đâu?', answer: 'Thời gian giao dự kiến nằm ở cuối card ưu đãi. Dùng bộ lọc Giao hàng cam kết để tìm theo nhu cầu.' },
++  { question: 'Tôi xem thông tin bảo hành ở đâu?', answer: 'Chọn nhãn bảo hành ở góc card ưu đãi để xem thông tin. Điều kiện cụ thể cần được xác nhận với người bán.' },
++  { question: 'Làm sao so sánh người bán?', answer: 'Đối chiếu tên, điểm đánh giá, số phản hồi, giá và thời gian giao hiển thị trên từng card.' },
++  { question: 'Tại sao không có kết quả sau khi lọc?', answer: 'Có thể chưa có ưu đãi đáp ứng đồng thời các điều kiện. Hãy mở rộng khoảng giá hoặc chọn Xóa bộ lọc.' },
++  { question: 'Có thể xem các gói bằng điện thoại không?', answer: 'Vuốt ngang danh sách gói trong card hoặc các đánh giá. Nút chuyển cũng dùng được khi không thao tác vuốt.' },
++  { question: 'Phiếu giảm giá được lưu như thế nào?', answer: 'Phiếu đã thu thập được ghi nhớ trong phiên duyệt hiện tại. Việc áp dụng vào đơn hàng cần hệ thống bán hàng kết nối đầy đủ.' },
++  { question: 'Các thao tác mua hiện có tạo giao dịch không?', answer: 'Giao diện hiện sử dụng dữ liệu tham khảo. Thao tác xác nhận chưa tạo đơn hàng, thanh toán hoặc cấp tài khoản thực tế.' },
+ ];
+diff --git a/src/shared/features/page/AiCheckout/AiCheckoutDialog.module.css b/src/shared/features/page/AiCheckout/AiCheckoutDialog.module.css
+new file mode 100644
+index 0000000..25c8e8b
+--- /dev/null
++++ b/src/shared/features/page/AiCheckout/AiCheckoutDialog.module.css
+@@ -0,0 +1,522 @@
++.dialog.dialog.dialog {
++  display: flex;
++  flex-direction: column;
++  overflow: hidden;
++  max-height: min(720px, calc(100dvh - 64px));
++  padding: 0;
++  color: var(--liquid-field-ink, #342b29);
++  font-family: var(--font-inter, Inter), system-ui, sans-serif;
++}
++.header {
++  display: flex;
++  align-items: center;
++  gap: 12px;
++  padding: 16px 20px;
++  border-bottom: 1px solid var(--liquid-edge);
++  flex-shrink: 0;
++}
++.header h2 {
++  flex: 1;
++  min-width: 0;
++  font-size: 20px;
++  font-weight: 650;
++  line-height: 1.35;
++  margin: 0;
++  outline: none;
++}
++.iconButton.iconButton {
++  display: flex;
++  justify-content: center;
++  align-items: center;
++  flex-shrink: 0;
++  width: 40px;
++  height: 40px;
++  border-radius: 50%;
++  padding: 0;
++}
++.body {
++  min-height: 0;
++  overflow-y: auto;
++  overscroll-behavior: contain;
++  padding: 20px;
++  scrollbar-width: thin;
++}
++.product {
++  display: flex;
++  gap: 20px;
++  padding-bottom: 18px;
++  border-bottom: 1px solid var(--liquid-edge);
++}
++.logo {
++  width: 96px;
++  height: 96px;
++  flex-shrink: 0;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  padding: 12px;
++  background: var(--liquid-panel);
++  border-radius: 18px;
++  border: 1px solid var(--liquid-edge);
++}
++.logo img {
++  width: 100%;
++  height: 100%;
++  object-fit: contain;
++}
++.productCopy {
++  min-width: 0;
++}
++.productCopy p {
++  margin: 8px 0;
++  line-height: 1.5;
++  overflow-wrap: anywhere;
++}
++.price {
++  font-size: 28px;
++  font-weight: 700;
++  line-height: 1.25;
++  color: var(--catalog-accent);
++  font-variant-numeric: tabular-nums;
++}
++.pills {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 8px;
++}
++.pills span {
++  font-size: 12px;
++  padding: 4px 10px;
++  border-radius: 999px;
++  background: var(--catalog-soft);
++}
++.muted {
++  color: var(--liquid-field-placeholder);
++  font-size: 13px;
++  line-height: 1.6;
++}
++.section {
++  margin-top: 18px;
++}
++.section h3 {
++  display: flex;
++  align-items: center;
++  gap: 8px;
++  font-size: 15px;
++  font-weight: 650;
++  margin: 0 0 12px;
++}
++.options {
++  display: flex;
++  gap: 14px;
++  flex-wrap: wrap;
++}
++.option.option,
++.method.method {
++  border: 1px solid var(--liquid-field-edge);
++  border-radius: 14px;
++  padding: 12px 14px;
++  color: var(--liquid-field-ink);
++  text-align: left;
++  background: var(--liquid-panel);
++  font-size: 15px;
++  line-height: 1.5;
++}
++.option small {
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  gap: 4px;
++  margin-top: 8px;
++  font-size: 11px;
++  font-weight: 600;
++}
++.option.selected,
++.method.selected {
++  border-color: var(--catalog-accent);
++  background: var(--catalog-soft);
++  color: var(--catalog-accent);
++  box-shadow:
++    inset 0 0 0 1px var(--catalog-accent),
++    0 6px 18px rgba(89, 48, 24, 0.06);
++}
++.checkbox {
++  display: flex;
++  align-items: center;
++  gap: 12px;
++  margin-top: 16px;
++  font-size: 14px;
++  line-height: 1.5;
++}
++.checkbox input {
++  width: 20px;
++  height: 20px;
++  flex-shrink: 0;
++  accent-color: var(--catalog-accent);
++}
++.hint {
++  color: var(--liquid-field-placeholder);
++  font-size: 12px;
++  line-height: 1.6;
++  margin: 8px 0 0;
++}
++.protection {
++  display: flex;
++  align-items: center;
++  gap: 8px;
++  background: rgba(255, 255, 255, 0.35);
++  padding: 16px;
++  border-radius: 14px;
++  font-size: 14px;
++}
++.footer {
++  position: relative;
++  border-top: 1px solid var(--liquid-edge);
++  background: var(--liquid-panel);
++  padding: 16px 20px;
++  flex-shrink: 0;
++  max-height: 45dvh;
++  overflow-y: auto;
++}
++.actions {
++  display: grid;
++  grid-template-columns: 1fr 1fr;
++  gap: 14px;
++}
++.actions button,
++.pay.pay {
++  padding: 12px 20px;
++  min-height: 48px;
++  font-size: 14px;
++}
++.notice {
++  display: flex;
++  align-items: flex-start;
++  gap: 14px;
++  font-size: 14px;
++  line-height: 1.65;
++  margin: 0 0 20px;
++}
++.notice svg {
++  color: var(--catalog-accent);
++  flex-shrink: 0;
++  margin-top: 3px;
++}
++.tabs {
++  display: flex;
++  gap: 28px;
++  border-bottom: 1px solid var(--liquid-edge);
++  margin: 0 -20px;
++  padding: 0 20px;
++}
++.tabs button {
++  min-height: 48px;
++  font-size: 15px;
++  border-radius: 0 !important;
++  padding: 8px 0;
++  color: var(--liquid-field-placeholder) !important;
++}
++.tabs .activeTab {
++  color: var(--catalog-accent) !important;
++  border-bottom: 2px solid var(--catalog-accent) !important;
++  margin-bottom: -1px;
++}
++.methods {
++  display: grid;
++  grid-template-columns: 1fr 1fr;
++  gap: 18px;
++  padding-top: 20px;
++  padding-bottom: 16px;
++}
++.methodList {
++  display: grid;
++  gap: 12px;
++}
++.method.method {
++  position: relative;
++  width: 100%;
++  padding: 16px;
++}
++.methodTitle {
++  display: flex;
++  align-items: center;
++  gap: 12px;
++  font-weight: 650;
++  font-size: 16px;
++}
++.methodTitle > svg:last-child {
++  margin-left: auto;
++}
++.brands {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 8px;
++  padding-top: 16px;
++}
++.brands span {
++  display: inline-flex;
++  align-items: center;
++  padding: 5px 7px;
++  border: 1px solid var(--liquid-edge);
++  border-radius: 5px;
++  background: rgba(255, 255, 255, 0.8);
++  color: #303a57;
++  font-weight: 700;
++  font-size: 11px;
++}
++.method small {
++  display: block;
++  margin-top: 12px;
++  font-size: 11px;
++}
++.help {
++  align-self: start;
++  background: var(--catalog-soft);
++  border-radius: 16px;
++  padding: 16px;
++  font-size: 13px;
++  line-height: 1.6;
++}
++.help p {
++  margin: 6px 0;
++}
++.help button {
++  text-decoration: underline;
++  text-underline-offset: 3px;
++  padding: 4px 0;
++  font-size: 13px;
++}
++.detailToggle.detailToggle {
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  gap: 8px;
++  margin: -14px auto 14px;
++  font-size: 13px;
++  padding: 8px 18px;
++}
++.rotated {
++  transform: rotate(180deg);
++}
++.total {
++  display: flex;
++  align-items: flex-start;
++  justify-content: space-between;
++  gap: 20px;
++  margin-bottom: 18px;
++}
++.total > strong {
++  font-size: 20px;
++  padding-top: 6px;
++}
++.total > div {
++  text-align: right;
++}
++.total p {
++  margin: 8px 0 0;
++}
++.breakdown {
++  margin: 0 0 20px;
++  padding: 16px;
++  background: var(--catalog-soft);
++  border-radius: 14px;
++  font-size: 13px;
++}
++.breakdown > div {
++  display: flex;
++  justify-content: space-between;
++  gap: 16px;
++  padding: 5px 0;
++}
++.breakdown dd {
++  text-align: right;
++  max-width: 70%;
++  overflow-wrap: anywhere;
++}
++.form {
++  display: grid;
++  gap: 18px;
++}
++.demoNote {
++  margin: 0;
++  padding: 12px 16px;
++  border-radius: 12px;
++  background: var(--catalog-soft);
++  font-size: 12px;
++  line-height: 1.6;
++}
++.field {
++  display: grid;
++  gap: 10px;
++  min-width: 0;
++}
++.field label {
++  font-size: 14px;
++  font-weight: 600;
++}
++.field label span {
++  color: var(--catalog-accent);
++  margin-left: 6px;
++}
++.field input {
++  width: 100%;
++  min-width: 0;
++  height: 48px;
++  border-radius: 14px !important;
++  padding: 12px 18px;
++  font-size: 16px;
++}
++.fieldRow {
++  display: grid;
++  grid-template-columns: 1fr 1fr;
++  gap: 20px;
++}
++.form .checkbox {
++  margin: 0;
++  font-size: 13px;
++}
++.error {
++  color: #a42b24;
++  font-size: 12px;
++  margin: 0;
++  line-height: 1.5;
++}
++.pay.pay {
++  display: flex;
++  width: 100%;
++  align-items: center;
++  justify-content: center;
++  gap: 10px;
++}
++.security {
++  display: flex;
++  align-items: center;
++  gap: 12px;
++  font-size: 12px;
++  line-height: 1.6;
++  margin: 18px 0 0;
++  color: var(--liquid-field-placeholder);
++}
++.security svg {
++  flex-shrink: 0;
++  color: var(--catalog-accent);
++}
++.complete {
++  text-align: center;
++  padding: 32px 0;
++}
++.complete > span {
++  display: inline-flex;
++  padding: 20px;
++  background: var(--catalog-soft);
++  color: var(--catalog-accent);
++  border-radius: 50%;
++}
++.complete h3 {
++  font-size: 22px;
++  font-weight: 650;
++  margin: 20px 0 12px;
++}
++@media (max-width: 640px) {
++  .dialog.dialog.dialog {
++    max-height: calc(100dvh - 24px);
++  }
++  .header {
++    padding: 16px;
++    gap: 8px;
++    flex-wrap: wrap;
++  }
++  .header h2 {
++    font-size: 18px;
++  }
++  .body {
++    padding: 20px 16px;
++  }
++  .product {
++    gap: 16px;
++  }
++  .logo {
++    width: 80px;
++    height: 80px;
++    padding: 8px;
++  }
++  .price {
++    font-size: 26px;
++  }
++  .productCopy p {
++    font-size: 13px;
++  }
++  .section {
++    margin-top: 22px;
++  }
++  .options {
++    gap: 10px;
++  }
++  .option.option {
++    padding: 12px 14px;
++    font-size: 14px;
++  }
++  .footer {
++    padding: 18px 16px;
++  }
++  .actions {
++    gap: 12px;
++  }
++  .actions button,
++  .pay.pay {
++    padding: 12px;
++    font-size: 13px;
++    min-height: 48px;
++  }
++  .methods {
++    grid-template-columns: 1fr;
++    gap: 16px;
++    padding-top: 20px;
++  }
++  .tabs {
++    margin: 0 -16px;
++    padding: 0 16px;
++    gap: 20px;
++  }
++  .tabs button {
++    font-size: 14px;
++  }
++  .method.method,
++  .help {
++    padding: 16px;
++  }
++  .methodTitle {
++    font-size: 14px;
++  }
++  .total {
++    margin-bottom: 18px;
++    gap: 12px;
++  }
++  .total > strong {
++    font-size: 16px;
++  }
++  .form {
++    gap: 20px;
++  }
++  .field label {
++    font-size: 14px;
++  }
++  .field input {
++    height: 50px;
++    padding: 12px;
++  }
++  .fieldRow {
++    gap: 12px;
++  }
++}
++@media (max-width: 360px) {
++  .product {
++    flex-direction: column;
++  }
++  .fieldRow {
++    grid-template-columns: 1fr;
++  }
++  .price {
++    font-size: 23px;
++  }
++}
+diff --git a/src/shared/features/page/AiCheckout/AiCheckoutDialog.test.tsx b/src/shared/features/page/AiCheckout/AiCheckoutDialog.test.tsx
+new file mode 100644
+index 0000000..9b65fcc
+--- /dev/null
++++ b/src/shared/features/page/AiCheckout/AiCheckoutDialog.test.tsx
+@@ -0,0 +1,110 @@
++import { createRoot, type Root } from 'react-dom/client';
++import * as React from 'react';
++import type { act as Act } from 'react-dom/test-utils';
++import { AiCheckoutDialog } from './AiCheckoutDialog';
++import type { CheckoutItem } from './model';
++// React 19 runtime; the repository still uses React 18 type declarations.
++const act = (React as typeof React & { act: typeof Act }).act;
++
++const item: CheckoutItem = {
++  id: 'test',
++  name: 'Test AI',
++  title: 'Gói Test AI',
++  logo: '/test.webp',
++  price: 100000,
++  periodMonths: 1,
++  access: 'Gói tiêu chuẩn',
++};
++let root: Root;
++let host: HTMLDivElement;
++const close = jest.fn();
++const button = (text: string) =>
++  Array.from(document.querySelectorAll<HTMLButtonElement>('button')).find(
++    node => node.textContent === text,
++  )!;
++const click = (element: HTMLElement) => act(() => element.click());
++
++beforeEach(() => {
++  (
++    globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }
++  ).IS_REACT_ACT_ENVIRONMENT = true;
++  close.mockClear();
++  host = document.createElement('div');
++  document.body.append(host);
++  root = createRoot(host);
++});
++afterEach(() => {
++  act(() => root.unmount());
++  host.remove();
++});
++
++test('three steps keep the quote and focus, back restores chosen term', () => {
++  act(() => root.render(<AiCheckoutDialog item={item} onClose={close} />));
++  click(button('3 tháng'));
++  click(button('Đi tới thanh toán'));
++  expect(
++    document.querySelector('[role="dialog"]')?.getAttribute('data-size'),
++  ).toBe('payment');
++  expect(document.activeElement?.textContent).toBe(
++    'Chọn phương thức thanh toán',
++  );
++  expect(document.body.textContent).toContain('300.000');
++  click(button('Thanh toán ngay'));
++  expect(
++    document.querySelector('[role="dialog"]')?.getAttribute('data-size'),
++  ).toBe('card');
++  expect(document.activeElement?.textContent).toBe('Thanh toán an toàn');
++  click(document.querySelector<HTMLButtonElement>('[aria-label="Quay lại"]')!);
++  click(document.querySelector<HTMLButtonElement>('[aria-label="Quay lại"]')!);
++  expect(
++    document.querySelector('button[aria-pressed="true"]')?.textContent,
++  ).toContain('3 tháng');
++  click(button('Hủy'));
++  expect(close).toHaveBeenCalledTimes(1);
++});
++
++test('changing renewal resets an incompatible payment method', () => {
++  act(() => root.render(<AiCheckoutDialog item={item} onClose={close} />));
++  click(button('Đi tới thanh toán'));
++  click(button('Thanh toán một lần'));
++  const paypal = Array.from(
++    document.querySelectorAll<HTMLButtonElement>('button'),
++  ).find(node => node.textContent?.startsWith('PayPal'))!;
++  click(paypal);
++  click(button('Tự động gia hạn'));
++  expect(document.body.textContent).not.toContain('PayPal');
++  click(button('Thanh toán ngay'));
++  expect(document.body.textContent).toContain('Số thẻ');
++  act(() =>
++    document
++      .getElementById('preview-card-form')!
++      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })),
++  );
++  expect(document.activeElement?.id).toBe('preview-card-number');
++  expect(document.querySelectorAll('[role="alert"]').length).toBe(4);
++});
++
++test('Escape dismisses the shared dialog', () => {
++  act(() => root.render(<AiCheckoutDialog item={item} onClose={close} />));
++  act(() =>
++    document.dispatchEvent(
++      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
++    ),
++  );
++  expect(close).toHaveBeenCalledTimes(1);
++});
++
++test('valid test data completes preview and removes all card fields', () => {
++  act(() => root.render(<AiCheckoutDialog item={item} onClose={close} />));
++  click(button('Đi tới thanh toán'));
++  click(button('Thanh toán ngay'));
++  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!;
++  for (const [field, value] of Object.entries({ number:'4242424242424242',expiry:'12/30',cvv:'123',name:'Demo' })) {
++    const input = document.getElementById(`preview-card-${field}`)!;
++    act(() => { setter.call(input,value); input.dispatchEvent(new Event('input', { bubbles:true })); });
++  }
++  act(() => document.getElementById('preview-card-form')!.dispatchEvent(new Event('submit', { bubbles:true, cancelable:true })));
++  expect(document.body.textContent).toContain('Đã hoàn tất xem trước');
++  expect(document.querySelector('input')).toBeNull();
++  expect(document.body.textContent).not.toContain('4242');
++});
+diff --git a/src/shared/features/page/AiCheckout/AiCheckoutDialog.tsx b/src/shared/features/page/AiCheckout/AiCheckoutDialog.tsx
+new file mode 100644
+index 0000000..5b62074
+--- /dev/null
++++ b/src/shared/features/page/AiCheckout/AiCheckoutDialog.tsx
+@@ -0,0 +1,547 @@
++import { useEffect, useRef, useState } from 'react';
++import {
++  ArrowLeft,
++  Check,
++  ChevronDown,
++  CreditCard,
++  LockKeyhole,
++  ShieldCheck,
++  X,
++} from 'lucide-react';
++import { CatalogDialog } from '@/shared/ui/liquid/CatalogDialog';
++import {
++  formatMoney,
++  quote,
++  validatePreviewCard,
++  type CheckoutItem,
++} from './model';
++import styles from './AiCheckoutDialog.module.css';
++
++type Step = 'purchase' | 'payment' | 'card' | 'complete';
++
++/** One shared, frontend-only checkout. Card values never leave this component. */
++export function AiCheckoutDialog({
++  item,
++  onClose,
++}: {
++  item: CheckoutItem;
++  onClose: () => void;
++}) {
++  return <CheckoutSession key={item.id} item={item} onClose={onClose} />;
++}
++
++function CheckoutSession({
++  item,
++  onClose,
++}: {
++  item: CheckoutItem;
++  onClose: () => void;
++}) {
++  const [step, setStep] = useState<Step>('purchase');
++  const [months, setMonths] = useState(item.periodMonths);
++  const [renew, setRenew] = useState(!item.oneTime);
++  const [method, setMethod] = useState('card');
++  const [details, setDetails] = useState(false);
++  const [number, setNumber] = useState('');
++  const [expiry, setExpiry] = useState('');
++  const [cvv, setCvv] = useState('');
++  const [name, setName] = useState('');
++  const [errors, setErrors] = useState<ReturnType<typeof validatePreviewCard>>(
++    {},
++  );
++  const heading = useRef<HTMLHeadingElement>(null);
++  const body = useRef<HTMLDivElement>(null);
++  useEffect(() => {
++    if (step !== 'purchase') heading.current?.focus();
++    body.current?.scrollTo?.({ top: 0 });
++  }, [step]);
++  const total = quote(item, months);
++  // Marketplace quotes and top-ups retain their exact duration and price.
++  const terms =
++    item.seller || item.oneTime
++      ? [item.periodMonths]
++      : Array.from(new Set([item.periodMonths, 3, 6, 12])).sort(
++          (a, b) => a - b,
++        );
++  const title =
++    step === 'purchase'
++      ? `Chọn gói ${item.name}`
++      : step === 'payment'
++        ? 'Chọn phương thức thanh toán'
++        : step === 'card'
++          ? 'Thanh toán an toàn'
++          : 'Hoàn tất xem trước';
++  const chooseRenew = (value: boolean) => {
++    setRenew(value);
++    setMethod('card');
++  };
++  const complete = () => {
++    setNumber('');
++    setExpiry('');
++    setCvv('');
++    setName('');
++    setErrors({});
++    setStep('complete');
++  };
++  const submit = (event: React.FormEvent) => {
++    event.preventDefault();
++    const nextErrors = validatePreviewCard(number, expiry, cvv, name);
++    setErrors(nextErrors);
++    const first = Object.keys(nextErrors)[0];
++    if (first) {
++      document.getElementById(`preview-card-${first}`)?.focus();
++      return;
++    }
++    complete();
++  };
++  const footer = (label: string, action: () => void) => (
++    <div className={styles.actions}>
++      <button type="button" data-catalog-variant="secondary" onClick={onClose}>
++        Hủy
++      </button>
++      <button type="button" data-catalog-variant="primary" onClick={action}>
++        {label}
++      </button>
++    </div>
++  );
++
++  return (
++    <CatalogDialog
++      open
++      onClose={onClose}
++      title={title}
++      size={step === 'complete' ? 'card' : step}
++      className={styles.dialog}
++    >
++      <header className={styles.header}>
++        {step !== 'purchase' && step !== 'complete' && (
++          <button
++            type="button"
++            data-catalog-variant="text"
++            className={styles.iconButton}
++            aria-label="Quay lại"
++            onClick={() => setStep(step === 'card' ? 'payment' : 'purchase')}
++          >
++            <ArrowLeft size={22} />
++          </button>
++        )}
++        <h2 ref={heading} tabIndex={-1}>
++          {title}
++        </h2>
++        <button
++          type="button"
++          data-catalog-variant="text"
++          className={styles.iconButton}
++          aria-label="Đóng"
++          onClick={onClose}
++        >
++          <X size={24} />
++        </button>
++      </header>
++      <div ref={body} className={styles.body}>
++        {step === 'purchase' && (
++          <>
++            <div className={styles.product}>
++              <div className={styles.logo}>
++                <img src={item.logo} alt={item.name} />
++              </div>
++              <div className={styles.productCopy}>
++                <strong className={styles.price}>{formatMoney(total)}</strong>
++                <p>{item.title}</p>
++                <div className={styles.pills}>
++                  <span>Chưa thêm bảo vệ bổ sung</span>
++                  <span>
++                    {item.oneTime
++                      ? 'Thanh toán một lần'
++                      : `${formatMoney(total / months)} / tháng`}
++                  </span>
++                </div>
++                {!item.oneTime && (
++                  <p className={styles.muted}>
++                    Giá gia hạn tham khảo {formatMoney(total)} / {months} tháng
++                  </p>
++                )}
++              </div>
++            </div>
++            <section className={styles.section}>
++              <h3>{item.oneTime ? 'Giá trị gói' : 'Tùy chọn thời hạn'}</h3>
++              <div className={styles.options}>
++                {terms.map(term => (
++                  <button
++                    type="button"
++                    key={term}
++                    aria-pressed={months === term}
++                    className={`${styles.option} ${months === term ? styles.selected : ''}`}
++                    onClick={() => setMonths(term)}
++                  >
++                    {item.oneTime ? 'Gói đang chọn' : `${term} tháng`}
++                    {months === term && (
++                      <small>
++                        <Check size={14} /> Đã chọn
++                      </small>
++                    )}
++                  </button>
++                ))}
++              </div>
++              {!item.oneTime && (
++                <>
++                  <label className={styles.checkbox}>
++                    <input
++                      type="checkbox"
++                      checked={renew}
++                      onChange={event => chooseRenew(event.target.checked)}
++                    />{' '}
++                    Bật tự động gia hạn
++                  </label>
++                  <p className={styles.hint}>
++                    Tùy chọn mô phỏng. Chưa kích hoạt gia hạn hoặc trừ tiền.
++                  </p>
++                </>
++              )}
++            </section>
++            <section className={styles.section}>
++              <h3>Chọn loại</h3>
++              <div className={styles.options}>
++                <button
++                  type="button"
++                  aria-pressed
++                  className={`${styles.option} ${styles.selected}`}
++                >
++                  {item.access}
++                </button>
++              </div>
++              {item.seller && (
++                <p className={styles.hint}>Người bán: {item.seller}</p>
++              )}
++            </section>
++            <section className={styles.section}>
++              <h3>
++                <ShieldCheck size={19} /> Bảo vệ gói
++              </h3>
++              <div className={styles.options}>
++                <button
++                  type="button"
++                  aria-pressed
++                  className={`${styles.option} ${styles.selected}`}
++                >
++                  Chưa thêm bảo vệ bổ sung
++                </button>
++                <span className={styles.protection}>
++                  <ShieldCheck size={22} />{' '}
++                  {item.warranty
++                    ? `Bảo hành: ${item.warranty}`
++                    : 'Bảo vệ toàn kỳ · chưa cung cấp'}
++                </span>
++              </div>
++              <p className={styles.hint}>
++                Giá được tính theo dữ liệu gói hiện tại. Quyền lợi bổ sung chưa
++                được tích hợp.
++              </p>
++            </section>
++          </>
++        )}
++        {step === 'payment' && (
++          <>
++            <p className={styles.notice}>
++              <LockKeyhole size={22} />
++              <span>
++                Đây là luồng xem trước giao diện. Chưa kết nối nhà cung cấp
++                thanh toán, không tạo giao dịch.
++              </span>
++            </p>
++            <div
++              className={styles.tabs}
++              role="group"
++              aria-label="Hình thức thanh toán"
++            >
++              {!item.oneTime && (
++                <button
++                  type="button"
++                  data-catalog-variant="text"
++                  aria-pressed={renew}
++                  className={renew ? styles.activeTab : ''}
++                  onClick={() => chooseRenew(true)}
++                >
++                  Tự động gia hạn
++                </button>
++              )}
++              <button
++                type="button"
++                data-catalog-variant="text"
++                aria-pressed={!renew}
++                className={!renew ? styles.activeTab : ''}
++                onClick={() => chooseRenew(false)}
++              >
++                Thanh toán một lần
++              </button>
++            </div>
++            <div className={styles.methods}>
++              <div className={styles.methodList}>
++                <button
++                  type="button"
++                  aria-pressed={method === 'card'}
++                  className={`${styles.method} ${method === 'card' ? styles.selected : ''}`}
++                  onClick={() => setMethod('card')}
++                >
++                  <span className={styles.methodTitle}>
++                    <CreditCard size={22} /> Thẻ tín dụng &amp; thẻ ghi nợ{' '}
++                    <Check size={18} />
++                  </span>
++                  <span className={styles.brands}>
++                    {[
++                      'VISA',
++                      'Mastercard',
++                      'AMEX',
++                      'Discover',
++                      'JCB',
++                      'UnionPay',
++                    ].map(brand => (
++                      <span key={brand}>{brand}</span>
++                    ))}
++                  </span>
++                  {renew && <small>Tự động gia hạn</small>}
++                </button>
++                {!renew && (
++                  <button
++                    type="button"
++                    aria-pressed={method === 'paypal'}
++                    className={`${styles.method} ${method === 'paypal' ? styles.selected : ''}`}
++                    onClick={() => setMethod('paypal')}
++                  >
++                    <span className={styles.methodTitle}>
++                      PayPal {method === 'paypal' && <Check size={18} />}
++                    </span>
++                    <span className={styles.hint}>
++                      Xem trước lựa chọn ví điện tử
++                    </span>
++                  </button>
++                )}
++              </div>
++              <aside className={styles.help}>
++                <strong>
++                  {renew
++                    ? 'Muốn thanh toán một lần?'
++                    : 'Lựa chọn phù hợp với bạn'}
++                </strong>
++                <p>
++                  {renew
++                    ? 'Bạn có thể đổi hình thức thanh toán trước khi tiếp tục.'
++                    : 'Tổng tiền và thời hạn được giữ nhất quán trong toàn bộ luồng.'}
++                </p>
++                {renew && (
++                  <button
++                    type="button"
++                    data-catalog-variant="text"
++                    onClick={() => chooseRenew(false)}
++                  >
++                    Thử thanh toán một lần
++                  </button>
++                )}
++              </aside>
++            </div>
++          </>
++        )}
++        {step === 'card' && (
++          <form
++            id="preview-card-form"
++            onSubmit={submit}
++            noValidate
++            autoComplete="off"
++            className={styles.form}
++          >
++            <p className={styles.demoNote}>
++              Chỉ dùng dữ liệu thử nghiệm: 4242 4242 4242 4242 · 12/30 · 123.
++              Không lưu thông tin thẻ.
++            </p>
++            <CardField
++              field="number"
++              label="Số thẻ"
++              value={number}
++              onChange={value =>
++                setNumber(
++                  value
++                    .replace(/\D/g, '')
++                    .slice(0, 16)
++                    .replace(/(.{4})/g, '$1 ')
++                    .trim(),
++                )
++              }
++              placeholder="4242 4242 4242 4242"
++              error={errors.number}
++            />
++            <div className={styles.fieldRow}>
++              <CardField
++                field="expiry"
++                label="Ngày hết hạn"
++                value={expiry}
++                onChange={value => {
++                  const digits = value.replace(/\D/g, '').slice(0, 4);
++                  setExpiry(
++                    digits.length > 2
++                      ? `${digits.slice(0, 2)}/${digits.slice(2)}`
++                      : digits,
++                  );
++                }}
++                placeholder="MM/YY"
++                error={errors.expiry}
++              />
++              <CardField
++                field="cvv"
++                label="CVV"
++                value={cvv}
++                onChange={value => setCvv(value.replace(/\D/g, '').slice(0, 3))}
++                placeholder="3 chữ số"
++                error={errors.cvv}
++              />
++            </div>
++            <CardField
++              field="name"
++              label="Tên trên thẻ"
++              value={name}
++              onChange={value => setName(value.slice(0, 80))}
++              placeholder="Tên thử nghiệm"
++              error={errors.name}
++            />
++            <label className={`${styles.checkbox} ${styles.muted}`}>
++              <input type="checkbox" disabled /> Lưu thẻ cho các lần thanh toán
++              sau (chưa hỗ trợ)
++            </label>
++          </form>
++        )}
++        {step === 'complete' && (
++          <div className={styles.complete}>
++            <span>
++              <Check size={32} />
++            </span>
++            <h3>Đã hoàn tất xem trước</h3>
++            <p>
++              {item.name} · {formatMoney(total)}
++            </p>
++            <p className={styles.muted}>
++              Không tạo đơn hàng, không trừ tiền và không lưu thông tin thanh
++              toán.
++            </p>
++          </div>
++        )}
++      </div>
++      <footer className={styles.footer}>
++        {step === 'purchase' &&
++          footer('Đi tới thanh toán', () => setStep('payment'))}
++        {step === 'payment' && (
++          <>
++            <button
++              type="button"
++              data-catalog-variant="text"
++              className={styles.detailToggle}
++              aria-expanded={details}
++              aria-controls="checkout-breakdown"
++              onClick={() => setDetails(!details)}
++            >
++              Chi tiết{' '}
++              <ChevronDown
++                size={16}
++                className={details ? styles.rotated : ''}
++              />
++            </button>
++            {details && (
++              <dl id="checkout-breakdown" className={styles.breakdown}>
++                <div>
++                  <dt>Gói</dt>
++                  <dd>{item.title}</dd>
++                </div>
++                <div>
++                  <dt>Thời hạn</dt>
++                  <dd>{item.oneTime ? 'Một lần' : `${months} tháng`}</dd>
++                </div>
++                <div>
++                  <dt>Bảo vệ bổ sung</dt>
++                  <dd>Chưa thêm</dd>
++                </div>
++              </dl>
++            )}
++            <div className={styles.total}>
++              <strong>Tổng cộng:</strong>
++              <div>
++                <strong className={styles.price}>{formatMoney(total)}</strong>
++                {renew && (
++                  <p className={styles.muted}>
++                    Giá gia hạn {formatMoney(total)} / {months} tháng
++                  </p>
++                )}
++              </div>
++            </div>
++            {footer('Thanh toán ngay', () =>
++              method === 'card' ? setStep('card') : complete(),
++            )}
++          </>
++        )}
++        {step === 'card' && (
++          <>
++            <button
++              type="submit"
++              form="preview-card-form"
++              data-catalog-variant="primary"
++              className={styles.pay}
++            >
++              <LockKeyhole size={18} /> Thanh toán ngay {formatMoney(total)}
++            </button>
++            <p className={styles.security}>
++              <ShieldCheck size={22} /> Phiên xem trước · dữ liệu thử nghiệm chỉ
++              tồn tại khi modal đang mở.
++            </p>
++          </>
++        )}
++        {step === 'complete' && (
++          <button
++            type="button"
++            data-catalog-variant="primary"
++            className={styles.pay}
++            onClick={onClose}
++          >
++            Đóng
++          </button>
++        )}
++      </footer>
++    </CatalogDialog>
++  );
++}
++
++function CardField({
++  field,
++  label,
++  value,
++  onChange,
++  placeholder,
++  error,
++}: {
++  field: string;
++  label: string;
++  value: string;
++  onChange: (value: string) => void;
++  placeholder: string;
++  error?: string;
++}) {
++  return (
++    <div className={styles.field}>
++      <label htmlFor={`preview-card-${field}`}>
++        {label} <span aria-hidden="true">•</span>
++      </label>
++      <input
++        id={`preview-card-${field}`}
++        value={value}
++        onChange={event => onChange(event.target.value)}
++        placeholder={placeholder}
++        inputMode={field === 'name' ? 'text' : 'numeric'}
++        autoComplete="off"
++        required
++        aria-invalid={!!error}
++        aria-describedby={error ? `preview-error-${field}` : undefined}
++      />
++      {error && (
++        <p id={`preview-error-${field}`} role="alert" className={styles.error}>
++          {error}
++        </p>
++      )}
++    </div>
++  );
++}
+diff --git a/src/shared/features/page/AiCheckout/adapters.ts b/src/shared/features/page/AiCheckout/adapters.ts
+new file mode 100644
+index 0000000..16499b0
+--- /dev/null
++++ b/src/shared/features/page/AiCheckout/adapters.ts
+@@ -0,0 +1,42 @@
++import type { AiProduct } from '../AiAccountsPage/mockData';
++import type {
++  AccountDetailData,
++  DetailOffer,
++} from '../AiAccountDetailPage/mockDetailData';
++import { periodMonths, type CheckoutItem } from './model';
++
++export function productCheckout(
++  product: AiProduct,
++  price = product.price,
++  title = product.name,
++): CheckoutItem {
++  const marketplace = product.type === 'marketplace';
++  return {
++    id: `${product.id}:${title}:${price}`,
++    name: product.name,
++    title,
++    logo: product.logo,
++    price,
++    periodMonths: periodMonths(marketplace ? title : product.duration),
++    access: marketplace ? title : 'Gói tiêu chuẩn',
++    seller: marketplace ? 'Thị trường' : undefined,
++    oneTime: product.id.includes('recharge'),
++  };
++}
++
++export function offerCheckout(
++  data: AccountDetailData,
++  offer: DetailOffer,
++): CheckoutItem {
++  return {
++    id: offer.id,
++    name: data.name,
++    title: offer.title,
++    logo: data.logo,
++    price: offer.price,
++    periodMonths: periodMonths(offer.duration),
++    access: offer.sharing,
++    seller: offer.seller,
++    warranty: offer.warranty,
++  };
++}
+diff --git a/src/shared/features/page/AiCheckout/model.test.ts b/src/shared/features/page/AiCheckout/model.test.ts
+new file mode 100644
+index 0000000..67846f8
+--- /dev/null
++++ b/src/shared/features/page/AiCheckout/model.test.ts
+@@ -0,0 +1,66 @@
++import {
++  periodMonths,
++  quote,
++  validatePreviewCard,
++  type CheckoutItem,
++} from './model';
++import { productCheckout, offerCheckout } from './adapters';
++import { products } from '../AiAccountsPage/mockData';
++import { accountDetails } from '../AiAccountDetailPage/mockDetailData';
++
++describe('checkout quote and preview constraints', () => {
++  test.each([
++    ['1 năm', 12],
++    ['3 tháng', 3],
++    ['/ tháng', 1],
++    ['2 năm', 24],
++  ])('reads duration %s', (label, expected) => {
++    expect(periodMonths(label)).toBe(expected);
++  });
++  test('annual quoted amount is not charged twelve times', () => {
++    const item: CheckoutItem = {
++      id: 'annual',
++      name: 'AI',
++      title: 'Annual',
++      logo: '',
++      price: 1200000,
++      periodMonths: 12,
++      access: 'Private',
++    };
++    expect(quote(item, 12)).toBe(1200000);
++    expect(quote(item, 24)).toBe(2400000);
++  });
++  test('each catalog and marketplace offer retains its exact initial quote', () => {
++    for (const product of products) {
++      const item = productCheckout(product);
++      expect(quote(item, item.periodMonths)).toBe(product.price);
++      for (const offer of product.offers ?? []) {
++        const selected = productCheckout(product, offer.price, offer.title);
++        expect(quote(selected, selected.periodMonths)).toBe(offer.price);
++      }
++    }
++    for (const data of Object.values(accountDetails))
++      for (const offer of data.offers) {
++        const item = offerCheckout(data, offer);
++        expect(quote(item, item.periodMonths)).toBe(offer.price);
++        expect(item.seller).toBe(offer.seller);
++      }
++  });
++  test('top-ups are one-time purchases', () => {
++    const recharge = products.find(product => product.id.includes('recharge'))!;
++    expect(productCheckout(recharge).oneTime).toBe(true);
++  });
++  test('only the documented test card can complete preview', () => {
++    expect(
++      validatePreviewCard('4242 4242 4242 4242', '12/30', '123', 'Demo'),
++    ).toEqual({});
++    expect(
++      validatePreviewCard('4111 1111 1111 1111', '13/30', '12', ''),
++    ).toEqual({
++      number: expect.any(String),
++      expiry: expect.any(String),
++      cvv: expect.any(String),
++      name: expect.any(String),
++    });
++  });
++});
+diff --git a/src/shared/features/page/AiCheckout/model.ts b/src/shared/features/page/AiCheckout/model.ts
+new file mode 100644
+index 0000000..f9b8a8e
+--- /dev/null
++++ b/src/shared/features/page/AiCheckout/model.ts
+@@ -0,0 +1,48 @@
++export interface CheckoutItem {
++  id: string;
++  name: string;
++  title: string;
++  logo: string;
++  price: number;
++  periodMonths: number;
++  access: string;
++  seller?: string;
++  warranty?: string;
++  oneTime?: boolean;
++}
++
++/** Preserve the quoted period. Annual and marketplace prices are not monthly rates. */
++export function periodMonths(label = ''): number {
++  const months = label.match(/(\d+)\s*tháng/i);
++  if (months) return Number(months[1]);
++  const years = label.match(/(\d+)\s*năm/i);
++  return years ? Number(years[1]) * 12 : 1;
++}
++
++export const formatMoney = (value: number) =>
++  new Intl.NumberFormat('vi-VN', {
++    style: 'currency',
++    currency: 'VND',
++    maximumFractionDigits: 0,
++  }).format(value);
++
++export function quote(item: CheckoutItem, months: number) {
++  return Math.round((item.price * months) / item.periodMonths);
++}
++
++export function validatePreviewCard(
++  number: string,
++  expiry: string,
++  cvv: string,
++  name: string,
++) {
++  const errors: Partial<Record<'number' | 'expiry' | 'cvv' | 'name', string>> =
++    {};
++  if (number.replace(/\s/g, '') !== '4242424242424242')
++    errors.number = 'Dùng số thẻ thử nghiệm 4242 4242 4242 4242.';
++  if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry.trim()))
++    errors.expiry = 'Nhập MM/YY, ví dụ 12/30.';
++  if (!/^\d{3}$/.test(cvv.trim())) errors.cvv = 'Nhập 3 chữ số thử nghiệm.';
++  if (!name.trim()) errors.name = 'Nhập tên thử nghiệm.';
++  return errors;
++}
+diff --git a/src/shared/features/page/contract-clone/ContractCard.tsx b/src/shared/features/page/contract-clone/ContractCard.tsx
+index da538cb..73c92f2 100644
+--- a/src/shared/features/page/contract-clone/ContractCard.tsx
++++ b/src/shared/features/page/contract-clone/ContractCard.tsx
+@@ -1,16 +1,16 @@
++import Link from 'next/link';
+ import Image from 'next/image';
+ import { FiCheckCircle, FiDownload, FiEye, FiStar } from 'react-icons/fi';
+ import type { ContractItem } from './mockData';
+ import { formatVnd } from './mockData';
+ 
+-export function ContractCard({ item, onPreview }: { item: ContractItem; onPreview?: (item: ContractItem) => void }) {
++export function ContractCard({ item }: { item: ContractItem }) {
+   const discount = Math.max(0, Math.round((1 - item.price / item.oldPrice) * 100));
+ 
+   return (
+-    <button
++    <Link
+       data-liquid-card=""
+-      type="button"
+-      onClick={() => onPreview?.(item)}
++      href={`/collection/mau-hop-dong/chi-tiet/${item.id}`}
+       className="relative block w-full rounded-xl bg-white p-3 text-left transition-colors duration-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-white md:p-4"
+     >
+       {item.kind === 'bundle' ? (
+@@ -63,6 +63,6 @@ export function ContractCard({ item, onPreview }: { item: ContractItem; onPrevie
+           </div>
+         </div>
+       </div>
+-    </button>
++    </Link>
+   );
+ }
+diff --git a/src/shared/features/page/contract-clone/ContractDetailPage.tsx b/src/shared/features/page/contract-clone/ContractDetailPage.tsx
+new file mode 100644
+index 0000000..b92ec7c
+--- /dev/null
++++ b/src/shared/features/page/contract-clone/ContractDetailPage.tsx
+@@ -0,0 +1,78 @@
++import Link from 'next/link';
++import { useState } from 'react';
++import { ContractPreviewModal } from './ContractPreviewModal';
++import { formatVnd, type ContractItem } from './mockData';
++import theme from '@/shared/ui/liquid/CatalogTheme.module.css';
++
++export function ContractDetailPage({ item }: { item: ContractItem }) {
++  const [preview, setPreview] = useState(false);
++  return (
++    <main className={`${theme.page} min-h-[60vh] px-4 py-8 md:py-12`}>
++      <div className="mx-auto max-w-5xl">
++        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-gray-500">
++          <Link href="/collection/mau-hop-dong">Mẫu hợp đồng</Link>
++          <span aria-hidden="true"> / </span>Chi tiết
++        </nav>
++        <article data-liquid-surface="" className="rounded-3xl p-6 md:p-10">
++          <span className="text-sm text-green-700">{item.category}</span>
++          <h1 className="mt-3 max-w-4xl text-2xl font-semibold leading-snug md:text-4xl">
++            {item.title}
++          </h1>
++          <p className="mt-5 max-w-3xl text-base leading-7 text-gray-600">
++            {item.description}
++          </p>
++          <dl className="my-8 grid gap-4 sm:grid-cols-3">
++            {[
++              ['Đối tượng', item.audience],
++              [
++                'Định dạng',
++                item.fileType || (item.kind === 'bundle' ? 'ZIP' : 'DOCX'),
++              ],
++              ['Ngôn ngữ', item.language || 'Tiếng Việt'],
++            ].map(([label, value]) => (
++              <div data-liquid-card="" className="rounded-2xl p-4" key={label}>
++                <dt className="text-xs text-gray-500">{label}</dt>
++                <dd className="mt-2 text-sm font-semibold">{value}</dd>
++              </div>
++            ))}
++          </dl>
++          <div className="flex flex-wrap items-center justify-between gap-5 border-t border-gray-200 pt-6">
++            <div>
++              <span className="text-sm text-gray-500 line-through">
++                {formatVnd(item.oldPrice)}
++              </span>
++              <p className="mt-1 text-2xl font-semibold text-green-700">
++                {formatVnd(item.price)}
++              </p>
++            </div>
++            <button
++              type="button"
++              data-catalog-variant="primary"
++              className="px-6 py-3"
++              onClick={() => setPreview(true)}
++            >
++              Xem thông tin tài liệu
++            </button>
++          </div>
++          <p className="mt-5 text-sm leading-6 text-gray-500">
++            Tài liệu gốc chưa được cung cấp. Chức năng tải và thanh toán sẽ khả
++            dụng khi có tài liệu tương ứng.
++          </p>
++        </article>
++        <Link
++          href={{
++            pathname: '/collection/mau-hop-dong',
++            query: { category: item.category },
++          }}
++          className="mt-6 inline-flex min-h-11 items-center text-sm font-semibold text-green-700"
++        >
++          Xem các hợp đồng cùng danh mục →
++        </Link>
++        <ContractPreviewModal
++          item={preview ? item : null}
++          onClose={() => setPreview(false)}
++        />
++      </div>
++    </main>
++  );
++}
+diff --git a/src/shared/features/page/contract-clone/ContractHome.tsx b/src/shared/features/page/contract-clone/ContractHome.tsx
+index 457494f..6befb75 100644
+--- a/src/shared/features/page/contract-clone/ContractHome.tsx
++++ b/src/shared/features/page/contract-clone/ContractHome.tsx
+@@ -1,10 +1,9 @@
+ import theme from '@/shared/ui/liquid/CatalogTheme.module.css';
+-import Image from 'next/image';
++import Link from 'next/link';
+ import { useRouter } from 'next/router';
+ import { FormEvent, useMemo, useState } from 'react';
+ import {
+   FiArrowRight,
+-  FiCheck,
+   FiCheckCircle,
+   FiClock,
+   FiFileText,
+@@ -16,9 +15,9 @@ import {
+   FiZap,
+ } from 'react-icons/fi';
+ import { ContractCard } from './ContractCard';
+-import { ContractPreviewModal } from './ContractPreviewModal';
++import { ContractGuide, ContractTeam, ContractTestimonials } from './ContractSupportingSections';
+ import { ContractSidebar } from './ContractSidebar';
+-import { contracts, news, team, type ContractItem } from './mockData';
++import { contracts, news } from './mockData';
+ 
+ type HomeTab = 'Mới' | 'Phổ biến' | 'Bán chạy' | 'Được quan tâm';
+ 
+@@ -46,7 +45,6 @@ export function ContractHome() {
+   const [keyword, setKeyword] = useState('');
+   const [tab, setTab] = useState<HomeTab>('Mới');
+   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
+-  const [preview, setPreview] = useState<ContractItem | null>(null);
+ 
+   const visibleContracts = useMemo(() => {
+     const items = selectedCategory === 'Tất cả' ? [...contracts] : contracts.filter((item) => item.category === selectedCategory);
+@@ -56,7 +54,7 @@ export function ContractHome() {
+     return items.slice(0, 7);
+   }, [selectedCategory, tab]);
+ 
+-  const goSearch = (query: Record<string, string> = {}) => router.push({ pathname: '/collection/mau-hop-dong/tim-kiem', query });
++  const goSearch = (query: Record<string, string> = {}) => router.push({ pathname: '/collection/mau-hop-dong', query });
+   const submitSearch = (event: FormEvent) => {
+     event.preventDefault();
+     const q = keyword.trim();
+@@ -83,7 +81,7 @@ export function ContractHome() {
+             <form onSubmit={submitSearch} className="relative rounded-full border border-gray-200 bg-white p-1 pr-2 shadow-lg md:p-1.5 md:pr-2.5">
+               <div className="flex items-center">
+                 <FiSearch className="ml-3 h-5 w-5 flex-shrink-0 text-gray-400 md:h-6 md:w-6" />
+-                <input value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="Tìm kiếm hợp đồng..." className="min-w-0 flex-1 bg-transparent px-2 py-2 text-base text-gray-700 outline-none md:px-4 md:py-2.5 md:text-lg" />
++                <input aria-label="Tìm kiếm hợp đồng" value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="Tìm kiếm hợp đồng..." className="min-w-0 flex-1 bg-transparent px-2 py-2 text-base text-gray-700 outline-none md:px-4 md:py-2.5 md:text-lg" />
+                 <button data-catalog-primary="" type="submit" className="relative rounded-full border border-green-200/60 bg-gradient-to-br from-green-400 via-green-500 to-emerald-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wide text-white shadow-lg transition hover:brightness-105 md:px-8 md:py-3 md:text-sm">Tìm ngay</button>
+               </div>
+             </form>
+@@ -98,20 +96,7 @@ export function ContractHome() {
+           <div className="mb-12 px-2 md:mb-16">
+             <div data-liquid-surface="" className="mx-auto max-w-4xl rounded-3xl bg-white p-4 pt-3 shadow-xl md:px-8 md:pb-7">
+               <h3 className="mb-3 text-center text-lg font-bold text-gray-900 md:mb-5 md:text-2xl">Chỉ với <span className="text-green-600">3 bước</span> để tải về hợp đồng bạn cần</h3>
+-              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-5 md:p-8">
+-                <div className="grid gap-3 md:grid-cols-3">
+-                  {[
+-                    ['01', 'Tìm kiếm', 'Nhập từ khóa hoặc chọn danh mục', FiSearch],
+-                    ['02', 'Chọn mẫu', 'Xem thông tin và mẫu phù hợp', FiFileText],
+-                    ['03', 'Tải về', 'Nhận file Word để sử dụng', FiCheckCircle],
+-                  ].map(([step, title, desc, Icon]: any) => (
+-                    <div key={step} className="relative rounded-xl border border-white/10 bg-white/10 p-4 text-left text-white backdrop-blur-sm">
+-                      <div className="mb-3 flex items-center justify-between"><span className="text-xs font-bold text-green-300">BƯỚC {step}</span><Icon className="text-green-300" /></div>
+-                      <div className="font-bold">{title}</div><div className="mt-1 text-xs leading-5 text-slate-300">{desc}</div>
+-                    </div>
+-                  ))}
+-                </div>
+-              </div>
++              <ContractGuide />
+             </div>
+           </div>
+ 
+@@ -137,7 +122,7 @@ export function ContractHome() {
+                       <ContractSidebar selected={selectedCategory} onSelect={(value) => { setSelectedCategory(value); setTab('Mới'); }} />
+                     </div>
+                     <div className="order-1 space-y-2 lg:order-2 lg:col-span-9">
+-                      {visibleContracts.map((item) => <ContractCard key={item.id} item={item} onPreview={setPreview} />)}
++                      {visibleContracts.map((item) => <ContractCard key={item.id} item={item} />)}
+                       {!visibleContracts.length ? <div data-liquid-surface="" className="rounded-xl bg-white py-16 text-center text-sm text-gray-500">Không có mẫu hợp đồng trong danh mục này.</div> : null}
+                       <button type="button" onClick={() => goSearch(selectedCategory === 'Tất cả' ? {} : { category: selectedCategory })} className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-green-200 bg-white px-4 py-3 text-sm font-semibold text-green-700 transition hover:bg-green-50">Xem tất cả hợp đồng <FiArrowRight /></button>
+                     </div>
+@@ -156,7 +141,7 @@ export function ContractHome() {
+             <h2 className="mt-2 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text p-2 text-center text-4xl font-bold text-transparent md:text-5xl">Giúp bạn xây dựng hợp đồng nhanh chóng</h2>
+             <p className="mx-auto mt-2 max-w-3xl text-center text-lg leading-relaxed text-gray-600 md:text-xl">Với hơn 10,000 hợp đồng có sẵn, chúng tôi đảm bảo bạn có thể tìm thấy được hợp đồng phù hợp với nhu cầu của mình.</p>
+           </div>
+-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
++          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+             {benefitCards.map(([metric, title, desc, gradient, border, tone, Icon]) => (
+               <div data-catalog-benefit="" data-liquid-card="" key={title} className={`group relative overflow-hidden rounded-3xl border ${border} bg-gradient-to-br ${gradient} p-5 shadow-xl transition hover:-translate-y-1 md:p-7`}>
+                 <div className="flex items-start justify-between"><div className={`text-3xl font-semibold ${tone} md:text-4xl`}>{metric}</div><div data-liquid-surface="" className="rounded-2xl bg-white/70 p-3 shadow-sm"><Icon className={`h-6 w-6 ${tone}`} /></div></div>
+@@ -191,28 +176,27 @@ export function ContractHome() {
+ 
+           <div className="mt-16 text-center md:mt-24"><h3 className="text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">Tại sao khách hàng tin tưởng chúng tôi?</h3><p className="mt-4 text-lg text-gray-600 md:text-xl">Mức độ tin cậy cao nhờ quy trình kiểm duyệt nghiêm ngặt</p></div>
+           <div className="mt-10 grid gap-6 md:grid-cols-3">
+-            {[
++            {([
+               ['Kiểm duyệt bởi luật sư', 'Đội ngũ luật sư giàu kinh nghiệm kiểm tra từng tài liệu', FiShield],
+               ['Chứng nhận chất lượng', 'Cam kết hoàn tiền 100% nếu không hài lòng', FiCheckCircle],
+               ['Cập nhật liên tục', 'Theo dõi và cập nhật theo quy định pháp luật mới nhất', FiTrendingUp],
+-            ].map(([title, desc, Icon]: any) => <div key={title} className="rounded-3xl border border-gray-100 bg-white p-7 text-center shadow-lg"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-green-600"><Icon size={26} /></div><h4 className="mt-5 text-xl font-semibold text-gray-900 md:text-2xl">{title}</h4><p className="mt-2 text-base text-gray-600 md:text-lg">{desc}</p></div>)}
++            ] as const).map(([title, desc, Icon]) => <div key={title} className="rounded-3xl border border-gray-100 bg-white p-7 text-center shadow-lg"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-green-600"><Icon size={26} /></div><h4 className="mt-5 text-xl font-semibold text-gray-900 md:text-2xl">{title}</h4><p className="mt-2 text-base text-gray-600 md:text-lg">{desc}</p></div>)}
+           </div>
+         </div>
+       </section>
+ 
+       <section className="relative w-full overflow-hidden bg-slate-50 px-6 py-16 md:px-12 md:py-20">
+-        <div className="mx-auto max-w-6xl"><div className="mb-8 text-center"><div className="mb-2 flex justify-center gap-1 text-yellow-400">{Array.from({ length: 5 }).map((_, index) => <FiStar key={index} className="fill-current" />)}</div><h2 className="text-3xl font-bold tracking-tight md:text-4xl">Đánh giá từ khách hàng</h2><p className="mt-3 text-lg text-gray-600">Xem những đánh giá của khách hàng về dịch vụ của chúng tôi</p></div><div data-liquid-surface="" className="mx-auto max-w-4xl rounded-3xl bg-white p-7 shadow-xl md:p-10"><p className="relative z-10 text-lg italic leading-8 text-gray-700">“Mỗi hợp đồng tôi mua đều đáng giá từng đồng. Chỉ từ 45k tôi đã nhận được hợp đồng đảm bảo pháp lý vững chắc, giúp tôi loại bỏ hoàn toàn rủi ro cho công ty. Việc sử dụng cũng rất nhanh và dễ chỉnh sửa.”</p><h4 className="mt-6 font-medium text-gray-900">Anh Cường Ban - Chủ cơ sở kinh doanh dịch vụ lưu trú</h4></div></div>
++        <div className="mx-auto max-w-6xl"><div className="mb-8 text-center"><div className="mb-2 flex justify-center gap-1 text-yellow-400">{Array.from({ length: 5 }).map((_, index) => <FiStar key={index} className="fill-current" />)}</div><h2 className="text-3xl font-bold tracking-tight md:text-4xl">Đánh giá từ khách hàng</h2><p className="mt-3 text-lg text-gray-600">Xem những đánh giá của khách hàng về dịch vụ của chúng tôi</p></div><ContractTestimonials /></div>
+       </section>
+ 
+       <section className="relative overflow-hidden bg-white py-16 md:py-24">
+-        <div className="mx-auto max-w-7xl px-4 md:px-6"><h2 className="text-pretty text-center text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">Đội ngũ phát triển</h2><p className="mx-auto mt-6 max-w-4xl text-center text-lg leading-8 text-gray-600 md:text-xl">Chúng tôi có các luật sư và biên tập viên chuyên nghiệp với nhiều kinh nghiệm, đã tham gia xây dựng hàng trăm mẫu hợp đồng cho các khách hàng trong và ngoài nước</p><div className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">{team.map((member) => <div key={member.name} className="group text-center"><div className="mx-auto aspect-square max-w-[160px] overflow-hidden rounded-3xl bg-slate-100 shadow-md"><Image src={member.image} alt={member.name} width={180} height={180} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" /></div><div className="mt-3 text-sm font-bold text-gray-900 md:text-base">{member.name}</div><p className="mt-1 text-xs font-normal leading-tight text-green-700 sm:text-sm">{member.role}</p></div>)}</div></div>
++        <div className="mx-auto max-w-7xl px-4 md:px-6"><h2 className="text-pretty text-center text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">Đội ngũ phát triển</h2><p className="mx-auto mt-6 max-w-4xl text-center text-lg leading-8 text-gray-600 md:text-xl">Chúng tôi có các luật sư và biên tập viên chuyên nghiệp với nhiều kinh nghiệm, đã tham gia xây dựng hàng trăm mẫu hợp đồng cho các khách hàng trong và ngoài nước</p><ContractTeam /></div>
+       </section>
+ 
+       <section className="bg-gradient-to-br from-slate-50 via-white to-slate-50 py-16 md:py-24">
+-        <div className="mx-auto max-w-7xl px-4 md:px-6"><div className="text-center"><span className="text-sm font-semibold uppercase tracking-[0.2em] text-green-600">Tin tức mới nhất</span><h2 className="mt-2 text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">Tin tức & Cập nhật</h2><p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">Cập nhật những thông tin mới nhất về pháp luật, mẫu hợp đồng và các vấn đề pháp lý quan trọng</p></div><div className="mt-10 grid gap-5 lg:grid-cols-2"><article data-liquid-surface="" className="rounded-3xl border border-slate-100 bg-white p-7 shadow-lg"><div className="mb-4 flex items-center justify-between text-sm text-gray-500"><span>Admin - {news[0].date}</span><span className="rounded-full bg-green-50 px-3 py-1 text-green-700">{news[0].category}</span></div><h3 className="text-2xl font-bold leading-snug text-gray-900">{news[0].title}</h3><p className="mt-4 text-sm leading-6 text-gray-600">Tổng hợp nội dung, thủ tục, lưu ý pháp lý và mẫu văn bản để tham khảo khi thanh lý hoặc chấm dứt hợp đồng.</p><button className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-green-700">Xem chi tiết <FiArrowRight /></button></article><div className="space-y-3">{news.slice(1).map((item) => <article key={item.title} className="group rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition hover:shadow-md"><div className="flex-1 min-w-0"><h3 className="font-semibold leading-6 text-gray-900 group-hover:text-green-700">{item.title}</h3><div className="mt-2 flex items-center gap-3 text-xs text-gray-500"><span>{item.category}</span><span>{item.date}</span></div></div></article>)}</div></div></div>
++        <div className="mx-auto max-w-7xl px-4 md:px-6"><div className="text-center"><span className="text-sm font-semibold uppercase tracking-[0.2em] text-green-600">Tin tức mới nhất</span><h2 className="mt-2 text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">Tin tức & Cập nhật</h2><p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">Cập nhật những thông tin mới nhất về pháp luật, mẫu hợp đồng và các vấn đề pháp lý quan trọng</p></div><div className="mt-10 grid gap-5 lg:grid-cols-2"><article data-liquid-surface="" className="rounded-3xl border border-slate-100 bg-white p-4 shadow-lg"><div className="mb-4 flex items-center justify-between text-sm text-gray-500"><span>Admin - {news[0].date}</span><span className="rounded-full bg-green-50 px-3 py-1 text-green-700">{news[0].category}</span></div><h3 className="text-xl font-semibold leading-snug text-gray-900"><Link href="/collection/mau-hop-dong/tin-tuc/0">{news[0].title}</Link></h3><p className="mt-4 text-sm leading-6 text-gray-600">Tổng hợp nội dung, thủ tục, lưu ý pháp lý và mẫu văn bản để tham khảo khi thanh lý hoặc chấm dứt hợp đồng.</p><Link data-catalog-variant="text" href="/collection/mau-hop-dong/tin-tuc/0" className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-green-700">Xem chi tiết <FiArrowRight /></Link></article><div className="space-y-3">{news.slice(1).map((item, index) => <article key={item.title} className="group rounded-2xl border border-slate-100 bg-white p-3 shadow-sm transition hover:shadow-md"><div className="flex-1 min-w-0"><h3 className="text-sm font-semibold leading-6 text-gray-900 group-hover:text-green-700"><Link href={`/collection/mau-hop-dong/tin-tuc/${index + 1}`}>{item.title}</Link></h3><div className="mt-2 flex items-center gap-3 text-xs text-gray-500"><span>{item.category}</span><span>{item.date}</span></div></div></article>)}</div></div></div>
+       </section>
+ 
+-      <ContractPreviewModal item={preview} onClose={() => setPreview(null)} />
+     </main>
+   );
+ }
+diff --git a/src/shared/features/page/contract-clone/ContractPreviewModal.tsx b/src/shared/features/page/contract-clone/ContractPreviewModal.tsx
+index 5b5964c..9a8d2b0 100644
+--- a/src/shared/features/page/contract-clone/ContractPreviewModal.tsx
++++ b/src/shared/features/page/contract-clone/ContractPreviewModal.tsx
+@@ -2,14 +2,14 @@ import Image from 'next/image';
+ import { FiCheckCircle, FiDownload, FiEye, FiShield, FiStar, FiX } from 'react-icons/fi';
+ import type { ContractItem } from './mockData';
+ import { formatVnd } from './mockData';
++import { CatalogDialog } from '@/shared/ui/liquid/CatalogDialog';
+ 
+ export function ContractPreviewModal({ item, onClose }: { item: ContractItem | null; onClose: () => void }) {
+   if (!item) return null;
+   const discount = Math.max(0, Math.round((1 - item.price / item.oldPrice) * 100));
+ 
+   return (
+-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/55 p-4 backdrop-blur-sm" onMouseDown={onClose}>
+-      <div data-liquid-surface="" className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl sm:p-8" onMouseDown={(event) => event.stopPropagation()}>
++    <CatalogDialog open onClose={onClose} title={item.title} className="p-6 sm:p-8">
+         <div className="flex items-start justify-between gap-4">
+           <div className="flex min-w-0 items-start gap-3">
+             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
+@@ -31,9 +31,8 @@ export function ContractPreviewModal({ item, onClose }: { item: ContractItem | n
+           item.kind === 'bundle' ? `${item.pages || 100}+ trang tài liệu` : `${item.pages || 10} trang nội dung`,
+           item.language || 'Tiếng Việt',
+         ].map((text) => <div key={text} className="flex items-center gap-2 rounded-xl bg-gray-50 p-3 text-sm font-semibold text-gray-700"><FiCheckCircle className="text-green-600" />{text}</div>)}</div>
+-        <div className="mt-6 rounded-2xl border border-green-100 bg-green-50 p-4"><div className="flex flex-wrap items-center justify-between gap-4"><div><div className="text-xs text-gray-400 line-through">{formatVnd(item.oldPrice)}</div><div className="text-2xl font-black text-green-700">{formatVnd(item.price)}</div></div><button type="button" className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-green-700"><FiDownload /> Tải mẫu hợp đồng</button></div></div>
+-        <div className="mt-4 flex items-center gap-2 text-xs text-gray-500"><FiShield className="text-green-600" />Mock FE phục vụ đánh giá giao diện; không thực hiện thanh toán hoặc tải file thật.</div>
+-      </div>
+-    </div>
++        <div className="mt-6 rounded-2xl border border-green-100 bg-green-50 p-4"><div className="flex flex-wrap items-center justify-between gap-4"><div><div className="text-xs text-gray-400 line-through">{formatVnd(item.oldPrice)}</div><div className="text-2xl font-black text-green-700">{formatVnd(item.price)}</div></div><button type="button" disabled aria-describedby="contract-file-status" className="inline-flex min-h-12 items-center gap-2 rounded-full border px-5 py-3 text-sm font-semibold opacity-60"><FiDownload /> Chưa có tệp để tải</button></div></div>
++        <div id="contract-file-status" className="mt-4 flex items-center gap-2 text-xs text-gray-500"><FiShield className="text-green-600" />Tài liệu gốc chưa được cung cấp. Chưa thực hiện thanh toán hoặc tải file.</div>
++    </CatalogDialog>
+   );
+ }
+diff --git a/src/shared/features/page/contract-clone/ContractSearch.tsx b/src/shared/features/page/contract-clone/ContractSearch.tsx
+index eeaa392..8158815 100644
+--- a/src/shared/features/page/contract-clone/ContractSearch.tsx
++++ b/src/shared/features/page/contract-clone/ContractSearch.tsx
+@@ -1,11 +1,11 @@
+ import theme from '@/shared/ui/liquid/CatalogTheme.module.css';
+ import { useRouter } from 'next/router';
+ import { FormEvent, useEffect, useMemo, useState } from 'react';
+-import { FiChevronLeft, FiChevronRight, FiFileText, FiPackage, FiSearch } from 'react-icons/fi';
++import { FiChevronLeft, FiChevronRight, FiSearch } from 'react-icons/fi';
+ import { ContractCard } from './ContractCard';
+-import { ContractPreviewModal } from './ContractPreviewModal';
++import { ContractSearchControls } from './ContractSearchControls';
+ import { ContractSidebar } from './ContractSidebar';
+-import { bundles, contracts, type ContractAudience, type ContractItem, type ContractKind } from './mockData';
++import { bundles, contracts, type ContractAudience, type ContractKind } from './mockData';
+ 
+ const PAGE_SIZE = 8;
+ 
+@@ -16,14 +16,13 @@ export function ContractSearch() {
+   const [audience, setAudience] = useState<'Tất cả' | ContractAudience>('Tất cả');
+   const [category, setCategory] = useState('Tất cả');
+   const [page, setPage] = useState(1);
+-  const [preview, setPreview] = useState<ContractItem | null>(null);
+ 
+   useEffect(() => {
+     if (!router.isReady) return;
+     setQuery(typeof router.query.q === 'string' ? router.query.q : '');
+     setCategory(typeof router.query.category === 'string' ? router.query.category : 'Tất cả');
+     setKind(router.query.type === 'bundle' ? 'bundle' : 'contract');
+-    setAudience(router.query.audience === 'Cá nhân' || router.query.audience === 'Doanh nghiệp' ? router.query.audience : 'Tất cả');
++    setAudience(router.query.type === 'bundle' ? 'Doanh nghiệp' : router.query.audience === 'Cá nhân' || router.query.audience === 'Doanh nghiệp' ? router.query.audience : 'Tất cả');
+     const pageFromUrl = Number(router.query.page);
+     setPage(Number.isFinite(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1);
+   }, [router.isReady, router.query.q, router.query.category, router.query.type, router.query.audience, router.query.page]);
+@@ -57,7 +56,7 @@ export function ContractSearch() {
+     if (state.type === 'bundle') urlQuery.type = 'bundle';
+     if (state.audience !== 'Tất cả') urlQuery.audience = state.audience;
+     if (state.page > 1) urlQuery.page = String(state.page);
+-    router.replace({ pathname: '/collection/mau-hop-dong/tim-kiem', query: urlQuery }, undefined, { shallow: true });
++    router.replace({ pathname: '/collection/mau-hop-dong', query: urlQuery }, undefined, { shallow: true });
+   };
+ 
+   const submit = (event: FormEvent) => {
+@@ -113,39 +112,20 @@ export function ContractSearch() {
+             </div>
+ 
+             <div className="order-1 space-y-3 md:space-y-4 lg:order-2 lg:col-span-9">
+-              <form onSubmit={submit} className="rounded-xl bg-white p-3 md:p-4">
+-                <div data-liquid-surface="" className="flex items-center rounded-lg border border-gray-200 bg-white px-3 focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100">
+-                  <FiSearch className="h-4 w-4 flex-shrink-0 text-gray-400" />
+-                  <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Tìm kiếm hợp đồng..." className="h-11 min-w-0 flex-1 bg-transparent px-3 text-sm outline-none" />
+-                  <button type="submit" className="rounded-lg bg-green-500 px-4 py-2 text-xs font-semibold text-white hover:bg-green-600 md:text-sm">Tìm kiếm</button>
+-                </div>
+-              </form>
+-
+-              <div data-liquid-surface="" className="rounded-xl bg-white p-3 md:p-4">
+-                <div className="flex items-center gap-2 md:gap-3">
+-                  <span className="text-xs font-medium text-gray-700 md:text-sm">Lọc theo:</span>
+-                  <div className="flex gap-2">
+-                    <button type="button" onClick={() => setKindAndSync('contract')} className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors md:gap-2 md:px-4 md:py-2 md:text-sm ${kind === 'contract' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}><FiFileText /><span>Hợp đồng</span></button>
+-                    <button type="button" onClick={() => setKindAndSync('bundle')} className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors md:gap-2 md:px-4 md:py-2 md:text-sm ${kind === 'bundle' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}><FiPackage /><span>Gói</span></button>
+-                  </div>
+-                </div>
+-              </div>
+-
+-              <div data-liquid-surface="" className="rounded-xl bg-white p-3 md:p-4">
+-                <div className="flex flex-wrap items-center gap-2 md:gap-3">
+-                  <span className="text-xs font-medium text-gray-700 md:text-sm">Đối tượng:</span>
+-                  <div className="flex gap-2">
+-                    {(['Tất cả', 'Cá nhân', 'Doanh nghiệp'] as const).map((value) => (
+-                      <button key={value} type="button" disabled={kind === 'bundle' && value !== 'Doanh nghiệp'} onClick={() => setAudienceAndSync(value)} className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors md:px-4 md:py-2 md:text-sm ${audience === value ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} disabled:cursor-not-allowed disabled:opacity-35`}>{value}</button>
+-                    ))}
+-                  </div>
+-                  <div className="ml-auto text-xs text-gray-500 md:text-sm"><strong className="text-gray-800">{filtered.length}</strong> kết quả</div>
+-                </div>
+-              </div>
++              <ContractSearchControls
++                query={query}
++                kind={kind}
++                audience={audience}
++                count={filtered.length}
++                onQueryChange={setQuery}
++                onSubmit={submit}
++                onKindChange={setKindAndSync}
++                onAudienceChange={setAudienceAndSync}
++              />
+ 
+               {visible.length ? (
+                 <div className="space-y-2">
+-                  {visible.map((item) => <ContractCard key={item.id} item={item} onPreview={setPreview} />)}
++                  {visible.map((item) => <ContractCard key={item.id} item={item} />)}
+                 </div>
+               ) : (
+                 <div data-liquid-surface="" className="rounded-xl bg-white py-20 text-center">
+@@ -167,7 +147,6 @@ export function ContractSearch() {
+           </div>
+         </div>
+       </div>
+-      <ContractPreviewModal item={preview} onClose={() => setPreview(null)} />
+     </main>
+   );
+ }
+diff --git a/src/shared/features/page/contract-clone/ContractSearchControls.module.css b/src/shared/features/page/contract-clone/ContractSearchControls.module.css
+new file mode 100644
+index 0000000..3dd5ebf
+--- /dev/null
++++ b/src/shared/features/page/contract-clone/ContractSearchControls.module.css
+@@ -0,0 +1,150 @@
++.controls {
++  display: grid;
++  gap: 10px;
++  min-width: 0;
++  color: var(--liquid-field-ink);
++}
++.controls .panel {
++  padding: 12px;
++  border-radius: 20px;
++  box-shadow: var(--liquid-shadow);
++}
++.controls .searchField {
++  display: flex;
++  align-items: center;
++  min-height: 48px;
++  gap: 10px;
++  padding: 4px 4px 4px 12px;
++  border: 1px solid var(--liquid-field-edge);
++}
++.searchField:focus-within {
++  outline: 2px solid var(--liquid-focus);
++  outline-offset: 2px;
++}
++.searchIcon {
++  width: 18px;
++  height: 18px;
++  flex-shrink: 0;
++  color: var(--liquid-field-placeholder);
++}
++.controls .searchInput {
++  width: 100%;
++  min-width: 0;
++  flex: 1;
++  height: 40px;
++  padding: 0;
++  border: 0;
++  color: var(--liquid-field-ink);
++  font: inherit;
++  font-size: 14px;
++  line-height: 20px;
++}
++.controls .searchInput:focus-visible {
++  outline: none;
++}
++.controls .submitButton[data-catalog-variant] {
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  flex-shrink: 0;
++  min-height: 40px;
++  padding: 0 18px;
++  font-size: 14px;
++  line-height: 20px;
++  white-space: nowrap;
++}
++.filterRow {
++  display: flex;
++  flex-wrap: wrap;
++  align-items: center;
++  gap: 8px 12px;
++  min-width: 0;
++}
++.label {
++  flex: 0 0 76px;
++  color: var(--liquid-field-ink);
++  font-size: 13px;
++  font-weight: 600;
++  line-height: 20px;
++  white-space: nowrap;
++}
++.options {
++  display: flex;
++  flex-wrap: wrap;
++  align-items: center;
++  gap: 6px;
++  min-width: 0;
++}
++.controls .filterButton[data-catalog-variant] {
++  display: inline-flex;
++  align-items: center;
++  justify-content: center;
++  gap: 6px;
++  min-height: 36px;
++  padding: 8px 14px;
++  font-size: 13px;
++  font-weight: 600;
++  line-height: 20px;
++  white-space: nowrap;
++}
++.filterButton svg {
++  width: 16px;
++  height: 16px;
++  flex-shrink: 0;
++}
++.controls .filterButton:disabled {
++  opacity: 0.6;
++  cursor: not-allowed;
++}
++.resultCount {
++  margin-left: auto;
++  color: var(--liquid-field-placeholder);
++  font-size: 12px;
++  line-height: 20px;
++  white-space: nowrap;
++}
++.resultCount strong {
++  color: var(--liquid-field-ink);
++  font-weight: 700;
++  font-variant-numeric: tabular-nums;
++}
++@media (max-width: 620px) {
++  .controls {
++    gap: 8px;
++  }
++  .controls .panel {
++    padding: 10px;
++  }
++  .controls .searchField {
++    gap: 8px;
++    padding-left: 12px;
++  }
++  .controls .submitButton[data-catalog-variant] {
++    padding-inline: 14px;
++    font-size: 13px;
++  }
++  .controls .searchInput {
++    font-size: 16px;
++  }
++  .label {
++    flex-basis: 100%;
++  }
++  .options {
++    width: 100%;
++  }
++  .controls .filterButton[data-catalog-variant] {
++    flex: 1 0 auto;
++    min-height: 40px;
++    padding-inline: 12px;
++  }
++  .resultCount {
++    width: 100%;
++    margin-left: 0;
++    text-align: right;
++  }
++}
++@media (max-width: 360px) {
++  .searchIcon {
++    display: none;
++  }
++}
+diff --git a/src/shared/features/page/contract-clone/ContractSearchControls.tsx b/src/shared/features/page/contract-clone/ContractSearchControls.tsx
+new file mode 100644
+index 0000000..387cd79
+--- /dev/null
++++ b/src/shared/features/page/contract-clone/ContractSearchControls.tsx
+@@ -0,0 +1,132 @@
++import { useId, type FormEvent } from 'react';
++import { FiFileText, FiPackage, FiSearch } from 'react-icons/fi';
++import type { ContractAudience, ContractKind } from './mockData';
++import styles from './ContractSearchControls.module.css';
++
++export function ContractSearchControls({
++  query,
++  kind,
++  audience,
++  count,
++  onQueryChange,
++  onSubmit,
++  onKindChange,
++  onAudienceChange,
++}: {
++  query: string;
++  kind: ContractKind;
++  audience: 'Tất cả' | ContractAudience;
++  count: number;
++  onQueryChange: (value: string) => void;
++  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
++  onKindChange: (value: ContractKind) => void;
++  onAudienceChange: (value: 'Tất cả' | ContractAudience) => void;
++}) {
++  const id = useId();
++  return (
++    <div className={styles.controls}>
++      <form
++        role="search"
++        aria-label="Tìm kiếm mẫu hợp đồng"
++        onSubmit={onSubmit}
++        data-liquid-surface=""
++        className={styles.panel}
++      >
++        <label htmlFor={`${id}-search`} className="sr-only">
++          Tìm kiếm mẫu hợp đồng
++        </label>
++        <div
++          data-liquid-field=""
++          data-slot="input-group"
++          className={styles.searchField}
++        >
++          <FiSearch className={styles.searchIcon} aria-hidden="true" />
++          <input
++            id={`${id}-search`}
++            type="search"
++            value={query}
++            onChange={event => onQueryChange(event.target.value)}
++            placeholder="Tìm kiếm mẫu hợp đồng..."
++            className={styles.searchInput}
++          />
++          <button
++            type="submit"
++            data-catalog-variant="primary"
++            data-liquid-shape="pill"
++            className={styles.submitButton}
++          >
++            Tìm kiếm
++          </button>
++        </div>
++      </form>
++
++      <div data-liquid-surface="" className={styles.panel}>
++        <div
++          className={styles.filterRow}
++          role="group"
++          aria-labelledby={`${id}-kind`}
++        >
++          <span id={`${id}-kind`} className={styles.label}>
++            Lọc theo:
++          </span>
++          <div className={styles.options}>
++            {(
++              [
++                { value: 'contract', label: 'Hợp đồng', icon: FiFileText },
++                { value: 'bundle', label: 'Gói', icon: FiPackage },
++              ] as const
++            ).map(item => (
++              <button
++                key={item.value}
++                type="button"
++                aria-pressed={kind === item.value}
++                data-catalog-variant={
++                  kind === item.value ? 'primary' : 'secondary'
++                }
++                data-liquid-shape="pill"
++                onClick={() => onKindChange(item.value)}
++                className={styles.filterButton}
++              >
++                <item.icon aria-hidden="true" />
++                <span>{item.label}</span>
++              </button>
++            ))}
++          </div>
++        </div>
++      </div>
++
++      <div data-liquid-surface="" className={styles.panel}>
++        <div
++          className={styles.filterRow}
++          role="group"
++          aria-labelledby={`${id}-audience`}
++        >
++          <span id={`${id}-audience`} className={styles.label}>
++            Đối tượng:
++          </span>
++          <div className={styles.options}>
++            {(['Tất cả', 'Cá nhân', 'Doanh nghiệp'] as const).map(value => (
++              <button
++                key={value}
++                type="button"
++                aria-pressed={audience === value}
++                disabled={kind === 'bundle' && value !== 'Doanh nghiệp'}
++                data-catalog-variant={
++                  audience === value ? 'primary' : 'secondary'
++                }
++                data-liquid-shape="pill"
++                onClick={() => onAudienceChange(value)}
++                className={styles.filterButton}
++              >
++                {value}
++              </button>
++            ))}
++          </div>
++          <span className={styles.resultCount} role="status">
++            <strong>{count}</strong> kết quả
++          </span>
++        </div>
++      </div>
++    </div>
++  );
++}
+diff --git a/src/shared/features/page/contract-clone/ContractSupportingSections.tsx b/src/shared/features/page/contract-clone/ContractSupportingSections.tsx
+new file mode 100644
+index 0000000..4243991
+--- /dev/null
++++ b/src/shared/features/page/contract-clone/ContractSupportingSections.tsx
+@@ -0,0 +1,171 @@
++import Image from 'next/image';
++import { useState } from 'react';
++import { FiCheckCircle, FiFileText, FiSearch } from 'react-icons/fi';
++import { CatalogCarousel } from '@/shared/ui/liquid/CatalogCarousel';
++import { team } from './mockData';
++
++const steps = [
++  {
++    title: 'Tìm kiếm',
++    description: 'Nhập từ khóa hoặc chọn danh mục hợp đồng theo nhu cầu.',
++    icon: FiSearch,
++  },
++  {
++    title: 'Chọn mẫu',
++    description: 'Đối chiếu nội dung, đối tượng sử dụng và định dạng tài liệu.',
++    icon: FiFileText,
++  },
++  {
++    title: 'Nhận tài liệu',
++    description:
++      'Kiểm tra thông tin gói và tài liệu có sẵn trước khi tiếp tục.',
++    icon: FiCheckCircle,
++  },
++];
++
++/** A usable guide frame while the reference video's source is unavailable. */
++export function ContractGuide({ videoSrc }: { videoSrc?: string }) {
++  const [step, setStep] = useState(0);
++  const Icon = steps[step].icon;
++  if (videoSrc)
++    return (
++      <video
++        controls
++        playsInline
++        preload="metadata"
++        className="mx-auto aspect-[470/255] w-full max-w-[470px] rounded-2xl"
++        src={videoSrc}
++        aria-label="Hướng dẫn chọn và nhận hợp đồng"
++      />
++    );
++  return (
++    <div className="mx-auto max-w-[470px]">
++      <div
++        data-liquid-surface=""
++        className="flex aspect-[470/255] flex-col items-center justify-center rounded-2xl border border-white/60 p-5 text-center"
++        aria-live="polite"
++      >
++        <Icon size={32} className="mb-3 text-green-600" aria-hidden="true" />
++        <span className="text-xs font-semibold text-green-700">
++          BƯỚC {step + 1} / 3
++        </span>
++        <h4 className="mt-2 text-xl font-semibold">{steps[step].title}</h4>
++        <p className="mt-2 max-w-sm text-sm leading-6 text-gray-600">
++          {steps[step].description}
++        </p>
++      </div>
++      <div
++        className="mt-3 grid grid-cols-3 gap-2"
++        role="group"
++        aria-label="Các bước hướng dẫn"
++      >
++        {steps.map((item, index) => (
++          <button
++            key={item.title}
++            type="button"
++            aria-pressed={step === index}
++            data-catalog-variant={step === index ? 'primary' : 'secondary'}
++            className="min-h-11 rounded-full px-2 py-2 text-xs font-semibold sm:text-sm"
++            onClick={() => setStep(index)}
++          >
++            {index + 1}. {item.title}
++          </button>
++        ))}
++      </div>
++    </div>
++  );
++}
++
++const testimonials = [
++  {
++    name: 'Anh Hải',
++    role: 'Freelancer · buôn bán tự do',
++    text: 'Trước đây, tôi phải trả tiền cho luật sư để kiểm tra lại hợp đồng do AI soạn, rất tốn thời gian và chi phí nhân đôi. Bây giờ, tôi chỉ cần mua mẫu chuẩn từ web.',
++  },
++  {
++    name: 'Anh Thành Đỗ',
++    role: 'Chủ doanh nghiệp Agency Marketing',
++    text: 'Mặc dù chỉ bỏ tiền mua mẫu, nhưng tôi cảm thấy như có luật sư riêng. Khi tôi cần tùy chỉnh điều khoản về KPI/hiệu suất, đội ngũ chăm sóc khách hàng đã hỗ trợ rất nhanh và chính xác.',
++  },
++  {
++    name: 'Anh Huy',
++    role: 'Chủ xưởng gia công',
++    text: 'Tôi từng bối rối về các điều khoản phạt vi phạm hợp đồng. Mẫu tôi mua có quy định chi tiết về pháp lý và cách tính phạt. Chi phí mua là khoản đầu tư nhỏ cho sự minh bạch và an tâm trong giao dịch.',
++  },
++];
++
++export function ContractTestimonials() {
++  return (
++    <div className="mx-auto max-w-4xl">
++      <CatalogCarousel label="Đánh giá khách hàng hợp đồng" compact>
++        {testimonials.map(item => (
++          <figure
++            data-liquid-card=""
++            key={item.name}
++            className="m-0 rounded-3xl p-6 sm:p-8"
++          >
++            <span className="text-amber-500" aria-label="5 trên 5 sao">
++              ★★★★★
++            </span>
++            <blockquote className="mt-4 text-base leading-7 text-gray-700">
++              “{item.text}”
++            </blockquote>
++            <figcaption className="mt-5 flex items-center gap-3">
++              <span
++                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-50 text-green-700"
++                aria-hidden="true"
++              >
++                {item.name.replace('Anh ', '').slice(0, 1)}
++              </span>
++              <span>
++                <strong className="block text-sm">{item.name}</strong>
++                <span className="text-xs text-gray-500">{item.role}</span>
++              </span>
++            </figcaption>
++          </figure>
++        ))}
++      </CatalogCarousel>
++    </div>
++  );
++}
++
++export function ContractTeam() {
++  const groups = [
++    { title: 'Nhà sáng lập', members: team.slice(0, 1), small: false },
++    { title: 'Đội ngũ nòng cốt', members: team.slice(1, 4), small: false },
++    { title: 'Ban biên tập', members: team.slice(4), small: true },
++  ];
++  return (
++    <div className="mt-10 space-y-8">
++      {groups.map(group => (
++        <section key={group.title} aria-label={group.title}>
++          <h3 className="mb-5 text-center text-base font-semibold text-gray-700">
++            {group.title}
++          </h3>
++          <div
++            className={`mx-auto grid max-w-5xl justify-items-center gap-x-4 gap-y-6 ${group.members.length === 1 ? 'grid-cols-1' : group.small ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3'}`}
++          >
++            {group.members.map(member => (
++              <div
++                key={member.name}
++                className="w-full max-w-[240px] text-center"
++              >
++                <Image
++                  src={member.image}
++                  alt={member.name}
++                  width={80}
++                  height={80}
++                  className={`mx-auto rounded-full object-cover ${group.small ? 'h-12 w-12 sm:h-14 sm:w-14' : 'h-16 w-16 sm:h-20 sm:w-20'}`}
++                />
++                <div className="mt-3 text-sm font-semibold">{member.name}</div>
++                <p className="mt-1 text-xs leading-5 text-green-700">
++                  {member.role}
++                </p>
++              </div>
++            ))}
++          </div>
++        </section>
++      ))}
++    </div>
++  );
++}
+diff --git a/src/shared/ui/liquid/CatalogCarousel.module.css b/src/shared/ui/liquid/CatalogCarousel.module.css
+new file mode 100644
+index 0000000..a1cb309
+--- /dev/null
++++ b/src/shared/ui/liquid/CatalogCarousel.module.css
+@@ -0,0 +1,61 @@
++.carousel {
++  position: relative;
++  min-width: 0;
++}
++.track {
++  display: flex;
++  gap: 24px;
++  overflow-x: auto;
++  overscroll-behavior-x: contain;
++  scroll-snap-type: x mandatory;
++  scrollbar-width: thin;
++  scrollbar-color: rgba(182, 76, 44, 0.25) transparent;
++  padding: 4px 0 12px;
++}
++.track > * {
++  flex: 0 0 calc((100% - 72px) / 4);
++  min-width: 0;
++  scroll-snap-align: start;
++}
++.controls {
++  display: flex;
++  justify-content: flex-end;
++  gap: 8px;
++  margin-top: 8px;
++}
++.controls button {
++  width: 44px;
++  height: 44px;
++  border-radius: 50%;
++  font-size: 24px;
++  display: grid;
++  place-items: center;
++}
++.controls button:disabled {
++  opacity: 0.35;
++  cursor: default;
++}
++.compact .track {
++  gap: 12px;
++}
++.compact .track > * {
++  flex-basis: 100%;
++}
++.compact .controls {
++  justify-content: space-between;
++}
++@media (max-width: 1180px) {
++  .track > * {
++    flex-basis: calc((100% - 48px) / 3);
++  }
++}
++@media (max-width: 900px) {
++  .track > * {
++    flex-basis: calc((100% - 24px) / 2);
++  }
++}
++@media (max-width: 620px) {
++  .track > * {
++    flex-basis: 88%;
++  }
++}
+diff --git a/src/shared/ui/liquid/CatalogCarousel.tsx b/src/shared/ui/liquid/CatalogCarousel.tsx
+new file mode 100644
+index 0000000..349c1d8
+--- /dev/null
++++ b/src/shared/ui/liquid/CatalogCarousel.tsx
+@@ -0,0 +1,91 @@
++import { useEffect, useRef, useState, type ReactNode } from 'react';
++import styles from './CatalogCarousel.module.css';
++
++export function CatalogCarousel({
++  label,
++  children,
++  compact = false,
++}: {
++  label: string;
++  children: ReactNode;
++  compact?: boolean;
++}) {
++  const track = useRef<HTMLDivElement>(null);
++  const [edges, setEdges] = useState({ start: true, end: false });
++  useEffect(() => {
++    const element = track.current;
++    if (!element) return;
++    const update = () =>
++      setEdges({
++        start: element.scrollLeft <= 2,
++        end:
++          element.scrollLeft + element.clientWidth >= element.scrollWidth - 2,
++      });
++    const observer = new ResizeObserver(update);
++    observer.observe(element);
++    element.addEventListener('scroll', update, { passive: true });
++    update();
++    return () => {
++      observer.disconnect();
++      element.removeEventListener('scroll', update);
++    };
++  }, [children]);
++  const move = (direction: number) => {
++    const element = track.current;
++    if (!element) return;
++    const first = element.firstElementChild as HTMLElement | null;
++    const distance = first
++      ? first.offsetWidth +
++        parseFloat(getComputedStyle(element).columnGap || '0')
++      : element.clientWidth;
++    element.scrollBy({
++      left: direction * distance,
++      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches
++        ? 'auto'
++        : 'smooth',
++    });
++  };
++  return (
++    <div
++      className={`${styles.carousel} ${compact ? styles.compact : ''}`}
++      role="region"
++      aria-label={label}
++      aria-roledescription="carousel"
++    >
++      <div
++        ref={track}
++        className={styles.track}
++        tabIndex={0}
++        onKeyDown={event => {
++          if (event.target !== event.currentTarget) return;
++          if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
++            event.preventDefault();
++            move(event.key === 'ArrowLeft' ? -1 : 1);
++          }
++        }}
++      >
++        {children}
++      </div>
++      <div className={styles.controls}>
++        <button
++          data-catalog-variant="secondary"
++          type="button"
++          disabled={edges.start}
++          onClick={() => move(-1)}
++          aria-label={`${label}: trước`}
++        >
++          ‹
++        </button>
++        <button
++          data-catalog-variant="secondary"
++          type="button"
++          disabled={edges.end}
++          onClick={() => move(1)}
++          aria-label={`${label}: tiếp theo`}
++        >
++          ›
++        </button>
++      </div>
++    </div>
++  );
++}
+diff --git a/src/shared/ui/liquid/CatalogDialog.module.css b/src/shared/ui/liquid/CatalogDialog.module.css
+new file mode 100644
+index 0000000..f14a64b
+--- /dev/null
++++ b/src/shared/ui/liquid/CatalogDialog.module.css
+@@ -0,0 +1,37 @@
++.overlay {
++  position: fixed;
++  inset: 0;
++  z-index: 400;
++  background: rgba(39, 30, 24, 0.42);
++  backdrop-filter: blur(8px);
++}
++.content.content {
++  position: fixed;
++  top: 50%;
++  left: 50%;
++  z-index: 401;
++  transform: translate(-50%, -50%);
++  width: min(var(--catalog-dialog-width, 640px), calc(100% - 32px));
++  max-height: calc(100dvh - 48px);
++  overflow-y: auto;
++  overscroll-behavior: contain;
++  background: var(--liquid-panel, #fffaf6);
++  border: 1px solid var(--liquid-edge, #e6dcd4);
++  border-radius: 24px;
++  box-shadow: 0 24px 80px rgba(50, 35, 24, 0.2);
++}
++.content[data-size='purchase'] {
++  --catalog-dialog-width: 640px;
++}
++.content[data-size='payment'] {
++  --catalog-dialog-width: 820px;
++}
++.content[data-size='card'] {
++  --catalog-dialog-width: 560px;
++}
++@media (max-width: 640px) {
++  .content.content {
++    max-height: calc(100dvh - 24px);
++    width: calc(100% - 24px);
++  }
++}
+diff --git a/src/shared/ui/liquid/CatalogDialog.tsx b/src/shared/ui/liquid/CatalogDialog.tsx
+new file mode 100644
+index 0000000..4d6bee6
+--- /dev/null
++++ b/src/shared/ui/liquid/CatalogDialog.tsx
+@@ -0,0 +1,56 @@
++import * as Dialog from '@radix-ui/react-dialog';
++import { useRef, type ReactNode } from 'react';
++import theme from './CatalogTheme.module.css';
++import styles from './CatalogDialog.module.css';
++
++/** Shared modal: Escape, focus trapping, scroll lock and focus restoration. */
++export function CatalogDialog({
++  open,
++  onClose,
++  title,
++  className = '',
++  size = 'default',
++  children,
++}: {
++  open: boolean;
++  onClose: () => void;
++  title: string;
++  className?: string;
++  size?: 'default' | 'purchase' | 'payment' | 'card';
++  children: ReactNode;
++}) {
++  const opener = useRef<HTMLElement | null>(null);
++  return (
++    <Dialog.Root
++      open={open}
++      onOpenChange={value => {
++        if (!value) onClose();
++      }}
++    >
++      <Dialog.Portal>
++        <Dialog.Overlay className={styles.overlay} />
++        <Dialog.Content
++          data-liquid-surface=""
++          data-size={size}
++          className={`${theme.scope} ${styles.content} ${className}`}
++          aria-describedby={undefined}
++          onOpenAutoFocus={() => {
++            opener.current =
++              document.activeElement instanceof HTMLElement
++                ? document.activeElement
++                : null;
++          }}
++          onCloseAutoFocus={event => {
++            if (opener.current?.isConnected) {
++              event.preventDefault();
++              opener.current.focus();
++            }
++          }}
++        >
++          <Dialog.Title className="sr-only">{title}</Dialog.Title>
++          {children}
++        </Dialog.Content>
++      </Dialog.Portal>
++    </Dialog.Root>
++  );
++}
+diff --git a/src/shared/ui/liquid/CatalogTheme.module.css b/src/shared/ui/liquid/CatalogTheme.module.css
+index 2cf7077..f250d41 100644
+--- a/src/shared/ui/liquid/CatalogTheme.module.css
++++ b/src/shared/ui/liquid/CatalogTheme.module.css
+@@ -24,8 +24,16 @@
+ .page :is(h1, h2) { line-height: 1.25; }
+ .page :global([data-catalog-title]) { font-size: clamp(2rem, 4.2vw, 3.5rem); line-height: 1.22; font-weight: 700; }
+ .scope { font-family: var(--font-inter), Inter, system-ui, sans-serif; }
++.scope :global(.text-green-500), .scope :global(.text-green-600), .scope :global(.text-green-700), .scope :global(.text-green-800) { color: var(--catalog-accent); }
++.scope :global(.bg-green-50), .scope :global(.bg-green-100) { background: var(--catalog-soft); }
++.scope :global(.border-green-100), .scope :global(.border-green-200) { border-color: var(--liquid-field-edge); }
++.scope :is(button, a, input, select):focus-visible { outline: 2px solid var(--liquid-focus); outline-offset: 3px; }
+ .page :is(p, li) { text-wrap: pretty; }
+ .page button { font-family: inherit; }
++.page :global([data-catalog-variant="primary"]), .scope :global([data-catalog-variant="primary"]) { background: var(--catalog-fill) !important; color: #fff !important; border: 1px solid rgba(133, 48, 24, .25); min-height: 48px; border-radius: 999px; font-weight: 700; }
++.page :global([data-catalog-variant="text"]), .scope :global([data-catalog-variant="text"]) { background: transparent !important; background-image: none !important; box-shadow: none !important; border: 0; color: var(--catalog-accent); }
++.page :global([data-catalog-variant="text"])::before, .page :global([data-catalog-variant="text"])::after, .scope :global([data-catalog-variant="text"])::before, .scope :global([data-catalog-variant="text"])::after { display: none; }
++.page :global([data-catalog-variant="secondary"]), .scope :global([data-catalog-variant="secondary"]) { background: var(--liquid-panel); color: var(--liquid-field-ink); border: 1px solid var(--liquid-field-edge); }
+ .page > section { background: transparent; }
+ .page :is(button, a, input, select):focus-visible { outline: 2px solid var(--liquid-focus); outline-offset: 3px; }
+ .page :global([data-catalog-hero]) {

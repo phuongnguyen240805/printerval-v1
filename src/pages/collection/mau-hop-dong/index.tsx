@@ -4,7 +4,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import i18nConfig from '../../../../next-i18next.config';
 import type { NextPageWithLayout } from '../../_app';
 import { PrimaryLayout } from '@/layouts';
-import { ContractHome } from '@/shared/features/page/contract-clone/ContractHome';
+import { ContractSearch } from '@/shared/features/page/contract-clone/ContractSearch';
 
 export const getStaticProps: GetStaticProps = async ({ locale = 'en' }) => ({
   props: {
@@ -12,7 +12,7 @@ export const getStaticProps: GetStaticProps = async ({ locale = 'en' }) => ({
   },
 });
 
-const MauHopDongPage: NextPageWithLayout = () => <ContractHome />;
+const MauHopDongPage: NextPageWithLayout = () => <ContractSearch />;
 
 MauHopDongPage.getLayout = function getLayout(page: ReactElement) {
   return (

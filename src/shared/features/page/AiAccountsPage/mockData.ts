@@ -1,34 +1,16 @@
-export type CatalogCategory = 'all' | 'ai' | 'software' | 'music' | 'gaming';
-
-export interface MarketplaceOffer {
-  id: string;
-  title: string;
-  price: number;
-}
-
-export interface AiProduct {
-  id: string;
-  name: string;
-  category: Exclude<CatalogCategory, 'all'>;
-  logo: string;
-  price: number;
-  duration?: string;
-  badge?: string;
-  type: 'official' | 'marketplace';
-  features: string[];
-  tags?: string[];
-  joinedText?: string;
-  offerCount?: number;
-  offers?: MarketplaceOffer[];
-  detailSlug?: string;
-}
+import type { AiProduct, CatalogCategory } from '../../ai-catalog/types';
+export type { AiProduct, CatalogCategory, MarketplaceOffer } from '../../ai-catalog/types';
 
 export const catalogTabs: Array<{ id: CatalogCategory; label: string; icon: string }> = [
   { id: 'all', label: 'Tất cả', icon: '✦' },
+  { id: 'svod', label: 'SVOD', icon: '▶' },
   { id: 'ai', label: 'AI', icon: 'AI' },
-  { id: 'software', label: 'Phần mềm', icon: '⌘' },
   { id: 'music', label: 'Âm nhạc', icon: '♫' },
+  { id: 'marketplace', label: 'Marketplace', icon: '▦' },
+  { id: 'topup', label: 'Nạp tiền', icon: '+' },
+  { id: 'software', label: 'Phần mềm', icon: '⌘' },
   { id: 'gaming', label: 'Trò chơi', icon: '◈' },
+  { id: 'new', label: 'Mới', icon: '✧' },
 ];
 
 export const products: AiProduct[] = [
@@ -45,7 +27,7 @@ export const products: AiProduct[] = [
       'Các gói ChatGPT Plus với nhiều thời hạn đăng ký cùng tùy chọn riêng tư và dùng chung.',
       'GPT Images tạo hình ảnh nhanh, hỗ trợ chỉnh sửa và tinh chỉnh qua nhiều lượt trao đổi.',
       'Trò chuyện, viết nội dung, phân tích dữ liệu và tìm kiếm trên web trong một nơi.',
-      'Mock FE: trạng thái mua hàng và thời hạn được mô phỏng hoàn toàn ở phía trình duyệt.',
+      'So sánh thời hạn và quyền truy cập trước khi chọn gói.',
     ],
   },
   {
@@ -145,7 +127,7 @@ export const products: AiProduct[] = [
       'Gói Premium với thư viện nhân vật phong phú.',
       'Tạo người bạn đồng hành theo thiết lập riêng.',
       'Trò chuyện cá nhân hóa với hình ảnh và tin nhắn thoại.',
-      'Quản lý gói và trạng thái hoàn toàn bằng dữ liệu mock.',
+      'Xem rõ thời hạn và thông tin gói trước khi lựa chọn.',
     ],
   },
   {
@@ -178,7 +160,7 @@ export const products: AiProduct[] = [
       'Gói SuperGrok với tần suất truy vấn cao hơn.',
       'Khả năng lập trình, suy luận và thực thi nâng cao.',
       'Cửa sổ ngữ cảnh lớn hơn cho tác vụ phức tạp.',
-      'Mở khóa DeepSearch và Think Mode trong bản demo nội dung.',
+      'Hỗ trợ tìm kiếm và suy luận theo quyền truy cập của gói.',
     ],
   },
   {
@@ -224,19 +206,19 @@ export const products: AiProduct[] = [
     features: [
       'Nạp Plus cho tài khoản ChatGPT cá nhân.',
       'Giữ lịch sử trò chuyện và dữ liệu riêng trên tài khoản của bạn.',
-      'Quyền truy cập các tính năng Plus theo gói demo.',
-      'Luồng thanh toán trong trang chỉ là mô phỏng frontend.',
+      'Xem thông tin quyền truy cập của gói trước khi đăng ký.',
+      'Kiểm tra tài khoản nhận nâng cấp trước khi tiếp tục.',
     ],
   },
 ];
 
 export const whyItems = [
-  { icon: '⚡', title: 'Truy cập tức thì', description: 'Mô phỏng trạng thái giao tài khoản ngay sau khi hoàn tất thao tác mua. UI phản hồi tức thì mà không cần backend.' },
-  { icon: '▦', title: 'Tất cả trong một nơi', description: 'Dịch vụ AI, phần mềm, âm nhạc và tài khoản số được gom vào cùng một trải nghiệm duyệt và tìm kiếm.' },
-  { icon: '↓', title: 'Dịch vụ cao cấp giá thấp hơn', description: 'Card sản phẩm hiển thị giá, thời hạn và lựa chọn gói rõ ràng để người dùng so sánh nhanh.' },
-  { icon: '◉', title: 'Truy cập an toàn và đáng tin cậy', description: 'Trang demo không gửi dữ liệu thanh toán hay thông tin cá nhân ra ngoài; mọi thao tác đều dừng ở frontend.' },
-  { icon: '24', title: 'Hỗ trợ 24/7', description: 'Các trạng thái hỗ trợ, bảo hành và lịch sử giao dịch được mô phỏng để đánh giá đầy đủ UX sau mua.' },
-  { icon: '✓', title: 'Bảo vệ người mua', description: 'Luồng demo thể hiện rõ chính sách bảo hành, hoàn tiền và xác nhận đơn trước khi người dùng tiếp tục.' },
+  { icon: '⚡', title: 'Thời gian giao rõ ràng', description: 'So sánh thời gian giao dự kiến của từng ưu đãi ngay trong danh sách.' },
+  { icon: '▦', title: 'Tất cả trong một nơi', description: 'Duyệt các dịch vụ AI, phần mềm và âm nhạc theo từng danh mục.' },
+  { icon: '↓', title: 'Dễ dàng so sánh giá', description: 'Giá, thời hạn và quyền truy cập được trình bày cùng nhau để lựa chọn dễ hơn.' },
+  { icon: '◉', title: 'Thông tin minh bạch', description: 'Xem người bán, đánh giá và thời gian bảo hành trước khi chọn ưu đãi.' },
+  { icon: '24', title: 'Chọn theo nhu cầu', description: 'Lọc theo gói, thời lượng hoặc ngân sách để tìm lựa chọn phù hợp.' },
+  { icon: '✓', title: 'Kiểm tra trước khi xác nhận', description: 'Đối chiếu thông tin gói và tổng tiền trong bước xác nhận.' },
 ];
 
 export const reviews = [
@@ -251,36 +233,18 @@ export const reviews = [
 ];
 
 export const faqs = [
-  {
-    question: 'Trang Tài khoản AI này hoạt động như thế nào?',
-    answer: 'Đây là bản clone frontend phục vụ đánh giá UI/UX. Tìm kiếm, lọc danh mục, mở rộng mô tả, chọn gói, modal mua hàng, bộ đếm giỏ và FAQ đều chạy ở phía trình duyệt bằng mock data; không gọi API thanh toán hoặc backend sản phẩm.',
-  },
-  {
-    question: 'Dữ liệu sản phẩm trong trang có phải dữ liệu thật không?',
-    answer: 'Không. Tên dịch vụ, kiểu card và mức giá được dựng từ bundle tham chiếu để kiểm thử giao diện. Trạng thái tồn kho, thời hạn, ưu đãi và quá trình mua đều là dữ liệu mô phỏng.',
-  },
-  {
-    question: 'Tôi có thể tìm kiếm và lọc sản phẩm không?',
-    answer: 'Có. Ô tìm kiếm lọc theo tên, badge và nội dung tính năng. Thanh danh mục cho phép chuyển nhanh giữa AI, phần mềm, âm nhạc và trò chơi; bộ lọc hoạt động hoàn toàn ở frontend.',
-  },
-  {
-    question: 'Nút Mua ngay có tạo đơn thật không?',
-    answer: 'Không. Nút Mua ngay mở modal chọn thời hạn, tính tổng tiền mock và mô phỏng thao tác thêm vào giỏ. Không có request thanh toán, không lưu thẻ và không tạo đơn trên hệ thống backend.',
-  },
-  {
-    question: 'Marketplace và Official khác nhau thế nào trong bản demo?',
-    answer: 'Card Official tập trung vào một sản phẩm với giá và quyền lợi chính. Card Marketplace mô phỏng nhiều người bán/gói trong cùng một card, có danh sách offer, tag và tổng số ưu đãi để kiểm tra UX so sánh.',
-  },
-  {
-    question: 'Trang có responsive cho mobile không?',
-    answer: 'Có. Header chuyển sang menu mobile, lưới sản phẩm thay đổi từ 4 cột xuống 1 cột, tabs có thể cuộn ngang và các section FAQ/review/benefit tự co theo chiều rộng màn hình.',
-  },
-  {
-    question: 'Trang này có phụ thuộc GamsGo hoặc CDN bên ngoài không?',
-    answer: 'Không đối với phần clone. Các logo được chép vào public/assets/ai-accounts và toàn bộ UI chính dùng dữ liệu local. Điều này giúp đánh giá frontend ngay cả khi không kết nối API GamsGo.',
-  },
-  {
-    question: 'Có thể nối backend thật sau này không?',
-    answer: 'Có. Mock data đã được tách riêng khỏi component. Có thể thay nguồn products/offers bằng API mà không cần đổi cấu trúc layout và các state tương tác chính của trang.',
-  },
+  { question: 'Làm thế nào để chọn gói phù hợp?', answer: 'Chọn danh mục, mở danh sách ưu đãi và so sánh quyền truy cập, thời hạn, giá cùng thông tin người bán.' },
+  { question: 'Gói đăng ký và Marketplace khác nhau thế nào?', answer: 'Card gói đăng ký giới thiệu quyền lợi chính của dịch vụ. Marketplace tập hợp các lựa chọn để so sánh theo gói và người bán.' },
+  { question: 'Tôi có thể xem tất cả ưu đãi của một dịch vụ ở đâu?', answer: 'Chọn Xem tất cả trên card dịch vụ để mở danh sách ưu đãi tương ứng.' },
+  { question: 'Làm sao tìm ưu đãi trong ngân sách?', answer: 'Nhập giá từ và giá đến trong bộ lọc; bạn cũng có thể sắp xếp theo giá thấp đến cao.' },
+  { question: 'Có thể lọc theo thời hạn không?', answer: 'Chọn thời lượng ở bộ lọc bên trái danh sách. Trên điện thoại, mở Bộ lọc để xem các lựa chọn.' },
+  { question: 'Toàn quyền truy cập nghĩa là gì?', answer: 'Đây là thuộc tính của ưu đãi. Hãy kiểm tra mô tả cụ thể về quyền sử dụng, tài khoản và phạm vi tính năng trước khi lựa chọn.' },
+  { question: 'Tài khoản riêng và dùng chung khác nhau thế nào?', answer: 'Các hình thức có thể khác nhau về quyền quản lý, dữ liệu và số người sử dụng. Đối chiếu mô tả của từng gói trước khi tiếp tục.' },
+  { question: 'Thời gian giao được hiển thị ở đâu?', answer: 'Thời gian giao dự kiến nằm ở cuối card ưu đãi. Dùng bộ lọc Giao hàng cam kết để tìm theo nhu cầu.' },
+  { question: 'Tôi xem thông tin bảo hành ở đâu?', answer: 'Chọn nhãn bảo hành ở góc card ưu đãi để xem thông tin. Điều kiện cụ thể cần được xác nhận với người bán.' },
+  { question: 'Làm sao so sánh người bán?', answer: 'Đối chiếu tên, điểm đánh giá, số phản hồi, giá và thời gian giao hiển thị trên từng card.' },
+  { question: 'Tại sao không có kết quả sau khi lọc?', answer: 'Có thể chưa có ưu đãi đáp ứng đồng thời các điều kiện. Hãy mở rộng khoảng giá hoặc chọn Xóa bộ lọc.' },
+  { question: 'Có thể xem các gói bằng điện thoại không?', answer: 'Vuốt ngang danh sách gói trong card hoặc các đánh giá. Nút chuyển cũng dùng được khi không thao tác vuốt.' },
+  { question: 'Phiếu giảm giá được lưu như thế nào?', answer: 'Phiếu đã thu thập được ghi nhớ trong phiên duyệt hiện tại. Việc áp dụng vào đơn hàng cần hệ thống bán hàng kết nối đầy đủ.' },
+  { question: 'Các thao tác mua hiện có tạo giao dịch không?', answer: 'Các gói và giá được lấy từ Medusa. Thao tác xác nhận hiện vẫn là bản xem trước, chưa tạo đơn hàng, thanh toán hoặc cấp tài khoản thực tế.' },
 ];

@@ -1,11 +1,11 @@
 import theme from '@/shared/ui/liquid/CatalogTheme.module.css';
 import { useRouter } from 'next/router';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { FiChevronLeft, FiChevronRight, FiFileText, FiPackage, FiSearch } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiSearch } from 'react-icons/fi';
 import { ContractCard } from './ContractCard';
-import { ContractPreviewModal } from './ContractPreviewModal';
+import { ContractSearchControls } from './ContractSearchControls';
 import { ContractSidebar } from './ContractSidebar';
-import { bundles, contracts, type ContractAudience, type ContractItem, type ContractKind } from './mockData';
+import { bundles, contracts, type ContractAudience, type ContractKind } from './mockData';
 
 const PAGE_SIZE = 8;
 
@@ -16,14 +16,13 @@ export function ContractSearch() {
   const [audience, setAudience] = useState<'Tất cả' | ContractAudience>('Tất cả');
   const [category, setCategory] = useState('Tất cả');
   const [page, setPage] = useState(1);
-  const [preview, setPreview] = useState<ContractItem | null>(null);
 
   useEffect(() => {
     if (!router.isReady) return;
     setQuery(typeof router.query.q === 'string' ? router.query.q : '');
     setCategory(typeof router.query.category === 'string' ? router.query.category : 'Tất cả');
     setKind(router.query.type === 'bundle' ? 'bundle' : 'contract');
-    setAudience(router.query.audience === 'Cá nhân' || router.query.audience === 'Doanh nghiệp' ? router.query.audience : 'Tất cả');
+    setAudience(router.query.type === 'bundle' ? 'Doanh nghiệp' : router.query.audience === 'Cá nhân' || router.query.audience === 'Doanh nghiệp' ? router.query.audience : 'Tất cả');
     const pageFromUrl = Number(router.query.page);
     setPage(Number.isFinite(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1);
   }, [router.isReady, router.query.q, router.query.category, router.query.type, router.query.audience, router.query.page]);
@@ -57,7 +56,7 @@ export function ContractSearch() {
     if (state.type === 'bundle') urlQuery.type = 'bundle';
     if (state.audience !== 'Tất cả') urlQuery.audience = state.audience;
     if (state.page > 1) urlQuery.page = String(state.page);
-    router.replace({ pathname: '/collection/mau-hop-dong/tim-kiem', query: urlQuery }, undefined, { shallow: true });
+    router.replace({ pathname: '/collection/mau-hop-dong', query: urlQuery }, undefined, { shallow: true });
   };
 
   const submit = (event: FormEvent) => {
@@ -113,39 +112,20 @@ export function ContractSearch() {
             </div>
 
             <div className="order-1 space-y-3 md:space-y-4 lg:order-2 lg:col-span-9">
-              <form onSubmit={submit} className="rounded-xl bg-white p-3 md:p-4">
-                <div data-liquid-surface="" className="flex items-center rounded-lg border border-gray-200 bg-white px-3 focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100">
-                  <FiSearch className="h-4 w-4 flex-shrink-0 text-gray-400" />
-                  <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Tìm kiếm hợp đồng..." className="h-11 min-w-0 flex-1 bg-transparent px-3 text-sm outline-none" />
-                  <button type="submit" className="rounded-lg bg-green-500 px-4 py-2 text-xs font-semibold text-white hover:bg-green-600 md:text-sm">Tìm kiếm</button>
-                </div>
-              </form>
-
-              <div data-liquid-surface="" className="rounded-xl bg-white p-3 md:p-4">
-                <div className="flex items-center gap-2 md:gap-3">
-                  <span className="text-xs font-medium text-gray-700 md:text-sm">Lọc theo:</span>
-                  <div className="flex gap-2">
-                    <button type="button" onClick={() => setKindAndSync('contract')} className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors md:gap-2 md:px-4 md:py-2 md:text-sm ${kind === 'contract' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}><FiFileText /><span>Hợp đồng</span></button>
-                    <button type="button" onClick={() => setKindAndSync('bundle')} className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors md:gap-2 md:px-4 md:py-2 md:text-sm ${kind === 'bundle' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}><FiPackage /><span>Gói</span></button>
-                  </div>
-                </div>
-              </div>
-
-              <div data-liquid-surface="" className="rounded-xl bg-white p-3 md:p-4">
-                <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                  <span className="text-xs font-medium text-gray-700 md:text-sm">Đối tượng:</span>
-                  <div className="flex gap-2">
-                    {(['Tất cả', 'Cá nhân', 'Doanh nghiệp'] as const).map((value) => (
-                      <button key={value} type="button" disabled={kind === 'bundle' && value !== 'Doanh nghiệp'} onClick={() => setAudienceAndSync(value)} className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors md:px-4 md:py-2 md:text-sm ${audience === value ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} disabled:cursor-not-allowed disabled:opacity-35`}>{value}</button>
-                    ))}
-                  </div>
-                  <div className="ml-auto text-xs text-gray-500 md:text-sm"><strong className="text-gray-800">{filtered.length}</strong> kết quả</div>
-                </div>
-              </div>
+              <ContractSearchControls
+                query={query}
+                kind={kind}
+                audience={audience}
+                count={filtered.length}
+                onQueryChange={setQuery}
+                onSubmit={submit}
+                onKindChange={setKindAndSync}
+                onAudienceChange={setAudienceAndSync}
+              />
 
               {visible.length ? (
                 <div className="space-y-2">
-                  {visible.map((item) => <ContractCard key={item.id} item={item} onPreview={setPreview} />)}
+                  {visible.map((item) => <ContractCard key={item.id} item={item} />)}
                 </div>
               ) : (
                 <div data-liquid-surface="" className="rounded-xl bg-white py-20 text-center">
@@ -167,7 +147,6 @@ export function ContractSearch() {
           </div>
         </div>
       </div>
-      <ContractPreviewModal item={preview} onClose={() => setPreview(null)} />
     </main>
   );
 }

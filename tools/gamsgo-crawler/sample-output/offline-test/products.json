@@ -1,0 +1,141 @@
+[
+  {
+    "requestedUrl": "https://www.gamsgo.com/vi/details/chatgpt",
+    "finalUrl": "https://www.gamsgo.com/vi/details/chatgpt",
+    "canonicalUrl": "https://www.gamsgo.com/vi/details/chatgpt",
+    "slug": "chatgpt",
+    "title": "ChatGPT",
+    "documentTitle": "Mua tài khoản ChatGPT Plus - GamsGo",
+    "description": "ChatGPT là trợ lý AI đa phương thức được phát triển bởi OpenAI.",
+    "intro": "ChatGPT là trợ lý AI đa phương thức được phát triển bởi OpenAI, hỗ trợ nhập văn bản, hình ảnh và âm thanh.",
+    "breadcrumb": [
+      "Trang chủ",
+      "AI"
+    ],
+    "tags": [],
+    "priceOnDetail": null,
+    "listingPrice": {
+      "raw": "￥762/ tháng",
+      "amount": 762,
+      "currency": "JPY",
+      "period": "month",
+      "source": "listing"
+    },
+    "features": [
+      "Tạo nội dung và hỗ trợ phân tích tài liệu phức tạp",
+      "Tương tác tự nhiên qua nhiều hình thức đầu vào"
+    ],
+    "sections": [
+      {
+        "level": 2,
+        "heading": "Chọn gói",
+        "text": "PlusGia hạn1 tháng3 tháng Tạm tính: --"
+      },
+      {
+        "level": 2,
+        "heading": "Mở khóa trải nghiệm GPT mạnh mẽ hơn",
+        "text": "Trợ lý AI hỗ trợ công việc, học tập và sáng tạo. Tạo nội dung và hỗ trợ phân tích tài liệu phức tạp Tương tác tự nhiên qua nhiều hình thức đầu vào"
+      },
+      {
+        "level": 2,
+        "heading": "Câu hỏi thường gặp",
+        "text": "Tôi có thể sử dụng ChatGPT ở đâu?"
+      }
+    ],
+    "planOptions": [
+      "Plus",
+      "Gia hạn",
+      "1 tháng",
+      "3 tháng"
+    ],
+    "images": [
+      {
+        "src": "https://static.gamsgocdn.com/placeholder/chatgpt.png",
+        "alt": "ChatGPT"
+      }
+    ],
+    "media": [],
+    "faqs": [
+      {
+        "question": "Tôi có thể sử dụng ChatGPT ở đâu?",
+        "answer": "Trên web và các thiết bị hỗ trợ."
+      }
+    ],
+    "jsonLd": [],
+    "meta": {
+      "description": "ChatGPT là trợ lý AI đa phương thức được phát triển bởi OpenAI.",
+      "ogTitle": "",
+      "ogImage": "",
+      "robots": ""
+    },
+    "contentHtml": "<section class=\"hero\"><h1>ChatGPT</h1><p>ChatGPT là trợ lý AI đa phương thức được phát triển bởi OpenAI, hỗ trợ nhập văn bản, hình ảnh và âm thanh.</p><img data-src=\"https://static.gamsgocdn.com/placeholder/chatgpt.png\" alt=\"ChatGPT\"></section><section class=\"plans\"><h2>Chọn gói</h2><div class=\"plan-options\"><button>Plus</button><button>Gia hạn</button><button>1 tháng</button><button>3 tháng</button></div><div>Tạm tính: --</div></section><section><h2>Mở khóa trải nghiệm GPT mạnh mẽ hơn</h2><p>Trợ lý AI hỗ trợ công việc, học tập và sáng tạo.</p><ul><li>Tạo nội dung và hỗ trợ phân tích tài liệu phức tạp</li><li>Tương tác tự nhiên qua nhiều hình thức đầu vào</li></ul></section><section><h2>Câu hỏi thường gặp</h2><details><summary>Tôi có thể sử dụng ChatGPT ở đâu?</summary><p>Trên web và các thiết bị hỗ trợ.</p></details></section>",
+    "contentText": "ChatGPTChatGPT là trợ lý AI đa phương thức được phát triển bởi OpenAI, hỗ trợ nhập văn bản, hình ảnh và âm thanh.Chọn góiPlusGia hạn1 tháng3 thángTạm tính: --Mở khóa trải nghiệm GPT mạnh mẽ hơnTrợ lý AI hỗ trợ công việc, học tập và sáng tạo.Tạo nội dung và hỗ trợ phân tích tài liệu phức tạpTương tác tự nhiên qua nhiều hình thức đầu vàoCâu hỏi thường gặpTôi có thể sử dụng ChatGPT ở đâu?Trên web và các thiết bị hỗ trợ.",
+    "crawl": {
+      "fetchedAt": "2026-10-09T01:19:07.600Z",
+      "status": null,
+      "elapsedMs": 9,
+      "networkEntries": 0,
+      "offline": true,
+      "rawHtmlPath": "html/chatgpt-0242739d4586.html"
+    }
+  },
+  {
+    "requestedUrl": "https://www.gamsgo.com/vi/details/gemini",
+    "finalUrl": "https://www.gamsgo.com/vi/details/gemini",
+    "canonicalUrl": "https://www.gamsgo.com/vi/details/gemini",
+    "slug": "gemini",
+    "title": "Gemini",
+    "documentTitle": "Gemini Pro - GamsGo",
+    "description": "Gemini Pro mang đến khả năng suy luận và xử lý tác vụ đa phương thức.",
+    "intro": "Gemini Pro là tài khoản Google AI Pro với nhiều phương án kích hoạt khác nhau, giúp xử lý văn bản, hình ảnh và công việc hiệu quả hơn.",
+    "breadcrumb": [],
+    "tags": [],
+    "priceOnDetail": null,
+    "listingPrice": {
+      "raw": "￥315/ tháng",
+      "amount": 315,
+      "currency": "JPY",
+      "period": "month",
+      "source": "listing"
+    },
+    "features": [
+      "Hỗ trợ xử lý thông tin và tìm kiếm bằng công cụ AI"
+    ],
+    "sections": [
+      {
+        "level": 2,
+        "heading": "Google AI Pro",
+        "text": "Hỗ trợ tạo hình ảnh chất lượng cao và phân tích nhiều loại tài liệu. Hỗ trợ xử lý thông tin và tìm kiếm bằng công cụ AI"
+      }
+    ],
+    "planOptions": [
+      "Pro",
+      "1 tháng"
+    ],
+    "images": [
+      {
+        "src": "https://static.gamsgocdn.com/placeholder/gemini.png",
+        "alt": "Gemini"
+      }
+    ],
+    "media": [],
+    "faqs": [],
+    "jsonLd": [],
+    "meta": {
+      "description": "Gemini Pro mang đến khả năng suy luận và xử lý tác vụ đa phương thức.",
+      "ogTitle": "",
+      "ogImage": "",
+      "robots": ""
+    },
+    "contentHtml": "<h1>Gemini</h1><p>Gemini Pro là tài khoản Google AI Pro với nhiều phương án kích hoạt khác nhau, giúp xử lý văn bản, hình ảnh và công việc hiệu quả hơn.</p><div class=\"subscription-plan\"><button>Pro</button><button>1 tháng</button></div><h2>Google AI Pro</h2><p>Hỗ trợ tạo hình ảnh chất lượng cao và phân tích nhiều loại tài liệu.</p><ul><li>Hỗ trợ xử lý thông tin và tìm kiếm bằng công cụ AI</li></ul><img src=\"https://static.gamsgocdn.com/placeholder/gemini.png\" alt=\"Gemini\">",
+    "contentText": "GeminiGemini Pro là tài khoản Google AI Pro với nhiều phương án kích hoạt khác nhau, giúp xử lý văn bản, hình ảnh và công việc hiệu quả hơn.Pro1 thángGoogle AI ProHỗ trợ tạo hình ảnh chất lượng cao và phân tích nhiều loại tài liệu.Hỗ trợ xử lý thông tin và tìm kiếm bằng công cụ AI",
+    "crawl": {
+      "fetchedAt": "2026-10-09T01:19:07.619Z",
+      "status": null,
+      "elapsedMs": 4,
+      "networkEntries": 0,
+      "offline": true,
+      "rawHtmlPath": "html/gemini-30684bbe1b70.html"
+    }
+  }
+]
